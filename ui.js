@@ -5,6 +5,23 @@ function esc(s){return String(s??'').replaceAll('&','&amp;').replaceAll('<','&lt
 function info(c){return `<p><b>Principale:</b> ${esc(c.main||'Nessuno')}</p><p><b>Schieramento scoperto:</b> ${esc(c.faceUp||'Solo bonus universale: rimuovi 1 gettone iniziativa')}</p><p><b>Secondario:</b> ${esc(c.secondary||'Nessuno')}</p>`;}
 function showDetail(c){$('#detailTitle').textContent=c.name;$('#detailBody').innerHTML=info(c);$('#details').showModal();}
 function choose(label,options,optional=false){return new Promise(resolve=>{const box=$('#choiceButtons');$('#choiceTitle').textContent=label;box.replaceChildren();for(const o of options){const b=document.createElement('button');b.textContent=o.label;b.onclick=()=>{$('#choice').close();resolve(o.id)};box.append(b);}if(optional){const b=document.createElement('button');b.textContent='Non applicare / salta';b.onclick=()=>{$('#choice').close();resolve(null)};box.append(b);}$('#choice').showModal();});}
+function showBotAction(action){return new Promise(resolve=>{
+ const dlg=$('#botAction');
+ $('#botName').textContent=`${action.name} si attiva · iniziativa ${action.initiative}`;
+ const lines=action.events.length?action.events:['Nessuna conseguenza aggiuntiva registrata.'];
+ $('#botEvents').replaceChildren(...lines.map(line=>{const p=document.createElement('p');p.textContent=line;return p;}));
+ $('#botEffect').textContent=action.main?`Effetto principale: ${action.main}`:'Nessun effetto principale.';
+ const button=$('#botContinue');
+ button.onclick=()=>{dlg.close();resolve();};
+ dlg.showModal();button.focus();
+ });}
+function positionTooltip(el,pop){
+ const rect=el.getBoundingClientRect();const width=Math.min(340,innerWidth-20);
+ pop.style.width=width+'px';pop.style.left=Math.max(10,Math.min(rect.left,innerWidth-width-10))+'px';
+ pop.style.top='10px';const height=Math.min(pop.scrollHeight,innerHeight*.65);
+ const top=rect.top-height-10>=10?rect.top-height-10:Math.min(innerHeight-height-10,rect.bottom+10);
+ pop.style.top=Math.max(10,top)+'px';
+}
 function init(){fetch('./cards.json').then(r=>r.json()).then(data=>{cards=data;fixCards();$('#start').onclick=start;$('#play').onclick=play;$('#detailClose').onclick=()=>$('#details').close();start();}).catch(e=>{$('#status').textContent=e.message});}
 function fixCards(){const fix={
  'mario-adinolfi':{main:'Un altro Santo ottiene +1 Dominio.',secondary:'Se hai altre due carte scoperte, Mario Adinolfi guadagna +1 Dominio.'},
@@ -12,10 +29,13 @@ function fixCards(){const fix={
  'galileo-galilei':{main:'Guarda una carta coperta e, se vuoi, scambia i gettoni iniziativa di quella carta con un’altra carta coperta.',faceUp:''},
  'lucifero':{faceUp:''}
  };cards.forEach(c=>Object.assign(c,fix[c.id]||{}));}
-function start(){selected=null;pay.clear();locked=false;m=new Match(cards,$('#faction').value,choose,render);render();if(m.g.turn!==m.g.human)m.autoProgress().catch(err=>alert(err.message));}
+function start(){selected=null;pay.clear();locked=false;m=new Match(cards,$('#faction').value,choose,render,showBotAction);render();if(m.g.turn!==m.g.human)m.autoProgress().catch(err=>alert(err.message));}
 async function play(){if(locked)return;locked=true;try{await m.playHuman(selected,$('#face').checked,[...pay]);selected=null;pay.clear();}catch(e){alert('Errore: '+e.message);console.error(e);}finally{locked=false;render();}}
 function cardEl(x,team,hide=false,hand=false){const c=m.g.cards[hand?x:x.id];const hidden=hide&&!x.faceUp;const el=document.createElement('div');el.className='card'+(hidden?' hidden':'')+(x.dead?' dead':'')+(x.activated?' activated':'');if(hand&&selected===x)el.classList.add('selected');if(hand&&pay.has(x))el.classList.add('pay');
- if(hidden){el.innerHTML='<strong>CARTA COPERTA</strong>';}else{const summary=(c.main||'').slice(0,94);el.innerHTML=`<strong>${esc(c.name)}</strong><small>${esc(c.category)}</small><div class="stats">Costo ${c.cost} · Dominio ${hand?c.dominion:x.dominion}</div><span class="summary">${esc(summary)}${c.main.length>94?'…':''}</span><button class="detail-btn" type="button" aria-label="Mostra effetti di ${esc(c.name)}">ⓘ</button><div class="info-pop">${info(c)}</div>`;el.querySelector('.detail-btn').onclick=e=>{e.stopPropagation();showDetail(c)};}
+ if(hidden){el.innerHTML='<strong>CARTA COPERTA</strong>';}else{const summary=(c.main||'').slice(0,94);el.innerHTML=`<strong>${esc(c.name)}</strong><small>${esc(c.category)}</small><div class="stats">Costo ${c.cost} · Dominio ${hand?c.dominion:x.dominion}</div><span class="summary">${esc(summary)}${c.main.length>94?'…':''}</span><button class="detail-btn" type="button" aria-label="Mostra effetti di ${esc(c.name)}">ⓘ</button><div class="info-pop">${info(c)}</div>`;el.querySelector('.detail-btn').onclick=e=>{e.stopPropagation();showDetail(c)};
+ const pop=el.querySelector('.info-pop');
+ el.addEventListener('mouseenter',()=>positionTooltip(el,pop));
+ el.addEventListener('focusin',()=>positionTooltip(el,pop));}
  if(!hand){const i=document.createElement('div');i.className='initiative';i.innerHTML=`<span>INIZIATIVA</span><b>${Math.max(0,x.initiative+(x.tokens||0))}</b>`;el.append(i);if(x.dead)el.title='Eliminata';}
  if(hand){el.onclick=()=>{if(locked||m.phase!=='deploy'||m.g.turn!==m.g.human)return;if(selected===x){selected=null;pay.clear();}else if(selected===null){selected=x;pay.clear();}else if(x!==selected){if(pay.has(x))pay.delete(x);else pay.add(x);}render();};}
  return el;}

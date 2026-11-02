@@ -1,15 +1,21 @@
-# Santi vs Corrotti · alfa giocabile 0.3
+# Santi vs Corrotti · Playtest alfa 0.4
 
-## Avvio
-Estrarre la cartella; in Windows aprire la cartella contenente `index.html`, digitare `cmd` nella barra del percorso e nel terminale avviare `python -m http.server 8000`. Aprire `http://localhost:8000`.
+Versione di prova del gioco, basata sulle 32 carte della versione 1.7 e sulle correzioni concordate in chat (colonna Note ignorata).
 
-## Novità
-- Partita completa in due round contro un automa sperimentale.
-- Carte con nome, costo, Dominio, iniziativa e breve testo subito visibili; spiegazione completa al passaggio del mouse o clic su ⓘ (anche su smartphone).
-- Schieramento, costo, pesca, effetti principali, effetti scoperti, secondari, punti e una scelta di eliminazione permanente tra i round.
-- Scelte interattive dei bersagli; log delle azioni.
+## Novità della 0.4
 
-## Attenzione: versione di prova, non definitiva
-Questa alfa non è ancora una trasposizione certificata del regolamento. Alcune situazioni particolari necessitano ancora di test e di rifinitura: contro-effetti retroattivi (Giuliano), copie di effetti con molte scelte, alcuni effetti passivi e annullamenti, gestione di informazioni segrete, simultaneità, sostituzione durante uno schieramento, punteggi e scelta di eliminazione definitiva in condizioni particolari. L'automa è casuale/euristico e non possiede ancora tre livelli. Questa versione serve per trovare errori nel flusso di partita.
+- Dopo il primo round, ogni giocatore sceglie una carta avversaria superstite da eliminare definitivamente. Le due scelte sono rese note insieme. Le carte eliminate non rientrano nel mazzo del round 2.
+- Ogni attivazione dell'automa apre un pannello che riassume la carta, il testo principale e le conseguenze registrate. Premi **Continua** per proseguire.
+- Descrizioni su PC: passaggio del mouse; sul telefono: pulsante ⓘ. I tooltip del mouse sono adattati ai margini dello schermo; le finestre ⓘ sono scrollabili.
 
-La colonna Note del foglio Excel non è utilizzata. Le correzioni concordate di Mario Adinolfi, Martin Lutero, Galileo e Lucifero sono applicate nell'interfaccia.
+## Uso
+
+Apri un terminale nella cartella dei file ed esegui:
+
+    python -m http.server 8000
+
+Apri http://localhost:8000 oppure carica tutti i file su GitHub Pages.
+
+## Nota sullo stato del gioco
+
+Si tratta di un'**alfa per playtest**: alcune interazioni delle abilità sono ancora da verificare e correggere. L'automa ha un'unica strategia provvisoria. Prima di ogni aggiornamento su GitHub, sostituisci tutti i file per evitare versioni miste e ricarica la pagina senza cache.

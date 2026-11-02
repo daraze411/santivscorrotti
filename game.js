@@ -1,7 +1,7 @@
 import {newGame,deploy,initiativeOf,order,shuffle} from './engine.js';
 const other=t=>t==='Santi'?'Corrotti':'Santi';
 export class Match{
- constructor(cards,human,choose,update){this.g=newGame(cards,human);this.choose=choose;this.update=update;this.cancel=new Set();this.protect=new Map();this.immune=new Set();this.muted=new Set();this.revealed=new Set();this.categoryPenalties=[];this.discount={Santi:0,Corrotti:0};this.lastPaid={Santi:0,Corrotti:0};this.phase='deploy';this.scored=[];this.nextSkip={Santi:0,Corrotti:0};this.lastActivation=null;this.suppressedMain=new Set();this.tieLast=new Map();}
+ constructor(cards,human,choose,update,onAutoAction=async()=>{}){this.onAutoAction=onAutoAction;this.g=newGame(cards,human);this.choose=choose;this.update=update;this.cancel=new Set();this.protect=new Map();this.immune=new Set();this.muted=new Set();this.revealed=new Set();this.categoryPenalties=[];this.discount={Santi:0,Corrotti:0};this.lastPaid={Santi:0,Corrotti:0};this.phase='deploy';this.scored=[];this.nextSkip={Santi:0,Corrotti:0};this.lastActivation=null;this.suppressedMain=new Set();this.tieLast=new Map();}
  notify(s){this.g.log.unshift(s);this.update();}
  p(t){return this.g.parties[t];}
  card(x){return this.g.cards[x.id];}
@@ -93,11 +93,41 @@ export class Match{
  const exposed=t=>this.live(t).filter(x=>x.faceUp).length,paid=t=>this.lastPaid[t];let first=exposed('Santi')!==exposed('Corrotti')?(exposed('Santi')>exposed('Corrotti')?'Santi':'Corrotti'):paid('Santi')!==paid('Corrotti')?(paid('Santi')<paid('Corrotti')?'Santi':'Corrotti'):g.starter;
  if(this.tieLast.has(min)&&tied.some(z=>z.t===other(this.tieLast.get(min))))first=other(this.tieLast.get(min));if(!tied.some(z=>z.t===first))first=other(first);
  let opts=tied.filter(z=>z.t===first);let chosen=await this.select(first,opts.map(z=>({...z,label:`${this.card(z.x).name} · slot ${z.x.slot+1}`})), 'Scegli la prossima carta da attivare');let {x,t}=chosen||opts[0];this.tieLast.set(min,t);x.activated=true;if(!x.faceUp){x.faceUp=true;this.notify(`${t} rivela ${this.card(x).name}.`);}this.notify(`${this.card(x).name} si attiva (iniziativa ${min}).`);
+ const logBeforeEffects=this.g.log.length;
+ const before=this.all().map(({x,t})=>({x,t,name:this.card(x).name,faceUp:x.faceUp,dominion:x.dominion,tokens:x.tokens,dead:x.dead}));
  if(this.nextSkip[t]>0){this.nextSkip[t]--; this.notify(`Effetto principale di ${this.card(x).name} annullato da San Giorgio.`);}else if(this.suppressedMain.has(x)){this.notify(`Effetto principale di ${this.card(x).name} annullato da San Gennaro.`);}else if(this.cancel.has(t)){this.cancel.delete(t);this.notify(`Effetto principale di ${this.card(x).name} annullato da San Benedetto.`);}else await this.main(t,x);
  if(!x.dead&&!this.muted.has(x))await this.secondary(t,x);
  this.update();
+ if(t!==g.human){
+  const events=this.g.log.slice(0,Math.max(0,this.g.log.length-logBeforeEffects)).reverse();
+  for(const state of before){
+   const y=state.x;
+   if(y.dead&&!state.dead)continue; // L'eliminazione è già nel registro.
+   const name=state.faceUp||state.t===g.human?state.name:'Carta coperta';
+   if(y.dominion!==state.dominion)events.push(`${name}: Dominio ${state.dominion} → ${y.dominion}.`);
+   if(y.tokens!==state.tokens)events.push(`${name}: iniziativa ${initiativeOf({initiative:y.initiative,tokens:state.tokens})} → ${initiativeOf(y)}.`);
+  }
+  await this.onAutoAction({name:this.card(x).name,initiative:min,events,
+   main:this.card(x).main||'',secondary:this.card(x).secondary||'',dead:x.dead});
+ }
  }
  await this.endRound();}
  async endRound(){const g=this.g;for(const t of ['Santi','Corrotti']){const sum=this.live(t).reduce((s,x)=>s+x.dominion,0);this.p(t).score+=sum;this.scored.push({team:t,sum});this.notify(`${t}: ${sum} Dominio nel round ${g.round} (totale ${this.p(t).score}).`);}this.phase='between';g.phase='between';this.update();if(g.round===2){this.phase='finished';g.phase='finished';const a=this.p('Santi').score,b=this.p('Corrotti').score;let winner=a>b?'Santi':b>a?'Corrotti':null;if(!winner){const ca=this.p('Santi').board.reduce((n,x)=>n+this.card(x).cost,0),cb=this.p('Corrotti').board.reduce((n,x)=>n+this.card(x).cost,0);if(ca!==cb)winner=ca<cb?'Santi':'Corrotti';}this.notify(winner?`PARTITA FINITA: vince ${winner} (${a}–${b}).`:`PARTITA FINITA: pareggio (${a}–${b}).`);return;}
- const r1=this.scored.at(-2),r2=this.scored.at(-1);for(const t of ['Santi','Corrotti']){const lost=other(t),n=(t==='Santi'&&r1?.team==='Santi'&&r1?.sum>r2?.sum&&this.live(t).some(x=>this.id(x)==='san-gennaro'))?2:1;for(let j=0;j<n;j++){let victim=await this.target(t,lost,z=>!this.p(lost).removed.includes(z.id),`${t}: elimina definitivamente una carta avversaria (${j+1}/${n})`,true);if(victim){this.p(lost).removed.push(victim.id);this.notify(`${this.card(victim).name} eliminato definitivamente dal mazzo.`);}}}for(const t of ['Santi','Corrotti']){const p=this.p(t),ids=[...p.deck,...p.hand,...p.discard,...p.board.map(x=>x.id)].filter(id=>!p.removed.includes(id));p.deck=shuffle(ids,g.random);p.hand=[];p.discard=[];p.board=[];this.refreshHand(t);}g.round=2;g.starter='Corrotti';g.turn='Corrotti';g.plays=0;this.lastPaid={Santi:0,Corrotti:0};this.cancel.clear();this.protect.clear();this.immune.clear();this.muted.clear();this.categoryPenalties=[];this.discount={Santi:0,Corrotti:0};this.phase='deploy';g.phase='deploy';this.nextSkip={Santi:0,Corrotti:0};this.suppressedMain.clear();this.tieLast.clear();this.notify('Round 2: iniziano i Corrotti.');await this.autoProgress();}
+ // Le due fazioni decidono senza conoscere la scelta dell'altra.
+ const removalChoices={};
+ for(const t of ['Santi','Corrotti']){
+  const enemy=other(t),alive=this.live(enemy);
+  if(!alive.length){removalChoices[t]=[];continue;}
+  const selected=await this.target(t,enemy,z=>true,`${t}: scegli una carta avversaria sopravvissuta da eliminare definitivamente`,false);
+  removalChoices[t]=selected?[selected.id]:[];
+ }
+ for(const t of ['Santi','Corrotti']){
+  const enemy=other(t);
+  for(const id of removalChoices[t]){
+   if(!this.p(enemy).removed.includes(id))this.p(enemy).removed.push(id);
+  }
+ }
+ const eliminated=Object.entries(removalChoices).flatMap(([t,ids])=>ids.map(id=>`${t} elimina definitivamente ${this.g.cards[id].name}`));
+ this.notify(eliminated.length?`Scelte rivelate: ${eliminated.join(' · ')}.`:'Nessuna carta sopravvissuta da eliminare.');
+ for(const t of ['Santi','Corrotti']){const p=this.p(t),ids=[...p.deck,...p.hand,...p.discard,...p.board.map(x=>x.id)].filter(id=>!p.removed.includes(id));p.deck=shuffle(ids,g.random);p.hand=[];p.discard=[];p.board=[];this.refreshHand(t);}g.round=2;g.starter='Corrotti';g.turn='Corrotti';g.plays=0;this.lastPaid={Santi:0,Corrotti:0};this.cancel.clear();this.protect.clear();this.immune.clear();this.muted.clear();this.categoryPenalties=[];this.discount={Santi:0,Corrotti:0};this.phase='deploy';g.phase='deploy';this.nextSkip={Santi:0,Corrotti:0};this.suppressedMain.clear();this.tieLast.clear();this.notify('Round 2: iniziano i Corrotti.');await this.autoProgress();}
 }
