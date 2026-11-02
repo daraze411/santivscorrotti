@@ -41,3 +41,22 @@
 #details #detailBody p{margin:12px 0}
 #details #detailTitle{padding-top:8px;padding-right:6px}
 @media(hover:none){.floating-card-tooltip{display:none!important}}
+
+/* 0.4.2: layout fisso, indipendente dalla posizione della carta. */
+.floating-card-tooltip,
+.card .floating-card-tooltip{
+ position:fixed!important;
+ top:16px!important;
+ right:16px!important;
+ bottom:auto!important;
+ left:auto!important;
+ transform:none!important;
+ display:block;
+ width:min(400px,calc(100vw - 32px))!important;
+ max-height:min(75dvh,540px)!important;
+ overflow:auto!important;
+ z-index:2147483647!important;
+ box-shadow:0 20px 60px #000e;
+}
+.floating-card-tooltip[hidden]{display:none!important}
+@media(hover:none){.floating-card-tooltip{display:none!important}}

@@ -33,19 +33,10 @@ function showTooltip(el,c){
  const tip=getTooltip();
  tip.innerHTML=`<h3>${esc(c.name)}</h3>${info(c)}`;
  tip.hidden=false;
- const rect=el.getBoundingClientRect();
- const pad=12;
- const width=Math.min(380,window.innerWidth-pad*2);
- tip.style.width=width+'px';
- const x=Math.min(Math.max(pad,rect.left),window.innerWidth-width-pad);
- tip.style.left=x+'px';
- // Preferisci lo spazio sotto la carta; se manca, usa quello sopra.
- const desired=Math.min(tip.scrollHeight,Math.max(120,window.innerHeight-pad*2));
- let y=rect.bottom+8;
- if(y+desired>window.innerHeight-pad && rect.top-desired-8>=pad)y=rect.top-desired-8;
- if(y+desired>window.innerHeight-pad)y=window.innerHeight-desired-pad;
- tip.style.top=Math.max(pad,y)+'px';
+ // Il pannello resta fisso nel viewport: nessuna misura o coordinata della carta.
+ // Evita che risulti tagliato da bordi e contenitori del tavolo.
 }
+
 function init(){fetch('./cards.json').then(r=>r.json()).then(data=>{cards=data;fixCards();$('#start').onclick=start;$('#play').onclick=play;$('#detailClose').onclick=()=>$('#details').close();start();}).catch(e=>{$('#status').textContent=e.message});}
 function fixCards(){const fix={
  'mario-adinolfi':{main:'Un altro Santo ottiene +1 Dominio.',secondary:'Se hai altre due carte scoperte, Mario Adinolfi guadagna +1 Dominio.'},

@@ -22,3 +22,6 @@ Si tratta di un'**alfa per playtest**: alcune interazioni delle abilità sono an
 
 ## Correzione 0.4.1
 Descrizioni al passaggio del mouse spostate in un pannello esterno alle carte, con limiti di viewport; finestra informazioni touch ampliata. Nessuna modifica alle regole.
+
+## 0.4.2
+Corretto il pannello al passaggio del mouse: ora e fisso nell’angolo superiore destro e non segue piu la carta. Il pulsante info rimane invariato. Aggiornati i riferimenti con versione per evitare cache CSS/JS.
