@@ -19,3 +19,6 @@ Apri http://localhost:8000 oppure carica tutti i file su GitHub Pages.
 ## Nota sullo stato del gioco
 
 Si tratta di un'**alfa per playtest**: alcune interazioni delle abilità sono ancora da verificare e correggere. L'automa ha un'unica strategia provvisoria. Prima di ogni aggiornamento su GitHub, sostituisci tutti i file per evitare versioni miste e ricarica la pagina senza cache.
+
+## Correzione 0.4.1
+Descrizioni al passaggio del mouse spostate in un pannello esterno alle carte, con limiti di viewport; finestra informazioni touch ampliata. Nessuna modifica alle regole.

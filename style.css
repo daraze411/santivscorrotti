@@ -19,3 +19,25 @@
 #botEvents{background:#171817;border-radius:8px;border:1px solid #544c3a;padding:10px 14px;margin:14px 0;max-height:38dvh;overflow:auto}
 #botEvents p{margin:8px 0;line-height:1.45;font-size:14px}
 #botContinue{width:100%;padding:13px}
+
+/* v0.4.1: tooltip indipendente dal layout delle carte. */
+.floating-card-tooltip{
+ position:fixed;z-index:10000;box-sizing:border-box;
+ width:min(380px,calc(100vw - 24px));
+ max-height:calc(100dvh - 24px);overflow-y:auto;
+ overscroll-behavior:contain;
+ background:#211f1c;color:#f7ead5;
+ border:1px solid #caa96a;border-radius:12px;
+ padding:16px 18px;box-shadow:0 12px 34px #000c;
+ font-size:15px;line-height:1.5;pointer-events:none;
+}
+.floating-card-tooltip[hidden]{display:none!important}
+.floating-card-tooltip h3{font:700 20px Georgia,serif;color:#f5dca0;margin:0 0 12px}
+.floating-card-tooltip p{margin:0 0 12px;overflow-wrap:anywhere}
+.floating-card-tooltip p:last-child{margin-bottom:0}
+/* Finestra touch: testo leggibile anche con effetti lunghi. */
+#details{width:min(540px,calc(100vw - 24px));max-height:calc(100dvh - 32px);padding:clamp(16px,4vw,25px)}
+#details #detailBody{clear:both;font-size:16px;line-height:1.55;overflow-wrap:anywhere}
+#details #detailBody p{margin:12px 0}
+#details #detailTitle{padding-top:8px;padding-right:6px}
+@media(hover:none){.floating-card-tooltip{display:none!important}}
