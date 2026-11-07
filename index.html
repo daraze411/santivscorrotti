@@ -250,7 +250,7 @@ D('marx','Karl Marx',1,'Comunisti',2,2,'Ogni altro tuo Comunista scoperto ottien
 D('lenin','Vladimir Lenin',1,'Comunisti',3,2,'Se hai un altro Comunista scoperto, elimina una carta avversaria scoperta.',null,null),
 D('stalin','Joseph Stalin',1,'Comunisti',2,3,'Elimina una carta avversaria scoperta e sacrifica un altro tuo Comunista scoperto. Senza un Comunista da sacrificare non succede nulla.','Rimuovi un gettone iniziativa da un tuo Corrotto.',null),
 D('engels','Friedrich Engels',1,'Comunisti',1,1,'Due carte differenti della tua fazione ottengono +1 Dominio ciascuna.',null,null),
-D('ozzy','Ozzy Osbourne',1,'Artisti',2,1,'Scegli una categoria avversaria: le sue carte scoperte perdono 1 Dominio, anche quelle che diventano scoperte dopo.','Ozzy ottiene +1 Dominio.',null),
+D('ozzy','Ozzy Osbourne',1,'Artisti',2,2,'Scegli una categoria avversaria: le sue carte scoperte perdono 1 Dominio, anche quelle che diventano scoperte dopo.','Ozzy ottiene +1 Dominio.',null),
 D('siffredi','Rocco Siffredi',1,'Artisti',2,2,'Se è l’ultima carta dei Corrotti ad attivarsi, ottiene +2 Dominio.',null,null),
 D('baudelaire','Charles Baudelaire',1,'Artisti',3,4,null,'Aggiungi un gettone iniziativa a una carta avversaria.','Se viene eliminato, un’altra carta perde 1 Dominio.'),
 D('dali','Salvador Dalí',1,'Artisti',2,2,'Scambia il Dominio attuale di due carte scoperte, anche di fazioni diverse.',null,null),
@@ -509,7 +509,7 @@ const MAIN={
   async rita(c){const p=c.owner;
     const opts=S.players[p].board.filter(x=>x&&x!==c&&x.activated&&x.def.f===0&&MAIN[x.id]&&x.id!=='rita');
     const r={giorgio:0.5,barbara:3,ferretti:3,pantaleone:3,paolo:2.5,pietro:2,koll:2,adinolfi:1.5};
-    const x=await pick(p,'Santa Rita: copia l’effetto principale di un Santo già attivato',opts,{ai:x=>r[x.id]??1});
+    const x=await pick(p,'Santa Rita: copia l’effetto principale di un Santo già attivato',opts,{ai:x=>mainValue(x.id,p)+(r[x.id]??1)*0.1});
     if(!x)return;c.copied=x.id;log(`Santa Rita copia ${x.def.name}.`);await MAIN[x.id](c)},
   async pietro(c){const p=c.owner,P=S.players[p];
     const ok=x=>P.discard.some(d=>d.uid===x.cardUid)||P.deck.some(d=>d.uid===x.cardUid);
@@ -556,11 +556,11 @@ const MAIN={
   async diocleziano(c){const t=await pick(c.owner,'Diocleziano: elimina una carta avversaria coperta',live(1-c.owner).filter(x=>!x.faceUp));if(t)await eliminate(t,c)},
   async nerone(c){const p=c.owner;
     if(!S.players[p].board.some(x=>x&&x.activated&&x.def.cat==='Demoni ed Eretici')){log('Nerone: nessun Demone o Eretico già attivato.');return}
-    const x=await pick(p,'Nerone: copia l’effetto principale di un Corrotto già attivato',live(p).filter(x=>x!==c&&x.activated&&MAIN[x.id]&&x.id!=='nerone'),{ai:()=>Math.random()});
+    const x=await pick(p,'Nerone: copia l’effetto principale di un Corrotto già attivato',live(p).filter(x=>x!==c&&x.activated&&MAIN[x.id]&&x.id!=='nerone'),{ai:x=>mainValue(x.id,p)});
     if(!x)return;log(`Nerone copia ${x.def.name}.`);await MAIN[x.id](c)},
   async giuliano(c){const p=c.owner;if(!live(p).some(x=>x.faceUp&&x.def.cat==='Artisti')){log('Giuliano: nessun Artista scoperto.');return}
     const x=await pick(p,'Giuliano: una carta avversaria perde 2 Dominio',live(1-p));if(x){addDom(x,-2);log(`${pn(x)} perde 2 Dominio.`)}},
-  async lutero(c){const x=await pick(c.owner,'Martin Lutero: annulla l’effetto secondario di una tua carta non ancora attivata',live(c.owner).filter(x=>x!==c&&!x.activated),{ai:x=>x.id==='lucifero'?5:Math.random()});
+  async lutero(c){const x=await pick(c.owner,'Martin Lutero: annulla l’effetto secondario di una tua carta non ancora attivata',live(c.owner).filter(x=>x!==c&&!x.activated),{ai:x=>({lucifero:5,giorgio:live(c.owner).filter(y=>y!==x&&!y.activated).length?1.5:3,pantaleone:1,koll:1,sebastiano:0.6}[x.id]??(SEC[x.id]?-1:0.5))});
     if(x){x.secX=true;log(`L’effetto secondario di ${pn(x)} è annullato.`)}},
   async lucifero(c){const p=c.owner;const t=await pick(p,'Lucifero: elimina una carta avversaria scoperta',live(1-p).filter(x=>x.faceUp));
     if(t)await eliminate(t,c);
@@ -634,13 +634,92 @@ async function playGame(){
   }
   gameOver();
 }
-function cpuDeploy(p){
+function cpuDeployOld(p){
   const P=S.players[p],pl=P.hand.filter(h=>costOf(p,h)<=P.hand.length-1);
   let card=pl[0],bs=-1;
   for(const h of pl){const d=DEF[h.id],s=d.dom+Math.random()*2.5+(d.m?0.5:0)-(S.noRe?costOf(p,h)*0.7:0);if(s>bs){bs=s;card=h}}
   const d=DEF[card.id],up=Math.random()<(d.s?0.75:0.35);
   const others=P.hand.filter(h=>h!==card).sort((a,b)=>DEF[a.id].dom-DEF[b.id].dom);
   return{card,up,disc:others.slice(0,costOf(p,card))};
+}
+
+/* ---------- avversario computer: valutazioni ---------- */
+const KILL_UP={lucifero:1,belzebu:.7,lenin:.6,stalin:.5,barbara:.7,ferretti:.4,giorgio:1,pantaleone:.3,paolo:.4};
+const KILL_DOWN={diocleziano:1,giorgio:1,paolo:.4};
+function oppView(p){
+  const o=1-p,board=S.players[o].board.filter(Boolean);
+  const seen=new Set(board.filter(x=>seenBy(x,p)).map(x=>x.id));
+  const unseen=DEFS.filter(d=>d.f===o&&!S.removed[o].includes(d.id)&&!seen.has(d.id)).map(d=>d.id);
+  const slots=S.players[o].board.filter(x=>x===null).length;
+  return{board,unseen,slots};
+}
+function threat(p,up){
+  const K=up?KILL_UP:KILL_DOWN,{board,unseen,slots}=oppView(p);
+  const pu=unseen.length?unseen.reduce((a,id)=>a+(K[id]||0),0)/unseen.length:0;
+  let t=0;
+  for(const x of board){if(x.eliminated||x.activated)continue;t+=seenBy(x,p)?(K[x.id]||0):pu}
+  return t+slots*pu*0.8;
+}
+function bestTarget(p,f){const v=live(1-p).filter(f).map(x=>est(x,p));return v.length?Math.max(...v):0}
+function mainValue(id,p){
+  const o=1-p,slots=S.players[o].board.filter(x=>x===null).length,fut=slots>0?1.2:0;
+  const mine=live(p),hand=S.players[p].hand.map(h=>DEF[h.id]);
+  const commUp=mine.filter(x=>x.def.cat==='Comunisti'&&x.faceUp).length,commHand=hand.filter(d=>d.cat==='Comunisti').length;
+  const el=f=>Math.max(bestTarget(p,f),fut);
+  switch(id){
+    case 'giorgio':return el(()=>true)-0.6;
+    case 'barbara':{const lim=mine.some(x=>x.def.cat==='Mistici')?3:2;return el(x=>x.faceUp&&x.dom<=lim)}
+    case 'lucifero':return el(x=>x.faceUp)+0.3;
+    case 'belzebu':return el(x=>x.faceUp&&x.dom<=2);
+    case 'lenin':return (commUp||commHand?1:0.15)*el(x=>x.faceUp);
+    case 'stalin':return commUp+commHand>0?el(x=>x.faceUp)-1.5:0;
+    case 'diocleziano':return el(x=>!x.faceUp);
+    case 'pantaleone':return el(x=>canShow(x,p)&&(x.def.cat==='Comunisti'||x.def.sub==='eretico'))*0.8;
+    case 'ferretti':return el(x=>x.faceUp&&x.dom<=2&&(x.def.cat==='Comunisti'||x.def.cat==='Artisti'))*0.7;
+    case 'paolo':return 1.8;
+    case 'giuliano':return mine.some(x=>x.faceUp&&x.def.cat==='Artisti')||hand.some(d=>d.cat==='Artisti')?1.8:0.3;
+    case 'marx':return commUp+commHand*0.5;
+    case 'engels':return 2;case 'koll':return 2;case 'adinolfi':return 1;
+    case 'ozzy':return Math.max(0,...CATS[o].map(k=>live(o).filter(x=>x.faceUp&&x.def.cat===k).length))+0.5;
+    case 'siffredi':return 1.2;case 'dali':return 1;case 'rocco':return 0.8;case 'sebastiano':return 1;case 'benedetto':return 1;case 'brosio':return 0.8;
+    case 'lutero':return mine.some(x=>x.id==='lucifero'&&!x.activated)||hand.some(d=>d.id==='lucifero')?1:0.2;
+    case 'nerone':return mine.some(x=>x.def.cat==='Demoni ed Eretici')||hand.some(d=>d.cat==='Demoni ed Eretici')?1.6:0;
+    case 'rita':return mine.some(x=>x.def.f===0&&x!==null&&['barbara','ferretti','pantaleone','paolo','koll','pietro'].includes(x.id))?1.6:0.6;
+    case 'pietro':{const d=S.players[p].board.filter(x=>x&&x.eliminated).map(x=>x.def.dom);return 0.6+(d.length?Math.max(...d):0)}
+    case 'gennaro':return 0.8;case 'lorenzo':return 0.6;
+    default:return 0.2;
+  }
+}
+function scopValue(id,p){
+  const o=1-p,P=S.players[p];
+  switch(id){
+    case 'barbara':return S.players[o].last&&!S.players[o].last.eliminated&&S.players[o].hand.length?0.8:0;
+    case 'benedetto':return P.discard.length?1:0;
+    case 'lucia':case 'galileo':return live(o).some(x=>!x.faceUp)?0.4:0;
+    case 'marx':return P.hand.some(h=>DEF[h.id].cat==='Comunisti')?0.8:0;
+    case 'ozzy':return 1;
+    case 'bruno':{const c=live(p).filter(x=>x.def.cat==='Comunisti');return c.length?3-Math.min(...c.map(x=>x.dom)):0}
+    case 'rocco':case 'baudelaire':case 'paolo':case 'giuliano':return 0.5;
+    case 'lorenzo':case 'stalin':return 0.3;
+    default:return 0;
+  }
+}
+function keepValue(h,p){const d=DEF[h.id];return d.dom+mainValue(d.id,p)*0.6+(S.noRe?(3-costOf(p,h))*0.5:0)}
+function cpuDeploy(p){
+  if(S.aiOld&&S.aiOld[p])return cpuDeployOld(p);
+  const P=S.players[p],pl=P.hand.filter(h=>costOf(p,h)<=P.hand.length-1);
+  const tUp=Math.min(1.6,threat(p,true)),tDown=Math.min(1.6,threat(p,false));
+  let best=null,bs=-Infinity;
+  for(const h of pl){const d=DEF[h.id],cost=costOf(p,h);
+    const base=d.dom+mainValue(d.id,p)*0.8-(S.noRe?cost*0.6:cost*0.15);
+    for(const up of [true,false]){
+      let sc=base-d.dom*(up?tUp:tDown)*0.45;
+      if(up)sc+=scopValue(d.id,p)+0.35;
+      if(!up&&d.id==='lorenzo')sc+=0.6;
+      sc+=Math.random()*0.35;
+      if(sc>bs){bs=sc;best={card:h,up}}}}
+  const others=P.hand.filter(h=>h!==best.card).sort((a,b)=>keepValue(a,p)-keepValue(b,p));
+  return{card:best.card,up:best.up,disc:others.slice(0,costOf(p,best.card))};
 }
 async function humanDeploy(p){
   const P=S.players[p];
