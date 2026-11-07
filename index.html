@@ -196,6 +196,27 @@ details.log li.r{color:var(--fg);font-weight:700}
 .variant b{color:var(--fg)}
 .variant input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent);flex:none}
 .vtag{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
+@media (min-width:601px){.swipe,.lay{display:none!important}}
+.swipe{display:none}
+.lay{background:none;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:11px;cursor:pointer;margin-left:6px;color:var(--fg);text-transform:none;letter-spacing:0}
+.layopt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--muted)}
+.layopt .opt{padding:7px 12px}
+@media (min-width:601px){.layopt{display:none}}
+@media (max-width:600px){
+  .wrap{gap:6px;padding-block:6px 24px}
+  .top h1{font-size:17px}
+  .side{padding:5px;gap:4px;border-radius:10px}
+  .side .row{gap:4px}
+  .rowhead{font-size:10.5px}
+  .status{padding:5px 8px;font-size:13px;min-height:0}
+  body:not(.compact) .hand{display:flex;overflow-x:auto;gap:10px;scroll-snap-type:x mandatory;padding:2px 2px 6px;scrollbar-width:thin}
+  body:not(.compact) .hand .card{flex:0 0 46%;scroll-snap-align:start}
+  body:not(.compact) .hand .card .nm{font-size:15px}
+  body:not(.compact) .hand .card .nm.lg{font-size:13px}
+  body:not(.compact) .hand .ini,body:not(.compact) .hand .dom{min-width:28px;height:28px;font-size:16px}
+  body:not(.compact) .hand .cb{width:22px;height:22px}body:not(.compact) .hand .cb svg{width:14px;height:14px}
+  body:not(.compact) .swipe{display:inline}
+}
 @media (prefers-reduced-motion:no-preference){.card{transition:opacity .25s,outline-color .2s}}
 </style>
 
@@ -295,7 +316,9 @@ const RULES=[
  'Un effetto senza bersagli validi non fa nulla.'
 ];
 
-let S=null, UID=1, FAST=false, GID=0; const OPT={noRe:true};
+let S=null, UID=1, FAST=false, GID=0; const OPT={noRe:true,big:true};
+try{const v=localStorage.getItem('svc-layout');if(v)OPT.big=v!=='compact'}catch(e){}
+function setLayout(big){OPT.big=big;try{localStorage.setItem('svc-layout',big?'big':'compact')}catch(e){}document.body&&document.body.classList.toggle('compact',!big);render()}
 const rnd=n=>Math.floor(Math.random()*n);
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
 const sleep=ms=>{const g=GID;return FAST?Promise.resolve():new Promise(r=>setTimeout(()=>{if(g===GID)r()},ms))};
@@ -672,6 +695,17 @@ async function activationPhase(){
   const prec=fu[0]!==fu[1]?(fu[0]>fu[1]?0:1):paid[0]!==paid[1]?(paid[0]<paid[1]?0:1):S.starter;
   const why=fu[0]!==fu[1]?'più carte scoperte':paid[0]!==paid[1]?'ha pagato meno':'ha iniziato il round';
   log(`Attivazioni. Nei pareggi d’iniziativa hanno la precedenza i ${FAC[prec]} (${why}).`,true);
+  if(!FAST){
+    const ord=both().slice().sort((x,y)=>init(x)-init(y)||(x.owner===prec?-1:1));
+    const vw=S.mode==='cpu'?S.human:null;
+    const nm=c=>(vw!==null?canShow(c,vw):c.faceUp)?c.def.name:(c.fixed?'carta imposta':'carta coperta');
+    if(S.mode==='hot')await ensureViewer(null);
+    await ask(vw,{title:'Inizia la fase di attivazione',epic:'Le carte sono schierate. Ora si risponde delle proprie azioni.',
+      lines:[`Le carte si attivano dall’iniziativa più bassa alla più alta.`,
+        `A parità di iniziativa hanno la precedenza i ${FAC[prec]} (${why}).`,
+        `Ordine previsto: ${ord.map(c=>`${nm(c)} (${FAC[c.owner]}, ${init(c)})`).join(' → ')}. Può cambiare se gli effetti spostano i gettoni.`],
+      opts:[{label:'Inizia',v:1,main:true}]});
+  }
   let lastTier=null,lastOwner=null;
   for(;;){
     const pend=both().filter(c=>!c.activated);if(!pend.length)break;
@@ -898,7 +932,7 @@ function promptHtml(){
   }
   if(pr.pop||(!pr.multi&&!pr.optional&&pr.opts.length===1&&!pr.opts[0].uid)){
     return`<div class="modal pop" data-popok><div>${pr.inst?`<div class="who">Mosse dei ${FAC[1-S.human]}</div>`:who}<div class="pophd">${pr.inst?`<div class="pc">${cardEl(pr.inst,0)}</div>`:''}<h2>${esc(pr.title)}</h2></div>
-    ${pr.epic?`<p class="epic">${esc(pr.epic)}</p>`:''}${pr.card?`<div class="meta">${pr.card.cat} · Costo ${pr.card.cost} · Dominio ${pr.card.dom}</div>${fxHtml(pr.card)}`:''}${pr.text?`<div>${esc(pr.text)}</div>`:''}${pr.lines?`<ul class="poplist">${pr.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>`:''}${body}<div class="tap">Tocca fuori dal riquadro per continuare</div></div></div>`;
+    ${pr.epic?`<p class="epic">${esc(pr.epic)}</p>`:''}${pr.card?`<div class="meta">${pr.card.cat} · Costo ${pr.card.cost} · Dominio ${pr.card.dom}</div>${fxHtml(pr.card)}`:''}${pr.text?`<div>${esc(pr.text)}</div>`:''}${pr.lines?`<ul class="poplist">${pr.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>`:''}${body}<div class="tap">Tocca ovunque per continuare</div></div></div>`;
   }
   return`<div class="sheet" id="sheet">${who}<h2>${esc(pr.title)}</h2>${pr.card?`<div class="meta">${pr.card.cat} · Costo ${pr.card.cost} · Dominio ${pr.card.dom}</div>${fxHtml(pr.card)}`:''}${pr.text?`<div>${esc(pr.text)}</div>`:''}${body}</div>`;
 }
@@ -917,6 +951,7 @@ function render(){
         <button class="opt" data-start="hot">Due giocatori sullo stesso telefono</button>
         <button class="opt" data-help="tut">Come si gioca</button>
         <button class="opt" data-credits>Crediti</button>
+        <div class="layopt">Carte da telefono: <button class="opt ${OPT.big?'on':''}" data-lay="big">Mano grande</button><button class="opt ${OPT.big?'':'on'}" data-lay="compact">Compatte</button></div>
         <label class="variant"><input type="checkbox" id="opt-easy" ${OPT.noRe?'':'checked'}><span><b>Variante facilitata</b><br>Quando il mazzo finisce, gli scarti vengono rimescolati e si continua a pescare.</span></label>
       </div></div>${modalHtml()}`;
     return;
@@ -936,7 +971,7 @@ function render(){
     <div class="status">${esc(S.status)}</div>
     ${S.players?rowHtml(bottom):''}
     ${promptHtml()}${fin}
-    ${handP!==null&&S.players?`<section class="side ${handP?'cor':'san'}"><div class="rowhead"><b class="${handP?'cor':'san'}">La tua mano</b><span>${S.handWait?'tocca una carta':''}</span></div>
+    ${handP!==null&&S.players?`<section class="side ${handP?'cor':'san'}"><div class="rowhead"><b class="${handP?'cor':'san'}">La tua mano</b><span>${S.handWait?'tocca una carta':''}${S.players[handP].hand.length>2?'<span class="swipe"> · scorri →</span>':''}<button class="lay" data-lay="${OPT.big?'compact':'big'}">${OPT.big?'Vista compatta':'Mano grande'}</button></span></div>
       <div class="hand ${S.handWait?'wait':''}">${S.players[handP].hand.map(h=>handEl(h,handP)).join('')}</div></section>`:''}
     <details class="log" open><summary>Cronaca</summary><ol>${S.log.slice(0,60).map(l=>`<li class="${l.r?'r':''}">${esc(l.t)}</li>`).join('')}</ol></details>
   </div>
@@ -982,11 +1017,12 @@ if(typeof document!=='undefined'){
   document.documentElement.addEventListener('pointerleave',()=>{tip.hidden=true});
   document.addEventListener('change',e=>{if(e.target.id==='opt-easy')OPT.noRe=!e.target.checked});
   document.addEventListener('click',e=>{
-    const t=e.target.closest('[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
+    const t=e.target.closest('[data-popok],[data-lay],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
     if(!t)return;
     if(t.dataset.start!==undefined){newGame(t.dataset.start,t.dataset.start==='cpu'?+t.dataset.h:null);return}
     if(t.dataset.info!==undefined&&S.prompt){const od=optDef(S.prompt.opts[+t.dataset.info],S.prompt);if(od){S.detail=od;render()}return}
-    if(t.dataset.popok!==undefined){if(e.target===t&&S.prompt)resolvePrompt(S.prompt.opts[0].v);return}
+    if(t.dataset.lay!==undefined){setLayout(t.dataset.lay==='big');return}
+    if(t.dataset.popok!==undefined){if(S.prompt)resolvePrompt(S.prompt.opts[0].v);return}
     if(t.dataset.credits!==undefined){S=S||{screen:'start'};S.detail='credits';render();return}
     if(t.dataset.quit!==undefined){S.detail=S.final?null:'quit';if(S.final){S={screen:'start'}}render();return}
     if(t.dataset.home!==undefined){GID++;S={screen:'start'};render();window.scrollTo(0,0);return}
@@ -995,7 +1031,7 @@ if(typeof document!=='undefined'){
     if(t.dataset.hstep!==undefined){S.helpStep=Math.max(0,Math.min(TUT.length-1,(S.helpStep||0)+(+t.dataset.hstep)));render();document.querySelector('.help')?.scrollTo(0,0);return}
     if(t.dataset.hclose!==undefined){if(t.classList.contains('help')&&e.target!==t)return;S.detail=null;render();return}
     if(t.dataset.rules!==undefined){S=S||{screen:'start'};S.detail='rules';render();return}
-    if(t.dataset.close!==undefined){if(t.classList.contains('modal')&&e.target!==t)return;S.detail=null;render();return}
+    if(t.dataset.close!==undefined){if(S.detail==='quit'&&t.classList.contains('modal')&&e.target!==t)return;S.detail=null;render();return}
     if(t.dataset.restart!==undefined){S={screen:'start'};render();return}
     if(t.dataset.veil!==undefined){S.overlay&&S.overlay.res();return}
     const pr=S.prompt;
@@ -1014,6 +1050,7 @@ if(typeof document!=='undefined'){
       if(S.handWait&&!pr){S.handWait(h);return}
       S.detail={d:DEF[h.id]};render();return}
   });
+  document.body.classList.toggle('compact',!OPT.big);
   S={screen:'start'};render();
 }
 </script>
