@@ -75,6 +75,11 @@ h1{font-family:var(--f-display);font-weight:400;margin:0;line-height:1;text-wrap
 .card.art .nm{font-size:11.5px}
 .card.art .nm.lg{font-size:10px}
 .card.art .ct{display:none}
+.nk{display:block;font-size:8.5px;line-height:1.1;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--muted);text-wrap:balance;max-width:100%}
+.card.san .nk{color:var(--santi)}.card.cor .nk{color:var(--corr)}
+.nk.sm{font-size:7.5px;letter-spacing:0}
+.hand .card .nk,.hand .card .nk.sm{font-size:10px}
+.nkbig{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-top:-4px}
 .card.dead .pic{filter:grayscale(1)}
 .bigart{display:block;width:auto;max-width:100%;max-height:46vh;aspect-ratio:2/3;object-fit:cover;align-self:center;border:2px solid var(--line)}
 .bigart.san{border-color:var(--santi);border-radius:50% 50% 8px 8px / 22% 22% 8px 8px}
@@ -264,6 +269,9 @@ D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,null,'Puoi eliminare un tuo
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Se vuoi, scambia i gettoni iniziativa di due carte coperte.','Guarda una carta avversaria coperta.',null,'eretico'),
 ];
 const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));
+const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
+  marx:'Plusvalore',lenin:'Obladi oblada',stalin:'Grande purga',ozzy:'Pipistrello',siffredi:'Gran finale',baudelaire:'Fiori malvagi',dali:'Baffi onirici',diocleziano:'Editto letale',nerone:'Fuoco nel fuoco',lutero:'Lutero è mio e lo gestisco io',galileo:'Dito medio',bruno:'Mente ardente',engels:'Fedeltà totale',giuliano:'Nostalgia canaglia',lucifero:'Amore disperato',belzebu:'Fame insaziabile'};
+const nick=d=>{const n=NICK[d.id];if(!n)return'';const lw=Math.max(...n.split(' ').map(w=>w.length));return`<span class="nk ${lw>10||n.length>18?'sm':''}">${esc(n)}</span>`};
 const SV='fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"';
 const IC={
  Martiri:`<path ${SV} d="M12 22V4M12 7c-2.5-1.6-5.5-1.1-7.5 1.5M12 7c2.5-1.6 5.5-1.1 7.5 1.5M12 11c-2.5-1.5-5.5-1-7 1.5M12 11c2.5-1.5 5.5-1 7 1.5M12 15c-2-1-4-.8-5.5 1M12 15c2-1 4-.8 5.5 1"/>`,
@@ -398,6 +406,17 @@ async function pick(p,title,cands,{optional=false,ai,priv=false}={}){
   if(!cands.length)return null;
   const f=ai||(c=>harm(c,p));
   return ask(p,{title,optional,priv,opts:cands.map(c=>({label:lab(c,p),v:c,uid:c.uid,ai:f(c)}))});
+}
+/* riepilogo di ogni attivazione, per tutte le carte e in tutte le modalità */
+async function actRecap(c,mark,ini){
+  S.cpuActed=false;
+  if(FAST)return;
+  const n=S.log.length-mark;
+  let lines=S.log.slice(0,Math.max(0,n)).reverse().map(l=>l.t).filter(t=>!t.startsWith('▸')&&!t.startsWith('Si rivela'));
+  if(!lines.length)lines=[MAIN[c.id]||SEC[c.id]?'Non succede nulla: nessun bersaglio valido o condizione non soddisfatta.':'Questa carta non ha effetti da applicare all’attivazione.'];
+  if(S.mode==='hot')await ensureViewer(null);
+  render();
+  await ask(S.mode==='cpu'?S.human:null,{pop:true,inst:c,who:`Attivazione · ${FAC[c.owner]} · iniziativa ${ini}`,title:`Si attiva ${c.def.name}`,lines,opts:[{label:'Ok',v:1,main:true}]});
 }
 async function recap(actor,c,title,mark){
   if(S.mode!=='cpu'||FAST)return;
@@ -824,7 +843,7 @@ async function activate(c){
   if(!c.faceUp){c.faceUp=true;log(c.fixed?`Si rivela la carta imposta ai ${FAC[p]}: ${c.def.name}.`:`Si rivela ${c.def.name} (${FAC[p]}).`);
     if(c.fixed&&S.mode==='cpu'&&p===S.human&&!FAST){render();await info(p,`La carta che ti hanno imposto è ${c.def.name}`,'Si attiva per prima, con iniziativa −1.')}}
   c.activated=true;refreshOzzy();
-  S.status=`Si attiva ${c.def.name} (${FAC[p]}, iniziativa ${init(c)}).`;
+  const iniAtAct=init(c);S.status=`Si attiva ${c.def.name} (${FAC[p]}, iniziativa ${init(c)}).`;
   log(`▸ ${c.def.name} si attiva.`);
   const cancel=P.cancelNextMain;P.cancelNextMain=false;
   if(c.lost){log(`${c.def.name} ha perso il proprio effetto.`)}
@@ -839,7 +858,7 @@ async function activate(c){
     }
   }
   S.actCount[p]++;refreshOzzy();render();
-  await recap(p,c,`Si attiva ${c.def.name}`,mark);
+  await actRecap(c,mark,iniAtAct);
 }
 async function endRound(){
   S.phase='end';
@@ -894,7 +913,7 @@ function exCard(id,o={}){
   const d=DEF[id],side=d.f?'cor':'san';
   if(o.back)return`<div class="card ${side} back down"><span class="mid"><span class="ico">${ico('back'+d.f)}</span><span class="nm q">${FAC[d.f]}</span>${o.tag?`<span class="tags">${o.tag}</span>`:''}</span><span class="foot"><span class="ini">${o.ini??d.cost}${tokTxt(o.tok)}</span></span></div>`;
   const dom=o.dom??d.dom,dc=dom>d.dom?'up':dom<d.dom?'dn':'';
-  return`<div class="card art ${side} ${o.dead?'dead':''} ${o.st||''}">${pic(d)}<span class="mid"><span class="nm ${d.name.length>15?'lg':''}">${esc(d.name)}</span>${o.cat?`<span class="ct">${d.cat}</span>`:''}${o.tag?`<span class="tags">${o.tag}</span>`:''}</span><span class="foot"><span class="ini">${o.ini??d.cost}${tokTxt(o.tok)}</span><span class="dom ${dc}">${dom}</span></span></div>`;
+  return`<div class="card art ${side} ${o.dead?'dead':''} ${o.st||''}">${pic(d)}<span class="mid"><span class="nm ${d.name.length>15?'lg':''}">${esc(d.name)}</span>${nick(d)}${o.cat?`<span class="ct">${d.cat}</span>`:''}${o.tag?`<span class="tags">${o.tag}</span>`:''}</span><span class="foot"><span class="ini">${o.ini??d.cost}${tokTxt(o.tok)}</span><span class="dom ${dc}">${dom}</span></span></div>`;
 }
 const exRow=(f,cards,label)=>`<section class="side ${f?'cor':'san'}">${label?`<div class="rowhead"><b class="${f?'cor':'san'}">${label}</b></div>`:''}<div class="ex ${cards.hand?'hand':''}">${cards.join('')}</div></section>`;
 const HELP_BRIEF=`
@@ -999,14 +1018,14 @@ function cardEl(c,i){
   const dc=c.dom>c.def.dom?'up':c.dom<c.def.dom?'dn':'';
   const tg=tags.length?`<span class="tags">${tags.join(' · ')}</span>`:'';
   return`<button class="card ${c.owner?'cor':'san'} ${show?'art':'back'} ${c.faceUp?'':'down'} ${c.eliminated?'dead':''} ${tgt?'tgt':''}" data-card="${c.uid}" aria-label="${esc(show?c.def.name:'Carta coperta')}">
-    ${show?`${pic(c.def)}<span class="mid"><span class="nm ${c.def.name.length>15?'lg':''}">${esc(c.def.name)}</span>${tg}</span>`
+    ${show?`${pic(c.def)}<span class="mid"><span class="nm ${c.def.name.length>15?'lg':''}">${esc(c.def.name)}</span>${nick(c.def)}${tg}</span>`
           :`<span class="mid"><span class="ico">${ico('back'+c.owner)}</span><span class="nm q">${FAC[c.owner]}</span>${tg}</span>`}
     <span class="foot"><span class="ini" title="Iniziativa">${init(c)}${tokTxt(c.tokens)}</span>${show?`<span class="dom ${dc}" title="Dominio">${c.dom}</span>`:''}</span></button>`;
 }
 function handEl(h,p){
   const d=DEF[h.id],pr=S.prompt;let st='';
   if(pr&&pr.multi){const i=pr.opts.findIndex(o=>o.hand===h.uid);if(i>=0)st=pr.sel.includes(i)?'sel':'tgt';else if(pr.playing===h.uid)st='play'}
-  return`<button class="card art ${p?'cor':'san'} ${st}" data-hand="${h.uid}">${pic(d)}<span class="mid"><span class="nm ${d.name.length>15?'lg':''}">${esc(d.name)}</span><span class="ct">${d.cat}</span></span><span class="foot"><span class="ini" title="Costo">${costOf(p,h)}</span><span class="dom" title="Dominio">${d.dom}</span></span></button>`;
+  return`<button class="card art ${p?'cor':'san'} ${st}" data-hand="${h.uid}">${pic(d)}<span class="mid"><span class="nm ${d.name.length>15?'lg':''}">${esc(d.name)}</span>${nick(d)}<span class="ct">${d.cat}</span></span><span class="foot"><span class="ini" title="Costo">${costOf(p,h)}</span><span class="dom" title="Dominio">${d.dom}</span></span></button>`;
 }
 function fxHtml(d){
   return`<div class="fx">${d.m?`<span><b>Principale.</b> ${esc(d.m)}</span>`:''}${d.s?`<span><b>Scoperta.</b> ${esc(d.s)}</span>`:''}${d.c?`<span><b>Secondario.</b> ${esc(d.c)}</span>`:''}</div>`;
@@ -1030,7 +1049,7 @@ function promptHtml(){
     body=`<div class="opts">${pr.opts.map((o,i)=>`<span class="optw"><button class="opt ${o.main?'main':''}" data-opt="${i}">${esc(o.label)}</button>${!pr.pop&&optDef(o,pr)?`<button class="info" data-info="${i}" aria-label="Leggi gli effetti">i</button>`:''}</span>`).join('')}${pr.optional?'<button class="opt" data-skip>Salta</button>':''}</div>`;
   }
   if(pr.pop||(!pr.multi&&!pr.optional&&pr.opts.length===1&&!pr.opts[0].uid)){
-    return`<div class="modal pop" data-popok><div>${pr.inst?`<div class="who">Mosse dei ${FAC[1-S.human]}</div>`:who}<div class="pophd">${pr.inst?`<div class="pc">${cardEl(pr.inst,0)}</div>`:''}<h2>${esc(pr.title)}</h2></div>
+    return`<div class="modal pop" data-popok><div>${pr.inst?`<div class="who">${pr.who||`Mosse dei ${FAC[1-S.human]}`}</div>`:who}<div class="pophd">${pr.inst?`<div class="pc">${cardEl(pr.inst,0)}</div>`:''}<h2>${esc(pr.title)}</h2></div>
     ${pr.epic?`<p class="epic">${esc(pr.epic)}</p>`:''}${pr.card?`<div class="meta">${pr.card.cat} · Costo ${pr.card.cost} · Dominio ${pr.card.dom}</div>${fxHtml(pr.card)}`:''}${pr.text?`<div>${esc(pr.text)}</div>`:''}${pr.lines?`<ul class="poplist">${pr.lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>`:''}${body}<div class="tap">Tocca ovunque per continuare</div></div></div>`;
   }
   return`<div class="sheet" id="sheet">${who}<h2>${esc(pr.title)}</h2>${pr.card?`<div class="meta">${pr.card.cat} · Costo ${pr.card.cost} · Dominio ${pr.card.dom}</div>${fxHtml(pr.card)}`:''}${pr.text?`<div>${esc(pr.text)}</div>`:''}${body}</div>`;
@@ -1089,7 +1108,7 @@ function modalHtml(){
   if(S.detail==='quit')return`<div class="modal" data-close><div><h2>Terminare la partita?</h2><p class="meta">La partita in corso andrà persa e tornerai alla schermata iniziale.</p><button class="big" data-home>Termina e torna alla home</button><button class="opt" data-close>Continua a giocare</button></div></div>`;
   if(S.detail==='rules')return`<div class="modal" data-close><div><h2>Regole adottate</h2><p class="meta">Dove il regolamento lascia spazio a interpretazioni, il prototipo fa queste scelte.</p><ul class="rules">${RULES.map(r=>`<li>${esc(r)}</li>`).join('')}</ul><button class="big" data-close>Chiudi</button></div></div>`;
   const{d,c}=S.detail;
-  return`<div class="modal" data-close><div>${ART[d.id]?`<img class="bigart ${d.f?'cor':'san'}" src="${ART[d.id]}" alt="${esc(d.name)}">`:''}<h2>${esc(d.name)}</h2><div class="meta">${FAC[d.f]} · ${d.cat} · Costo ${d.cost} · Dominio stampato ${d.dom}${c?` · Dominio attuale ${c.dom} · Iniziativa ${init(c)}`:''}</div>${fxHtml(d)}<button class="big" data-close>Chiudi</button></div></div>`;
+  return`<div class="modal" data-close><div>${ART[d.id]?`<img class="bigart ${d.f?'cor':'san'}" src="${ART[d.id]}" alt="${esc(d.name)}">`:''}<h2>${esc(d.name)}</h2>${NICK[d.id]?`<div class="nkbig">${esc(NICK[d.id])}</div>`:''}<div class="meta">${FAC[d.f]} · ${d.cat} · Costo ${d.cost} · Dominio stampato ${d.dom}${c?` · Dominio attuale ${c.dom} · Iniziativa ${init(c)}`:''}</div>${fxHtml(d)}<button class="big" data-close>Chiudi</button></div></div>`;
 }
 function findCard(uid){for(const P of S.players)for(const c of P.board)if(c&&c.uid===uid)return c;return null}
 function hoverInfo(el){
@@ -1098,7 +1117,7 @@ function hoverInfo(el){
   if(el.dataset.hand!==undefined){const P=S.players&&S.players[S.viewer],h=P&&P.hand.find(x=>x.uid===+el.dataset.hand);return h?{d:DEF[h.id]}:null}
   return null;
 }
-function tipHtml({d,c}){return`<b class="tn ${d.f?'cor':'san'}">${esc(d.name)}</b><div class="meta">${d.cat} · Costo ${d.cost} · Dominio ${c?c.dom:d.dom}${c?` · Iniziativa ${init(c)}`:''}</div>${fxHtml(d)}`}
+function tipHtml({d,c}){return`<b class="tn ${d.f?'cor':'san'}">${esc(d.name)}</b>${NICK[d.id]?`<div class="nkbig">${esc(NICK[d.id])}</div>`:''}<div class="meta">${d.cat} · Costo ${d.cost} · Dominio ${c?c.dom:d.dom}${c?` · Iniziativa ${init(c)}`:''}</div>${fxHtml(d)}`}
 if(typeof document!=='undefined'){
   const tip=document.createElement('div');tip.className='tip';tip.hidden=true;document.body.appendChild(tip);
   const fine=()=>window.matchMedia('(hover: hover) and (pointer: fine)').matches;
