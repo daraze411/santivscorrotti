@@ -1,6 +1,6 @@
 # Santi vs Corrotti
 
-Gioco di carte per due giocatori: Santi contro Corrotti, due round, vince chi accumula più Dominio. Prototipo per playtest, regolamento 0.6.
+Gioco di carte per due giocatori: Santi contro Corrotti, due round, vince chi accumula più Dominio. Regolamento 0.8.
 
 **Gioca:** https://daraze411.github.io/santivscorrotti/
 

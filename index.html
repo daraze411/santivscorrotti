@@ -78,7 +78,6 @@ h1{font-family:var(--f-display);font-weight:400;margin:0;line-height:1;text-wrap
 .nk{display:block;font-size:8.5px;line-height:1.1;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--muted);text-wrap:balance;max-width:100%}
 .card.san .nk{color:var(--santi)}.card.cor .nk{color:var(--corr)}
 .nk.sm{font-size:7.5px;letter-spacing:0}
-.hand .card .nk,.hand .card .nk.sm{font-size:10px}
 .nkbig{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-top:-4px}
 .card.dead .pic{filter:grayscale(1)}
 .bigart{display:block;width:auto;max-width:100%;max-height:46vh;aspect-ratio:2/3;object-fit:cover;align-self:center;border:2px solid var(--line)}
@@ -121,13 +120,6 @@ h1{font-family:var(--f-display);font-weight:400;margin:0;line-height:1;text-wrap
 .optw .opt:has(+ .info){border-radius:8px 0 0 8px}
 .info{border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:8px;padding:6px 10px;font-weight:700;font-style:italic;font-family:Georgia,serif;cursor:pointer;font-size:14px}
 .info:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.hand .card{border-width:1.5px}
-.hand.wait .card{outline:2px solid var(--accent);outline-offset:1px}
-.hand .card.tgt{outline:2px dashed var(--accent);outline-offset:2px}
-.hand .card.sel{outline:3px solid var(--bad);outline-offset:2px;transform:translateY(-6px)}
-.hand .card.sel::after{content:"scarta";position:absolute;inset:auto 0 30px;font-size:11px;font-weight:700;color:var(--bad);letter-spacing:.06em;text-transform:uppercase}
-.hand .card.play{outline:3px solid var(--good);outline-offset:2px}
-.hand .card.play::after{content:"in gioco";position:absolute;inset:auto 0 30px;font-size:11px;font-weight:700;color:var(--good);letter-spacing:.06em;text-transform:uppercase}
 .hand .ini{background:var(--muted);border-radius:11px}
 details.log{font-size:13px;color:var(--muted)}
 details.log summary{cursor:pointer;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
@@ -197,16 +189,7 @@ details.log li.r{color:var(--fg);font-weight:700}
 .order b{color:var(--muted);font-weight:400}
 .legend{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:14px}
 
-.variant{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted);padding:10px 12px;border:1px solid var(--line);border-radius:8px;cursor:pointer}
-.variant b{color:var(--fg)}
-.variant input{width:20px;height:20px;margin:1px 0 0;accent-color:var(--accent);flex:none}
-.vtag{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);font-weight:700}
-@media (min-width:601px){.swipe,.lay{display:none!important}}
-.swipe{display:none}
 .lay{background:none;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:11px;cursor:pointer;margin-left:6px;color:var(--fg);text-transform:none;letter-spacing:0}
-.layopt{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:14px;color:var(--muted)}
-.layopt .opt{padding:7px 12px}
-@media (min-width:601px){.layopt{display:none}}
 @media (max-width:600px){
   .wrap{gap:6px;padding-block:6px 24px}
   .top h1{font-size:17px}
@@ -214,15 +197,101 @@ details.log li.r{color:var(--fg);font-weight:700}
   .side .row{gap:4px}
   .rowhead{font-size:10.5px}
   .status{padding:5px 8px;font-size:13px;min-height:0}
-  body:not(.compact) .hand{display:flex;overflow-x:auto;gap:10px;scroll-snap-type:x mandatory;padding:2px 2px 6px;scrollbar-width:thin}
-  body:not(.compact) .hand .card{flex:0 0 46%;scroll-snap-align:start}
-  body:not(.compact) .hand .card .nm{font-size:15px}
-  body:not(.compact) .hand .card .nm.lg{font-size:13px}
-  body:not(.compact) .hand .ini,body:not(.compact) .hand .dom{min-width:28px;height:28px;font-size:16px}
-  body:not(.compact) .hand .cb{width:22px;height:22px}body:not(.compact) .hand .cb svg{width:14px;height:14px}
-  body:not(.compact) .swipe{display:inline}
 }
 @media (prefers-reduced-motion:no-preference){.card{transition:opacity .25s,outline-color .2s}}
+/* carte: niente menu del tasto lungo, niente selezione del testo */
+.card,.hcard{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+/* mano: immagine pulita, scritte sotto */
+.hand{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.hcard{background:none;border:0;padding:0;display:flex;flex-direction:column;gap:4px;cursor:pointer;text-align:center;min-width:0;color:var(--fg);font:inherit}
+div.hcard{cursor:default}
+.hcard .himg{padding:3px;cursor:inherit}
+.hcard .himg .pic{flex:1 1 auto}
+.hcard .himg .cb{width:18px;height:18px}
+.hcap{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.hnm{font-family:var(--f-display);font-size:12.5px;line-height:1.05;text-wrap:balance;overflow-wrap:break-word}
+.hcard.san .hnm,.hcard.san .nk{color:var(--santi)} .hcard.cor .hnm,.hcard.cor .nk{color:var(--corr)}
+.hnum{display:flex;align-items:center;justify-content:center;gap:5px}
+.hnum .ini{background:var(--muted);color:var(--bg);border-radius:11px}
+.hlab{display:none;font-size:10px;color:var(--muted);letter-spacing:.03em}
+.hst{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.hcard.sel .hst{color:var(--bad)} .hcard.play .hst{color:var(--good)}
+.hand.wait .himg{outline:2px solid var(--accent);outline-offset:1px}
+.hcard.tgt .himg{outline:2px dashed var(--accent);outline-offset:2px}
+.hcard.sel .himg{outline:3px solid var(--bad);outline-offset:2px}
+.hcard.play .himg{outline:3px solid var(--good);outline-offset:2px}
+@media (prefers-reduced-motion:no-preference){.hcard .himg{transition:transform .15s}.hcard.sel .himg{transform:translateY(-5px)}}
+.hand.bighand{display:flex;overflow-x:auto;gap:10px;scroll-snap-type:x mandatory;padding:2px 2px 6px;scrollbar-width:thin}
+.hand.bighand .hcard{flex:0 0 46%;scroll-snap-align:start}
+.hand.bighand .hnm{font-size:16px}
+.hand.bighand .nk,.hand.bighand .nk.sm{font-size:10.5px}
+.hand.bighand .hnum .ini,.hand.bighand .hnum .dom{min-width:28px;height:28px;font-size:16px}
+.hand.bighand .hlab{display:inline}
+.hand.bighand .cb{width:22px;height:22px}.hand.bighand .cb svg{width:14px;height:14px}
+.swipe{display:inline}
+.lay{background:none;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:11px;cursor:pointer;margin-left:6px;color:var(--fg);text-transform:none;letter-spacing:0}
+/* file in campo grandi */
+.bigrow .row{display:flex;overflow-x:auto;gap:8px;scroll-snap-type:x mandatory;padding-bottom:4px;scrollbar-width:thin}
+.bigrow .row>*{flex:0 0 46%;scroll-snap-align:start}
+.bigrow .row>.slot{flex-basis:22%;aspect-ratio:auto;min-height:64px;border-radius:8px}
+.bigrow .card .nm{font-size:15px}.bigrow .card .nm.lg{font-size:13px}
+.bigrow .card .nk,.bigrow .card .nk.sm{font-size:10px}
+.bigrow .ini,.bigrow .dom{min-width:28px;height:28px;font-size:16px}
+.bigrow .tags{font-size:10.5px}
+.swipe2{font-size:11px;color:var(--muted);text-align:right}
+/* home e menu */
+.start .sub{font-size:17px;line-height:1.4;color:var(--fg);max-width:34ch;text-wrap:balance}
+.start .mh{font-family:var(--f-display);font-weight:400;font-size:24px;margin:0}
+.start .mh3{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:6px 0 0}
+.start .btns .back{background:none}
+.start .btns .soon{opacity:1;color:var(--muted);background:var(--surface);border-style:dashed;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:not-allowed}
+.badge{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--line);color:var(--muted);border-radius:20px;padding:3px 8px}
+.optlist{display:flex;flex-direction:column;gap:12px}
+.optrow{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.optrow>span{font-weight:700}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg .opt{padding:8px 12px}
+.tblwrap{overflow-x:auto}
+.stats{border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums;width:100%}
+.stats th,.stats td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
+.stats th:first-child{text-align:left}
+.stats thead th{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.stats tbody th.s{color:var(--santi)} .stats tbody th.c{color:var(--corr)}
+/* schermata finale: un mondo visivo a sé, uguale in tema chiaro e scuro */
+.endfx{position:fixed;inset:0;z-index:25;display:grid;place-items:center;overflow:hidden;cursor:pointer;padding:max(24px,env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));color:#fff6dc}
+.endfx.san{background:radial-gradient(ellipse at 50% 40%,#5a3f0c 0,#26190a 55%,#0d0904 100%)}
+.endfx.cor{background:radial-gradient(ellipse at 50% 45%,#3b0f52 0,#17051f 55%,#050106 100%);color:#f0dcff}
+.efc{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;max-width:420px}
+.efe{width:64px;height:64px}.efe svg{width:100%;height:100%;display:block}
+.endfx.san .efe{color:#f4cf6a}.endfx.cor .efe{color:#b26bff}
+.eft{margin:0;font-family:var(--f-display);font-weight:400;font-size:clamp(46px,15vw,84px);line-height:.95;letter-spacing:.02em;text-wrap:balance}
+.endfx.san .eft{background:linear-gradient(100deg,#b07d18 0%,#f4cf6a 30%,#fff7d6 45%,#f4cf6a 60%,#b07d18 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgb(244 207 106 / .45))}
+.endfx.cor .eft{color:#c48aff;text-shadow:2px 0 #ff2e7e,-2px 0 #3d0063,0 0 22px rgb(150 60 255 / .6)}
+.efs{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.efm{margin:0;font-family:var(--f-display);font-size:18px;line-height:1.3;opacity:.9;text-wrap:balance}
+.endfx .tap{color:inherit;opacity:.6;font-size:12px}
+.endfx.lose .eft{opacity:.85}
+.efp{position:absolute;inset:0;pointer-events:none}
+.efp i{position:absolute;left:var(--x);bottom:-10px;width:calc(7px*var(--s));height:calc(7px*var(--s));border-radius:50%}
+.endfx.san .efp i{background:radial-gradient(circle,#fff7d6 0,#f4cf6a 45%,transparent 70%);box-shadow:0 0 10px #f4cf6a}
+.endfx.cor .efp i{background:radial-gradient(circle,#e0b3ff 0,#7a1fd1 50%,transparent 72%);box-shadow:0 0 10px #7a1fd1}
+@media (prefers-reduced-motion:no-preference){
+  .endfx.san .eft{animation:shimmer 2.8s linear infinite,rise .8s cubic-bezier(.2,.8,.2,1) both}
+  .endfx.san .efe{animation:halo 2.4s ease-in-out infinite}
+  .endfx.san .efp i{animation:sparkle var(--t) ease-in var(--d) infinite}
+  .endfx.cor .efc{animation:quake .5s steps(2) 0s 3,quake .5s steps(2) 2.5s infinite}
+  .endfx.cor .eft{animation:glitch 1.8s steps(1) infinite,rise .6s cubic-bezier(.2,.8,.2,1) both}
+  .endfx.cor .efp i{animation:ember var(--t) linear var(--d) infinite}
+  .endfx.cor{animation:flicker 3s steps(1) infinite}
+}
+@keyframes shimmer{from{background-position:120% 0}to{background-position:-130% 0}}
+@keyframes rise{from{transform:translateY(24px) scale(.92);opacity:0}to{transform:none;opacity:1}}
+@keyframes halo{0%,100%{transform:scale(1);filter:drop-shadow(0 0 4px #f4cf6a)}50%{transform:scale(1.08);filter:drop-shadow(0 0 16px #f4cf6a)}}
+@keyframes sparkle{0%{transform:translateY(0) scale(.4);opacity:0}15%{opacity:1}70%{opacity:.9}100%{transform:translateY(-105vh) scale(1.1);opacity:0}}
+@keyframes ember{0%{transform:translate(0,0);opacity:0}10%{opacity:1}50%{transform:translate(14px,-50vh)}100%{transform:translate(-10px,-105vh);opacity:0}}
+@keyframes quake{0%{transform:translate(0,0)}25%{transform:translate(-6px,3px) rotate(-.6deg)}50%{transform:translate(5px,-4px) rotate(.5deg)}75%{transform:translate(-4px,-2px)}100%{transform:translate(0,0)}}
+@keyframes glitch{0%,86%,100%{text-shadow:2px 0 #ff2e7e,-2px 0 #3d0063,0 0 22px rgb(150 60 255 / .6);transform:none}88%{text-shadow:-6px 0 #ff2e7e,6px 0 #3d0063;transform:skewX(-8deg)}92%{text-shadow:5px 2px #ff2e7e,-5px -2px #000;transform:skewX(6deg) translateX(3px)}}
+@keyframes flicker{0%,94%,100%{filter:none}95%{filter:brightness(.55)}97%{filter:brightness(1.25)}}
 </style>
 
 </head>
@@ -319,14 +388,25 @@ const RULES=[
  'Il primo giocatore si sorteggia; il secondo round lo inizia l’altro.',
  'Carta imposta: iniziativa −1 fissa, nessun effetto può aggiungere, togliere o scambiare i suoi gettoni. Può essere bersaglio degli altri effetti. Non conta nella somma dei costi per lo spareggio finale. Se non resta nessuna carta da imporre, si schierano 4 carte.',
  'Nel secondo round si tiene la mano del primo e si riparte dal mazzo rimasto. Con la regola base gli scarti si rimescolano una sola volta, quando il mazzo finisce.',
- 'Regola base: durante il round gli scarti non vengono rimescolati. Chi non può pagare nessuna carta salta il turno.',
- 'Variante facilitata: quando il mazzo finisce, gli scarti vengono rimescolati.',
+ 'Durante il primo round gli scarti non vengono rimescolati. Chi non può pagare nessuna carta salta il turno.',
  'Un effetto senza bersagli validi non fa nulla.'
 ];
 
-let S=null, UID=1, FAST=false, GID=0; const OPT={noRe:true,big:true};
-try{const v=localStorage.getItem('svc-layout');if(v)OPT.big=v!=='compact'}catch(e){}
-function setLayout(big){OPT.big=big;try{localStorage.setItem('svc-layout',big?'big':'compact')}catch(e){}document.body&&document.body.classList.toggle('compact',!big);render()}
+let S=null, UID=1, FAST=false, GID=0;
+const OPT={noRe:true,hand:'big',mine:'compact',opp:'compact',theme:'auto'};
+try{const v=localStorage.getItem('svc-layout');if(v)OPT.hand=v==='compact'?'compact':'big'}catch(e){}
+try{Object.assign(OPT,JSON.parse(localStorage.getItem('svc-opt')||'{}'));OPT.noRe=true}catch(e){}
+function saveOpt(){try{localStorage.setItem('svc-opt',JSON.stringify({hand:OPT.hand,mine:OPT.mine,opp:OPT.opp,theme:OPT.theme}))}catch(e){}}
+function applyTheme(){if(typeof document==='undefined')return;const r=document.documentElement;if(OPT.theme==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',OPT.theme)}
+function loadStats(){try{const v=JSON.parse(localStorage.getItem('svc-stats')||'null');if(v&&v[0]&&v[1])return v}catch(e){}return[{w:0,l:0,d:0},{w:0,l:0,d:0}]}
+function saveStats(st){try{localStorage.setItem('svc-stats',JSON.stringify(st))}catch(e){}}
+function recordResult(){
+  if(FAST||S.mode!=='cpu'||!(S.human===0||S.human===1)||S.recorded)return;
+  S.recorded=true;const st=loadStats(),me=st[S.human];
+  if(S.final.w===null)me.d++;else if(S.final.w===S.human)me.w++;else me.l++;
+  saveStats(st);
+}
+function setOpt(k,v){OPT[k]=v;saveOpt();if(k==='theme')applyTheme();render()}
 const rnd=n=>Math.floor(Math.random()*n);
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
 const sleep=ms=>{const g=GID;return FAST?Promise.resolve():new Promise(r=>setTimeout(()=>{if(g===GID)r()},ms))};
@@ -763,7 +843,7 @@ function cpuDeploy(p){
 async function humanDeploy(p){
   const P=S.players[p];
   for(;;){
-    S.status=`Tocca ai ${FAC[p]}: tocca una carta della mano per schierarla.`;
+    S.status=`Tocca ai ${FAC[p]}: tocca una carta della mano per schierarla. Tieni premuta una carta per leggerne i poteri.`;
     const card=await new Promise(res=>{S.handWait=res;render()});S.handWait=null;
     const d=DEF[card.id],cost=costOf(p,card),ok=cost<=P.hand.length-1;
     const r=await ask(p,{title:d.name,card:d,text:ok?`Costo ${cost}: scarti ${cost} ${cost===1?'carta':'carte'} dalla mano.`:`Costo ${cost}: non hai abbastanza carte in mano.`,
@@ -904,7 +984,7 @@ function gameOver(){
   if(a!==b)w=a>b?0:1;
   else if(S.costSum[0]!==S.costSum[1]){w=S.costSum[0]<S.costSum[1]?0:1;why=' Parità di Dominio: vince chi ha schierato carte con costo stampato totale più basso nel round 2.'}
   else w=null;
-  S.phase='over';S.final={w,why};S.status=w===null?'Pareggio.':`Vincono i ${FAC[w]}.`;render();
+  S.phase='over';S.final={w,why};S.endFx=true;S.status=w===null?'Pareggio.':`Vincono i ${FAC[w]}.`;recordResult();render();
 }
 
 
@@ -915,6 +995,7 @@ function exCard(id,o={}){
   const dom=o.dom??d.dom,dc=dom>d.dom?'up':dom<d.dom?'dn':'';
   return`<div class="card art ${side} ${o.dead?'dead':''} ${o.st||''}">${pic(d)}<span class="mid"><span class="nm ${d.name.length>15?'lg':''}">${esc(d.name)}</span>${nick(d)}${o.cat?`<span class="ct">${d.cat}</span>`:''}${o.tag?`<span class="tags">${o.tag}</span>`:''}</span><span class="foot"><span class="ini">${o.ini??d.cost}${tokTxt(o.tok)}</span><span class="dom ${dc}">${dom}</span></span></div>`;
 }
+const exHand=(ids,st)=>`<section class="side san"><div class="hand">${ids.map(id=>hcardHtml(DEF[id],DEF[id].cost,st[id]||'')).join('')}</div></section>`;
 const exRow=(f,cards,label)=>`<section class="side ${f?'cor':'san'}">${label?`<div class="rowhead"><b class="${f?'cor':'san'}">${label}</b></div>`:''}<div class="ex ${cards.hand?'hand':''}">${cards.join('')}</div></section>`;
 const HELP_BRIEF=`
 <h2>Il gioco in un minuto</h2>
@@ -936,7 +1017,7 @@ const HELP_BRIEF=`
 <h3>Numeri da ricordare</h3>
 <ul class="lst">
 <li>Mano: 4 carte. Si pesca prima e dopo ogni schieramento, finché il mazzo dura.</li>
-<li>Gli scarti non tornano nel mazzo durante il round. Se non puoi pagare nessuna carta, salti il turno.</li>
+<li>Nel primo round gli scarti non tornano nel mazzo. Nel secondo si rimescolano una sola volta. Se non puoi pagare nessuna carta, salti il turno.</li>
 <li>Ogni carta entra in campo con tanti gettoni iniziativa quanto il suo costo: i gettoni sono la sua iniziativa, mai sotto zero.</li>
 <li>Ogni carta giocata scoperta ti fa togliere un gettone da una tua carta a scelta.</li>
 <li>Parità d’iniziativa: prima chi ha più carte scoperte, poi chi ha pagato meno, poi chi ha iniziato il round.</li>
@@ -944,6 +1025,7 @@ const HELP_BRIEF=`
 <li>Vince chi ha più Dominio sommando i due round.</li>
 </ul>
 <h3>Come leggere una carta</h3>
+<p><b>Tieni premuta una carta</b> (da computer: passaci sopra col mouse) per leggerne i poteri in qualsiasi momento.</p>
 <div class="ex">${exCard('lucia',{cat:1,tok:-1,ini:0})}${exCard('lenin',{cat:1,tok:1,ini:4})}${exCard('rocco',{back:1})}${exCard('adinolfi',{dom:4,cat:1})}</div>
 <div class="legend">
 <span class="ini" style="border-radius:11px">2</span><span>In basso a sinistra: iniziativa. In mano indica il costo.</span>
@@ -952,10 +1034,10 @@ const HELP_BRIEF=`
 </div>
 <p>La cornice dice la fazione: ad arco e dorata per i Santi, squadrata con doppio filetto per i Corrotti. Il colore dell’illustrazione e lo stemma nell’angolo dicono la categoria. Tocca una carta per leggerne gli effetti.</p>`;
 const TUT=[
-{t:'La tua mano',x:()=>exRow(0,[exCard('lucia',{cat:1}),exCard('rocco',{cat:1}),exCard('ferretti',{cat:1}),exCard('adinolfi',{cat:1})],'La tua mano'),
- p:'Hai sempre 4 carte in mano. Il numero in basso a sinistra è il costo, quello a destra il Dominio, cioè i punti che la carta vale se sopravvive.',
+{t:'La tua mano',x:()=>exHand(['lucia','rocco','ferretti','adinolfi'],{}),
+ p:'Hai sempre 4 carte in mano. Sotto ogni carta il numero scuro è il costo, quello bordato il Dominio, cioè i punti che la carta vale se sopravvive. Tieni premuta una carta, in mano o in campo, per leggerne i poteri.',
  n:'Le carte da costo 1 sono economiche ma deboli. Quelle da costo 3 valgono di più ma ti costano mezza mano.'},
-{t:'Pagare il costo',x:()=>exRow(0,[exCard('lucia',{st:'sel'}),exCard('rocco',{st:'sel'}),exCard('ferretti',{st:'play'}),exCard('adinolfi',{st:'sel'})],'Giochi Ferretti, costo 3'),
+{t:'Pagare il costo',x:()=>exHand(['lucia','rocco','ferretti','adinolfi'],{lucia:'sel',rocco:'sel',ferretti:'play',adinolfi:'sel'}),
  p:'Per giocare Giovanni Lindo Ferretti, che costa 3, devi scartare le altre tre carte. Dopo lo schieramento peschi fino a tornare a 4.',
  n:'Le carte scartate sono perse per tutto il round: il mazzo non si ricostituisce. Spendere troppo all’inizio vuol dire restare a corto di carte alla fine.'},
 {t:'Scoperta o coperta',x:()=>exRow(1,[exCard('lenin',{back:1,tok:1,ini:4,tag:'gettone di San Rocco'}),exCard('belzebu',{back:1})],'Corrotti')+exRow(0,[exCard('rocco',{tok:-1,ini:1,tag:'scoperta'})],'Santi'),
@@ -985,7 +1067,7 @@ function helpHtml(){
   else body=`<h2>Chiarimenti</h2><p class="meta">Dove il regolamento lascia spazio a interpretazioni, il gioco fa queste scelte.</p><ul class="lst">${RULES.map(r=>`<li>${esc(r)}</li>`).join('')}</ul>`;
   return`<div class="help" role="dialog" aria-label="Come si gioca" data-hclose><div class="wrap">
     <div class="hd"><h1>Come si gioca</h1><button class="linkbtn" data-hclose>Chiudi</button></div>
-    <div class="tabs">${[['breve','In breve'],['tut','Tutorial'],['chiar','Chiarimenti']].map(([k,l])=>`<button class="opt ${tab===k?'on':''}" data-htab="${k}">${l}</button>`).join('')}</div>
+    <div class="tabs">${[['breve','In breve'],['tut','Tutorial']].map(([k,l])=>`<button class="opt ${tab===k?'on':''}" data-htab="${k}">${l}</button>`).join('')}</div>
     ${body}</div></div>`;
 }
 
@@ -1022,18 +1104,23 @@ function cardEl(c,i){
           :`<span class="mid"><span class="ico">${ico('back'+c.owner)}</span><span class="nm q">${FAC[c.owner]}</span>${tg}</span>`}
     <span class="foot"><span class="ini" title="Iniziativa">${init(c)}${tokTxt(c.tokens)}</span>${show?`<span class="dom ${dc}" title="Dominio">${c.dom}</span>`:''}</span></button>`;
 }
+function hcardHtml(d,cost,st,attr){
+  const lab=st==='sel'?'scarta':st==='play'?'in gioco':'';
+  return`<${attr?'button':'div'} class="hcard ${d.f?'cor':'san'} ${st||''}" ${attr||''}><span class="card art ${d.f?'cor':'san'} himg">${pic(d)}</span>
+    <span class="hcap"><span class="hnm">${esc(d.name)}</span>${nick(d)}<span class="hnum"><span class="ini" title="Costo">${cost}</span><span class="hlab">costo · dominio</span><span class="dom" title="Dominio">${d.dom}</span></span>${lab?`<span class="hst">${lab}</span>`:''}</span></${attr?'button':'div'}>`;
+}
 function handEl(h,p){
   const d=DEF[h.id],pr=S.prompt;let st='';
   if(pr&&pr.multi){const i=pr.opts.findIndex(o=>o.hand===h.uid);if(i>=0)st=pr.sel.includes(i)?'sel':'tgt';else if(pr.playing===h.uid)st='play'}
-  return`<button class="card art ${p?'cor':'san'} ${st}" data-hand="${h.uid}">${pic(d)}<span class="mid"><span class="nm ${d.name.length>15?'lg':''}">${esc(d.name)}</span>${nick(d)}<span class="ct">${d.cat}</span></span><span class="foot"><span class="ini" title="Costo">${costOf(p,h)}</span><span class="dom" title="Dominio">${d.dom}</span></span></button>`;
+  return hcardHtml(d,costOf(p,h),st,`data-hand="${h.uid}"`);
 }
 function fxHtml(d){
   return`<div class="fx">${d.m?`<span><b>Principale.</b> ${esc(d.m)}</span>`:''}${d.s?`<span><b>Scoperta.</b> ${esc(d.s)}</span>`:''}${d.c?`<span><b>Secondario.</b> ${esc(d.c)}</span>`:''}</div>`;
 }
-function rowHtml(p){
-  const P=S.players[p],turn=S.phase==='deploy'&&S.turn===p;
-  return`<section class="side ${p?'cor':'san'}"><div class="rowhead"><b class="${p?'cor':'san'}">${FAC[p]}</b><span>${turn?'<span class="turn">di turno</span> · ':''}mazzo ${P.deck.length} · mano ${P.hand.length} · scarti ${P.discard.length}</span></div>
-  <div class="row">${P.board.map((c,i)=>cardEl(c,i)).join('')}</div></section>`;
+function rowHtml(p,opp){
+  const P=S.players[p],turn=S.phase==='deploy'&&S.turn===p,big=(opp?OPT.opp:OPT.mine)==='big';
+  return`<section class="side ${p?'cor':'san'} ${big?'bigrow':''}"><div class="rowhead"><b class="${p?'cor':'san'}">${FAC[p]}</b><span>${turn?'<span class="turn">di turno</span> · ':''}mazzo ${P.deck.length} · mano ${P.hand.length} · scarti ${P.discard.length}</span></div>
+  <div class="row">${P.board.map((c,i)=>cardEl(c,i)).join('')}</div>${big?'<div class="swipe2">scorri →</div>':''}</section>`;
 }
 function promptHtml(){
   const pr=S.prompt;if(!pr)return'';
@@ -1059,19 +1146,43 @@ function render(){
   const tp=document.querySelector('.tip');if(tp)tp.hidden=true;
   const app=document.getElementById('app');
   if(!S||S.screen==='start'){
+    const m=S&&S.menu||'home';let body='';
+    if(m==='home')body=`<p class="sub">Santi e Corrotti competono per dominare gli esseri umani. Scegli da che parte stare!</p>
+      <div class="btns">
+        <button class="opt main" data-menu="mode">Gioca</button>
+        <button class="opt" data-help="breve">Come si gioca</button>
+        <button class="opt" data-credits>Crediti</button>
+        <button class="opt" data-menu="options">Opzioni</button>
+      </div>`;
+    else if(m==='mode')body=`<h2 class="mh">Scegli il gioco</h2><div class="btns">
+        <button class="opt main" data-menu="side">Gioco base</button>
+        <button class="opt soon" disabled aria-disabled="true">Variante esperti <span class="badge">coming soon</span></button>
+        <button class="opt back" data-menu="home">Indietro</button></div>`;
+    else if(m==='side')body=`<h2 class="mh">Da che parte stai?</h2><div class="btns">
+        <button class="opt main fs" data-start="cpu" data-h="0">Gioca con i Santi</button>
+        <button class="opt main fc" data-start="cpu" data-h="1">Gioca con i Corrotti</button>
+        <button class="opt" data-start="hot">Due giocatori sullo stesso telefono</button>
+        <button class="opt back" data-menu="mode">Indietro</button></div>`;
+    else if(m==='options'){
+      const seg=(k,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button class="opt ${OPT[k]===v?'on':''}" data-setopt="${k}" data-v="${v}" aria-pressed="${OPT[k]===v}">${l}</button>`).join('')}</div>`;
+      const st=loadStats(),row=(i)=>{const x=st[i],n=x.w+x.l+x.d;return`<tr><th class="${i?'c':'s'}">${FAC[i]}</th><td>${n}</td><td>${x.w}</td><td>${x.l}</td><td>${x.d}</td><td>${n?Math.round(100*x.w/n)+'%':'–'}</td></tr>`};
+      body=`<h2 class="mh">Opzioni</h2>
+      <div class="optlist">
+        <div class="optrow"><span>La tua mano</span>${seg('hand',[['big','Grande'],['compact','Compatta']])}</div>
+        <div class="optrow"><span>Le tue carte in campo</span>${seg('mine',[['big','Grandi'],['compact','Compatte']])}</div>
+        <div class="optrow"><span>Carte avversarie in campo</span>${seg('opp',[['big','Grandi'],['compact','Compatte']])}</div>
+        <div class="optrow"><span>Tema</span>${seg('theme',[['auto','Automatico'],['light','Chiaro'],['dark','Scuro']])}</div>
+      </div>
+      <h3 class="mh3">Le tue partite contro il computer</h3>
+      <div class="tblwrap"><table class="stats"><thead><tr><th>Fazione</th><th>Partite</th><th>Vinte</th><th>Perse</th><th>Pari</th><th>% vinte</th></tr></thead><tbody>${row(0)}${row(1)}</tbody></table></div>
+      <p class="meta">Le statistiche restano salvate su questo dispositivo e in questo browser.</p>
+      ${S.confirmReset?`<div class="opts"><span>Azzerare tutte le statistiche?</span><button class="opt main" data-resetstats="yes">Sì, azzera</button><button class="opt" data-resetstats="no">Annulla</button></div>`:`<div class="opts"><button class="opt" data-resetstats="ask">Azzera statistiche</button></div>`}
+      <div class="btns"><button class="opt back" data-menu="home">Indietro</button></div>`;
+    }
     app.innerHTML=`<div class="wrap start">
       <div class="emblem"><span class="s">${ico('back0')}</span><span class="c">${ico('back1')}</span></div>
       <h1><span class="s">Santi</span> <span class="v">vs</span> <span class="c">Corrotti</span></h1>
-      <p>Due fazioni, sedici carte per parte, due round. Vince chi accumula più Dominio. Prototipo per playtest, regolamento 0.6.</p>
-      <div class="btns">
-        <button class="opt main fs" data-start="cpu" data-h="0">Gioca con i Santi contro il computer</button>
-        <button class="opt main fc" data-start="cpu" data-h="1">Gioca con i Corrotti contro il computer</button>
-        <button class="opt" data-start="hot">Due giocatori sullo stesso telefono</button>
-        <button class="opt" data-help="tut">Come si gioca</button>
-        <button class="opt" data-credits>Crediti</button>
-        <div class="layopt">Carte da telefono: <button class="opt ${OPT.big?'on':''}" data-lay="big">Mano grande</button><button class="opt ${OPT.big?'':'on'}" data-lay="compact">Compatte</button></div>
-        <label class="variant"><input type="checkbox" id="opt-easy" ${OPT.noRe?'':'checked'}><span><b>Variante facilitata</b><br>Quando il mazzo finisce, gli scarti vengono rimescolati e si continua a pescare.</span></label>
-      </div></div>${modalHtml()}`;
+      ${body}</div>${modalHtml()}`;
     return;
   }
   const v=S.viewer,bottom=S.mode==='cpu'?S.human:(v===0||v===1?v:0),top=1-bottom;
@@ -1083,18 +1194,30 @@ function render(){
     ${S.final.why?`<div class="meta">${S.final.why}</div>`:''}
     <div class="opts"><button class="opt main" data-restart>Nuova partita</button></div></div>`}
   app.innerHTML=`<div class="wrap">
-    ${S.noRe?'':'<div class="vtag">Variante facilitata · scarti rimescolati</div>'}<div class="top"><h1>Round ${S.round>2?2:S.round} <i>di 2</i></h1>
+    <div class="top"><h1>Round ${S.round>2?2:S.round} <i>di 2</i></h1>
       <div class="score"><span>Santi <b class="s">${S.totals[0]}</b></span><span>Corrotti <b class="c">${S.totals[1]}</b></span><button class="linkbtn" data-help="breve">Regole</button><button class="linkbtn" data-quit>Esci</button></div></div>
-    ${S.players?rowHtml(top):''}
+    ${S.players?rowHtml(top,true):''}
     <div class="status">${esc(S.status)}</div>
-    ${S.players?rowHtml(bottom):''}
+    ${S.players?rowHtml(bottom,false):''}
     ${promptHtml()}${fin}
-    ${handP!==null&&S.players?`<section class="side ${handP?'cor':'san'}"><div class="rowhead"><b class="${handP?'cor':'san'}">La tua mano</b><span>${S.handWait?'tocca una carta':''}${S.players[handP].hand.length>2?'<span class="swipe"> · scorri →</span>':''}<button class="lay" data-lay="${OPT.big?'compact':'big'}">${OPT.big?'Vista compatta':'Mano grande'}</button></span></div>
-      <div class="hand ${S.handWait?'wait':''}">${S.players[handP].hand.map(h=>handEl(h,handP)).join('')}</div></section>`:''}
+    ${handP!==null&&S.players?`<section class="side ${handP?'cor':'san'}"><div class="rowhead"><b class="${handP?'cor':'san'}">La tua mano</b><span>${S.handWait?'tocca per giocare':''}${OPT.hand==='big'&&S.players[handP].hand.length>2?'<span class="swipe"> · scorri →</span>':''}<button class="lay" data-setopt="hand" data-v="${OPT.hand==='big'?'compact':'big'}">${OPT.hand==='big'?'Mano compatta':'Mano grande'}</button></span></div>
+      <div class="hand ${OPT.hand==='big'?'bighand':''} ${S.handWait?'wait':''}">${S.players[handP].hand.map(h=>handEl(h,handP)).join('')}</div></section>`:''}
     <details class="log" open><summary>Cronaca</summary><ol>${S.log.slice(0,60).map(l=>`<li class="${l.r?'r':''}">${esc(l.t)}</li>`).join('')}</ol></details>
   </div>
-  ${S.overlay?`<div class="veil"><div><h2>${esc(S.overlay.title)}</h2><p>${esc(S.overlay.text)}</p><button class="big" data-veil>${esc(S.overlay.btn)}</button></div></div>`:''}
+  ${S.endFx&&S.final?endFxHtml():''}
+  ${S.overlay?`<div class="veil" data-veil><div><h2>${esc(S.overlay.title)}</h2><p>${esc(S.overlay.text)}</p><button class="big" data-veil>${esc(S.overlay.btn)}</button></div></div>`:''}
   ${modalHtml()}`;
+}
+function endFxHtml(){
+  const[a,b]=S.totals,w=S.final.w;let title,fac;
+  if(S.mode==='cpu'&&(S.human===0||S.human===1)){fac=S.human;title=w===null?'PAREGGIO':w===S.human?'HAI VINTO':'HAI PERSO'}
+  else{fac=w===null?0:w;title=w===null?'PAREGGIO':`VINCONO I ${FAC[w].toUpperCase()}`}
+  const win=w!==null&&(S.mode!=='cpu'||w===S.human);
+  const parts=Array.from({length:28},(_,i)=>`<i style="--x:${(i*37)%100}%;--d:${(i%7)*0.35}s;--s:${0.6+(i%5)*0.25};--t:${2.6+(i%4)*0.7}s"></i>`).join('');
+  return`<div class="endfx ${fac?'cor':'san'} ${win?'win':'lose'}" data-endfx role="dialog" aria-label="${title}">
+    <div class="efp">${parts}</div>
+    <div class="efc"><div class="efe">${ico(fac?'back1':'back0')}</div><h2 class="eft">${title}</h2>
+    <div class="efs">Santi ${a} · Corrotti ${b}</div><p class="efm">${esc(S.epic||'')}</p><div class="tap">Tocca ovunque per continuare</div></div></div>`;
 }
 function modalHtml(){
   if(!S||!S.detail)return'';
@@ -1103,7 +1226,7 @@ function modalHtml(){
     <div class="emblem"><span class="s">${ico('back0')}</span><span class="c">${ico('back1')}</span></div>
     <h2>Crediti</h2>
     <p>Santi vs Corrotti è un gioco leggero, ironico, e non vuole offendere nessuno — ad eccezione di Adinolfi, lui può sentirsi offeso.</p>
-    <dl><dt>Idea malvagia di</dt><dd>Sara Bassetti e di sua figlia Sole</dd><dt>Realizzazione perversa di</dt><dd>Daniele Radavero</dd></dl>
+    <dl><dt>Idea malvagia di</dt><dd>Sara Bassetti e sua figlia Sole</dd><dt>Realizzazione perversa di</dt><dd>Daniele Radavero</dd></dl>
     <button class="big" data-close>Chiudi</button></div></div>`;
   if(S.detail==='quit')return`<div class="modal" data-close><div><h2>Terminare la partita?</h2><p class="meta">La partita in corso andrà persa e tornerai alla schermata iniziale.</p><button class="big" data-home>Termina e torna alla home</button><button class="opt" data-close>Continua a giocare</button></div></div>`;
   if(S.detail==='rules')return`<div class="modal" data-close><div><h2>Regole adottate</h2><p class="meta">Dove il regolamento lascia spazio a interpretazioni, il prototipo fa queste scelte.</p><ul class="rules">${RULES.map(r=>`<li>${esc(r)}</li>`).join('')}</ul><button class="big" data-close>Chiudi</button></div></div>`;
@@ -1131,15 +1254,28 @@ if(typeof document!=='undefined'){
     let y=r.top;if(y+th>innerHeight-8)y=innerHeight-th-8;if(y<8)y=8;
     tip.style.left=x+'px';tip.style.top=y+'px';
   });
-  document.addEventListener('pointerdown',()=>{tip.hidden=true});
+  /* tenere premuto una carta mostra sempre i suoi poteri, anche durante scelte e riepiloghi */
+  let lpT=null,lpFired=false,lpXY=null;
+  const lpCancel=()=>{clearTimeout(lpT);lpT=null};
+  document.addEventListener('pointerdown',e=>{tip.hidden=true;lpCancel();lpFired=false;
+    const el=e.target.closest('[data-card],[data-hand]');if(!el||!S||!S.players)return;
+    lpXY=[e.clientX,e.clientY];
+    lpT=setTimeout(()=>{const info=hoverInfo(el);if(info){lpFired=true;S.detail=info;render();try{navigator.vibrate&&navigator.vibrate(12)}catch(_){}}},450);
+  });
+  document.addEventListener('pointermove',e=>{if(lpT&&lpXY&&Math.hypot(e.clientX-lpXY[0],e.clientY-lpXY[1])>10)lpCancel()});
+  document.addEventListener('pointerup',lpCancel);document.addEventListener('pointercancel',lpCancel);
+  document.addEventListener('contextmenu',e=>{if(e.target.closest('[data-card],[data-hand]'))e.preventDefault()});
+  document.addEventListener('click',e=>{if(lpFired){lpFired=false;e.stopPropagation();e.preventDefault()}},true);
   document.documentElement.addEventListener('pointerleave',()=>{tip.hidden=true});
-  document.addEventListener('change',e=>{if(e.target.id==='opt-easy')OPT.noRe=!e.target.checked});
   document.addEventListener('click',e=>{
-    const t=e.target.closest('[data-popok],[data-lay],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
+    const t=e.target.closest('[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
     if(!t)return;
     if(t.dataset.start!==undefined){newGame(t.dataset.start,t.dataset.start==='cpu'?+t.dataset.h:null);return}
     if(t.dataset.info!==undefined&&S.prompt){const od=optDef(S.prompt.opts[+t.dataset.info],S.prompt);if(od){S.detail=od;render()}return}
-    if(t.dataset.lay!==undefined){setLayout(t.dataset.lay==='big');return}
+    if(t.dataset.endfx!==undefined){S.endFx=false;render();return}
+    if(t.dataset.menu!==undefined){S={screen:'start',menu:t.dataset.menu};render();window.scrollTo(0,0);return}
+    if(t.dataset.setopt!==undefined){setOpt(t.dataset.setopt,t.dataset.v);return}
+    if(t.dataset.resetstats!==undefined){const v=t.dataset.resetstats;if(v==='yes')saveStats([{w:0,l:0,d:0},{w:0,l:0,d:0}]);S.confirmReset=v==='ask';render();return}
     if(t.dataset.popok!==undefined){if(S.prompt)resolvePrompt(S.prompt.opts[0].v);return}
     if(t.dataset.credits!==undefined){S=S||{screen:'start'};S.detail='credits';render();return}
     if(t.dataset.quit!==undefined){S.detail=S.final?null:'quit';if(S.final){S={screen:'start'}}render();return}
@@ -1147,9 +1283,9 @@ if(typeof document!=='undefined'){
     if(t.dataset.help!==undefined){S=S||{screen:'start'};S.detail='help';S.helpTab=t.dataset.help;S.helpStep=0;render();window.scrollTo(0,0);return}
     if(t.dataset.htab!==undefined){S.helpTab=t.dataset.htab;S.helpStep=0;render();document.querySelector('.help')?.scrollTo(0,0);return}
     if(t.dataset.hstep!==undefined){S.helpStep=Math.max(0,Math.min(TUT.length-1,(S.helpStep||0)+(+t.dataset.hstep)));render();document.querySelector('.help')?.scrollTo(0,0);return}
-    if(t.dataset.hclose!==undefined){if(t.classList.contains('help')&&e.target!==t)return;S.detail=null;render();return}
+    if(t.dataset.hclose!==undefined){S.detail=null;render();return}
     if(t.dataset.rules!==undefined){S=S||{screen:'start'};S.detail='rules';render();return}
-    if(t.dataset.close!==undefined){if(S.detail==='quit'&&t.classList.contains('modal')&&e.target!==t)return;S.detail=null;render();return}
+    if(t.dataset.close!==undefined){S.detail=null;render();return}
     if(t.dataset.restart!==undefined){S={screen:'start'};render();return}
     if(t.dataset.veil!==undefined){S.overlay&&S.overlay.res();return}
     const pr=S.prompt;
@@ -1168,7 +1304,7 @@ if(typeof document!=='undefined'){
       if(S.handWait&&!pr){S.handWait(h);return}
       S.detail={d:DEF[h.id]};render();return}
   });
-  document.body.classList.toggle('compact',!OPT.big);
+  applyTheme();
   S={screen:'start'};render();
 }
 </script>
