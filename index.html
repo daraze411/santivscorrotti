@@ -15,19 +15,29 @@ body{margin:0}
   --santi:#9a6f14; --santi-bg:#f2e6c6; --corr:#922634; --corr-bg:#f0d7da;
   --accent:#3b3888; --accent-fg:#ffffff; --good:#2f7a3f; --bad:#b3261e;
   --santi-tint:#ebe3cf; --corr-tint:#ead9da;
+  --sky:#f6eccf; --ray:rgb(212 168 62 / .11); --abyss:#d9c9d6; --ember:rgb(146 38 52 / .10);
   --f-display:"IM Fell English SC", Georgia, "Times New Roman", serif;
   --f-body:"Alegreya Sans", system-ui, -apple-system, sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#131118; --surface:#1f1c25; --fg:#ece8f1; --muted:#9b95a4; --line:#3a3442;
   --santi:#dcb04e; --santi-bg:#382d15; --corr:#e2636f; --corr-bg:#3a1a1f;
-  --accent:#a6a2f2; --accent-fg:#16141c; --good:#6cc27e; --bad:#ef7a70; --santi-tint:#211d15; --corr-tint:#241619; color-scheme:dark}}
+  --accent:#a6a2f2; --accent-fg:#16141c; --good:#6cc27e; --bad:#ef7a70; --santi-tint:#211d15; --corr-tint:#241619; --sky:#231d12; --ray:rgb(220 176 78 / .07); --abyss:#1d0c22; --ember:rgb(226 99 111 / .08); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#131118; --surface:#1f1c25; --fg:#ece8f1; --muted:#9b95a4; --line:#3a3442;
   --santi:#dcb04e; --santi-bg:#382d15; --corr:#e2636f; --corr-bg:#3a1a1f;
-  --accent:#a6a2f2; --accent-fg:#16141c; --good:#6cc27e; --bad:#ef7a70; --santi-tint:#211d15; --corr-tint:#241619; color-scheme:dark}
+  --accent:#a6a2f2; --accent-fg:#16141c; --good:#6cc27e; --bad:#ef7a70; --santi-tint:#211d15; --corr-tint:#241619; --sky:#231d12; --ray:rgb(220 176 78 / .07); --abyss:#1d0c22; --ember:rgb(226 99 111 / .08); color-scheme:dark}
 html,body{background:var(--bg);color:var(--fg)}
-body{font-family:var(--f-body);font-size:15px;line-height:1.4}
+body{font-family:var(--f-body);font-size:15px;line-height:1.4;position:relative;isolation:isolate}
+/* sfondo tematico: luce dall'alto (Cielo), bagliore dal basso (Inferi) */
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 80% 40% at 50% 104%,var(--ember),transparent 70%),
+    linear-gradient(180deg,transparent 45%,var(--abyss) 130%),
+    linear-gradient(180deg,transparent 0%,var(--bg) 62%),
+    radial-gradient(ellipse 70% 30% at 50% 0%,var(--sky),transparent 75%),
+    repeating-conic-gradient(from -90deg at 50% -8%,var(--ray) 0deg 3deg,transparent 3deg 9deg);
+  -webkit-mask-image:linear-gradient(#000,#000);}
 *{box-sizing:border-box}
 button{font:inherit;color:inherit}
 .wrap{max-width:520px;margin:0 auto;padding-block:12px 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:10px}
@@ -160,9 +170,21 @@ details.log li.r{color:var(--fg);font-weight:700}
 .start h1 .s{color:var(--santi)} .start h1 .c{color:var(--corr)} .start h1 .v{color:var(--muted);font-size:26px}
 .start p{margin:0;max-width:42ch;color:var(--muted)}
 .start .btns{display:flex;flex-direction:column;gap:8px}
-.start .btns .opt{padding:12px 14px;font-size:15px}
-.start .btns .fs{background:var(--santi);border-color:var(--santi);color:var(--surface)}
-.start .btns .fc{background:var(--corr);border-color:var(--corr);color:var(--surface)}
+.start .btns{gap:10px}
+.start .btns .opt{padding:14px 16px;font-size:16px;font-weight:700;border-radius:12px;display:flex;align-items:center;gap:12px;
+  background:linear-gradient(180deg,var(--surface),color-mix(in srgb,var(--surface) 82%,var(--line)));border:1px solid var(--line);
+  box-shadow:0 1px 0 rgb(255 255 255 / .35) inset,0 2px 6px rgb(0 0 0 / .08);transition:transform .12s,box-shadow .12s}
+.start .btns .opt .bi{width:26px;height:26px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--bg);color:var(--accent)}
+.start .btns .opt .bi svg{width:16px;height:16px}
+.start .btns .opt .bt{flex:1;text-align:left}
+.start .btns .opt .bt small{display:block;font-weight:400;font-size:12.5px;opacity:.8}
+.start .btns .opt .ar{opacity:.5;font-size:18px}
+.start .btns .opt:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 1px 0 rgb(255 255 255 / .35) inset,0 6px 14px rgb(0 0 0 / .14)}
+.start .btns .opt:not(:disabled):active{transform:translateY(1px) scale(.99);box-shadow:0 1px 3px rgb(0 0 0 / .12)}
+.start .btns .opt.main{background:linear-gradient(135deg,#5a55c4,#2b2875);color:#fff;border-color:transparent;font-size:18px;padding:16px}
+.start .btns .opt.main .bi,.start .btns .opt.fs .bi,.start .btns .opt.fc .bi{background:rgb(255 255 255 / .2);color:inherit}
+.start .btns .opt.fs{background:linear-gradient(135deg,#d6a63a,#9a6f14 55%,#5e420a);border-color:transparent;color:#fffaf0;text-shadow:0 1px 1px rgb(0 0 0 / .25)}
+.start .btns .opt.fc{background:linear-gradient(135deg,#c8414f,#922634 55%,#4f0f1a);border-color:transparent;color:#fff6f6;text-shadow:0 1px 1px rgb(0 0 0 / .25)}
 .final{font-variant-numeric:tabular-nums}
 .help{position:fixed;inset:0;background:rgb(0 0 0 / .45);z-index:18;overflow:auto;padding:max(24px,env(safe-area-inset-top,0px)) 0 max(24px,env(safe-area-inset-bottom,0px))}
 .help>.wrap{background:var(--bg);border-radius:14px;padding-block:16px 20px}
@@ -243,7 +265,7 @@ div.hcard{cursor:default}
 .start .sub{font-size:17px;line-height:1.4;color:var(--fg);max-width:34ch;text-wrap:balance}
 .start .mh{font-family:var(--f-display);font-weight:400;font-size:24px;margin:0}
 .start .mh3{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:6px 0 0}
-.start .btns .back{background:none}
+.start .btns .opt.back{background:none;box-shadow:none;font-weight:400;font-size:15px;padding:10px 14px;border-style:dashed}
 .start .btns .soon{opacity:1;color:var(--muted);background:var(--surface);border-style:dashed;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:not-allowed}
 .badge{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:var(--line);color:var(--muted);border-radius:20px;padding:3px 8px}
 .optlist{display:flex;flex-direction:column;gap:12px}
@@ -252,6 +274,11 @@ div.hcard{cursor:default}
 .seg{display:flex;flex-wrap:wrap;gap:6px}
 .seg .opt{padding:8px 12px}
 .tblwrap{overflow-x:auto}
+.savebox{display:flex;flex-direction:column;gap:8px;font-size:14px}
+.savebox p{margin:0;max-width:60ch}
+.code{width:100%;font:13px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);resize:vertical;word-break:break-all}
+.savebox a.opt{text-decoration:none;display:inline-flex;align-items:center;color:var(--fg)}
+.codemsg{font-weight:700}.codemsg.ok{color:var(--good)}.codemsg.ko{color:var(--bad)}
 .stats{border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums;width:100%}
 .stats th,.stats td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
 .stats th:first-child{text-align:left}
@@ -400,6 +427,19 @@ function saveOpt(){try{localStorage.setItem('svc-opt',JSON.stringify({hand:OPT.h
 function applyTheme(){if(typeof document==='undefined')return;const r=document.documentElement;if(OPT.theme==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',OPT.theme)}
 function loadStats(){try{const v=JSON.parse(localStorage.getItem('svc-stats')||'null');if(v&&v[0]&&v[1])return v}catch(e){}return[{w:0,l:0,d:0},{w:0,l:0,d:0}]}
 function saveStats(st){try{localStorage.setItem('svc-stats',JSON.stringify(st))}catch(e){}}
+function exportCode(){
+  const data={v:1,s:loadStats(),o:{hand:OPT.hand,mine:OPT.mine,opp:OPT.opp,theme:OPT.theme}};
+  return 'SVC1-'+btoa(unescape(encodeURIComponent(JSON.stringify(data)))).replace(/=+$/,'');
+}
+function importCode(txt){
+  try{const t=(txt||'').trim().replace(/\s+/g,'');if(!t.startsWith('SVC1-'))return false;
+    const d=JSON.parse(decodeURIComponent(escape(atob(t.slice(5)))));
+    const ok=x=>x&&['w','l','d'].every(k=>Number.isInteger(x[k])&&x[k]>=0);
+    if(!d||!Array.isArray(d.s)||!ok(d.s[0])||!ok(d.s[1]))return false;
+    saveStats(d.s);
+    if(d.o){for(const k of ['hand','mine','opp'])if(['big','compact'].includes(d.o[k]))OPT[k]=d.o[k];if(['auto','light','dark'].includes(d.o.theme))OPT.theme=d.o.theme;saveOpt();applyTheme()}
+    return true}catch(e){return false}
+}
 function recordResult(){
   if(FAST||S.mode!=='cpu'||!(S.human===0||S.human===1)||S.recorded)return;
   S.recorded=true;const st=loadStats(),me=st[S.human];
@@ -1149,19 +1189,19 @@ function render(){
     const m=S&&S.menu||'home';let body='';
     if(m==='home')body=`<p class="sub">Santi e Corrotti competono per dominare gli esseri umani. Scegli da che parte stare!</p>
       <div class="btns">
-        <button class="opt main" data-menu="mode">Gioca</button>
-        <button class="opt" data-help="breve">Come si gioca</button>
-        <button class="opt" data-credits>Crediti</button>
-        <button class="opt" data-menu="options">Opzioni</button>
+        <button class="opt main" data-menu="mode"><span class="bi"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></span><span class="bt">Gioca</span><span class="ar">›</span></button>
+        <button class="opt" data-help="breve"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7"/></svg></span><span class="bt">Come si gioca<small>Regole in breve e tutorial</small></span><span class="ar">›</span></button>
+        <button class="opt" data-menu="options"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 13a7.5 7.5 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L15 3h-4l-.4 2.6a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L6.6 11a7.5 7.5 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1L11 21h4l.4-2.6a7 7 0 0 0 1.7-1l2.4 1 2-3.4z"/></svg></span><span class="bt">Opzioni<small>Carte, tema, statistiche, salvataggio</small></span><span class="ar">›</span></button>
+        <button class="opt" data-credits><span class="bi"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.1-5.4 3.1 1.3-6L3.3 9.2l6.1-.6z"/></svg></span><span class="bt">Crediti</span><span class="ar">›</span></button>
       </div>`;
     else if(m==='mode')body=`<h2 class="mh">Scegli il gioco</h2><div class="btns">
-        <button class="opt main" data-menu="side">Gioco base</button>
-        <button class="opt soon" disabled aria-disabled="true">Variante esperti <span class="badge">coming soon</span></button>
+        <button class="opt main" data-menu="side"><span class="bt">Gioco base<small>Le regole del regolamento 0.8</small></span><span class="ar">›</span></button>
+        <button class="opt soon" disabled aria-disabled="true"><span class="bt">Variante esperti</span><span class="badge">coming soon</span></button>
         <button class="opt back" data-menu="home">Indietro</button></div>`;
     else if(m==='side')body=`<h2 class="mh">Da che parte stai?</h2><div class="btns">
-        <button class="opt main fs" data-start="cpu" data-h="0">Gioca con i Santi</button>
-        <button class="opt main fc" data-start="cpu" data-h="1">Gioca con i Corrotti</button>
-        <button class="opt" data-start="hot">Due giocatori sullo stesso telefono</button>
+        <button class="opt fs" data-start="cpu" data-h="0"><span class="bi">${ico('back0')}</span><span class="bt">Gioca con i Santi<small>Contro il computer</small></span><span class="ar">›</span></button>
+        <button class="opt fc" data-start="cpu" data-h="1"><span class="bi">${ico('back1')}</span><span class="bt">Gioca con i Corrotti<small>Contro il computer</small></span><span class="ar">›</span></button>
+        <button class="opt" data-start="hot"><span class="bt">Due giocatori sullo stesso telefono<small>Passatevi il telefono a ogni turno</small></span><span class="ar">›</span></button>
         <button class="opt back" data-menu="mode">Indietro</button></div>`;
     else if(m==='options'){
       const seg=(k,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button class="opt ${OPT[k]===v?'on':''}" data-setopt="${k}" data-v="${v}" aria-pressed="${OPT[k]===v}">${l}</button>`).join('')}</div>`;
@@ -1177,6 +1217,17 @@ function render(){
       <div class="tblwrap"><table class="stats"><thead><tr><th>Fazione</th><th>Partite</th><th>Vinte</th><th>Perse</th><th>Pari</th><th>% vinte</th></tr></thead><tbody>${row(0)}${row(1)}</tbody></table></div>
       <p class="meta">Le statistiche restano salvate su questo dispositivo e in questo browser.</p>
       ${S.confirmReset?`<div class="opts"><span>Azzerare tutte le statistiche?</span><button class="opt main" data-resetstats="yes">Sì, azzera</button><button class="opt" data-resetstats="no">Annulla</button></div>`:`<div class="opts"><button class="opt" data-resetstats="ask">Azzera statistiche</button></div>`}
+      <h3 class="mh3">Salva i tuoi progressi</h3>
+      <div class="savebox">
+        <p><b>Perché conviene.</b> Statistiche e opzioni restano solo in questo browser: se cambi telefono o browser, o cancelli i dati di navigazione, ripartono da zero. Con il codice di salvataggio le ritrovi in un attimo, ovunque.</p>
+        <textarea id="code-out" class="code" readonly rows="2" aria-label="Il tuo codice di salvataggio">${exportCode()}</textarea>
+        <div class="opts"><button class="opt main" data-code="copy">Copia codice</button>${typeof navigator!=='undefined'&&navigator.share?'<button class="opt" data-code="share">Condividi…</button>':''}<a class="opt" href="https://wa.me/?text=${encodeURIComponent('Santi vs Corrotti, il mio codice di salvataggio: '+exportCode())}" target="_blank" rel="noopener">Invia su WhatsApp</a></div>
+        <p class="meta">Consiglio: salvalo su Google Keep, in una nota del telefono o mandalo a te stesso, così non lo perdi. Il codice cambia ogni volta che giochi: aggiornalo ogni tanto.</p>
+        <label class="mh3" for="code-in">Hai già un codice?</label>
+        <textarea id="code-in" class="code" rows="2" placeholder="Incolla qui il codice che inizia con SVC1-"></textarea>
+        <div class="opts"><button class="opt" data-code="load">Carica codice</button></div>
+        ${S.codeMsg?`<p class="codemsg ${S.codeOk?'ok':'ko'}" role="status">${esc(S.codeMsg)}</p>`:''}
+      </div>
       <div class="btns"><button class="opt back" data-menu="home">Indietro</button></div>`;
     }
     app.innerHTML=`<div class="wrap start">
@@ -1268,10 +1319,19 @@ if(typeof document!=='undefined'){
   document.addEventListener('click',e=>{if(lpFired){lpFired=false;e.stopPropagation();e.preventDefault()}},true);
   document.documentElement.addEventListener('pointerleave',()=>{tip.hidden=true});
   document.addEventListener('click',e=>{
-    const t=e.target.closest('[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
+    const t=e.target.closest('[data-code],[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
     if(!t)return;
     if(t.dataset.start!==undefined){newGame(t.dataset.start,t.dataset.start==='cpu'?+t.dataset.h:null);return}
     if(t.dataset.info!==undefined&&S.prompt){const od=optDef(S.prompt.opts[+t.dataset.info],S.prompt);if(od){S.detail=od;render()}return}
+    if(t.dataset.code!==undefined){const a=t.dataset.code,out=document.getElementById('code-out'),code=exportCode();
+      const msg=(m,ok)=>{S.codeMsg=m;S.codeOk=ok;render()};
+      if(a==='copy'){const sel=()=>{const o=document.getElementById('code-out');if(o){o.focus();o.select()}};
+        if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(code).then(()=>msg('Codice copiato. Ora incollalo dove vuoi conservarlo.',true),()=>{msg('Copia non disponibile qui: il codice è selezionato, copialo a mano.',false);sel()});
+        else{msg('Copia non disponibile qui: il codice è selezionato, copialo a mano.',false);sel()}}
+      else if(a==='share'){navigator.share({title:'Santi vs Corrotti · codice di salvataggio',text:code}).then(()=>msg('Codice condiviso.',true),err=>{if(err&&err.name==='AbortError')return;msg('Condivisione non disponibile qui: usa Copia codice.',false)})}
+      else if(a==='load'){const v=document.getElementById('code-in').value;if(importCode(v))msg('Fatto: statistiche e opzioni ripristinate.',true);else msg('Codice non valido: controlla di averlo copiato per intero, a partire da SVC1-.',false)}
+      return}
+    if(t.dataset.menu!==undefined||t.dataset.credits!==undefined){if(S)S.codeMsg=null}
     if(t.dataset.endfx!==undefined){S.endFx=false;render();return}
     if(t.dataset.menu!==undefined){S={screen:'start',menu:t.dataset.menu};render();window.scrollTo(0,0);return}
     if(t.dataset.setopt!==undefined){setOpt(t.dataset.setopt,t.dataset.v);return}
