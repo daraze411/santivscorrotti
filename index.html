@@ -20,13 +20,13 @@ body{margin:0}
   --f-body:"Alegreya Sans", system-ui, -apple-system, sans-serif;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#131118; --surface:#1f1c25; --fg:#ece8f1; --muted:#9b95a4; --line:#3a3442;
-  --santi:#dcb04e; --santi-bg:#382d15; --corr:#e2636f; --corr-bg:#3a1a1f;
-  --accent:#a6a2f2; --accent-fg:#16141c; --good:#6cc27e; --bad:#ef7a70; --santi-tint:#211d15; --corr-tint:#241619; --sky:#231d12; --ray:rgb(220 176 78 / .07); --abyss:#1d0c22; --ember:rgb(226 99 111 / .08); color-scheme:dark}}
+  --bg:#120a16; --surface:#1f1325; --fg:#f0e6f2; --muted:#a493a8; --line:#3d2a45;
+  --santi:#dcb04e; --santi-bg:#382d15; --corr:#f0646f; --corr-bg:#401421;
+  --accent:#c38cff; --accent-fg:#16081d; --good:#6cc27e; --bad:#ff7a70; --santi-tint:#1f1716; --corr-tint:#2a1220; --sky:#1a0d20; --ray:rgb(160 70 220 / .06); --abyss:#3a0c1c; --ember:rgb(255 70 60 / .16); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#131118; --surface:#1f1c25; --fg:#ece8f1; --muted:#9b95a4; --line:#3a3442;
-  --santi:#dcb04e; --santi-bg:#382d15; --corr:#e2636f; --corr-bg:#3a1a1f;
-  --accent:#a6a2f2; --accent-fg:#16141c; --good:#6cc27e; --bad:#ef7a70; --santi-tint:#211d15; --corr-tint:#241619; --sky:#231d12; --ray:rgb(220 176 78 / .07); --abyss:#1d0c22; --ember:rgb(226 99 111 / .08); color-scheme:dark}
+  --bg:#120a16; --surface:#1f1325; --fg:#f0e6f2; --muted:#a493a8; --line:#3d2a45;
+  --santi:#dcb04e; --santi-bg:#382d15; --corr:#f0646f; --corr-bg:#401421;
+  --accent:#c38cff; --accent-fg:#16081d; --good:#6cc27e; --bad:#ff7a70; --santi-tint:#1f1716; --corr-tint:#2a1220; --sky:#1a0d20; --ray:rgb(160 70 220 / .06); --abyss:#3a0c1c; --ember:rgb(255 70 60 / .16); color-scheme:dark}
 html,body{background:var(--bg);color:var(--fg)}
 body{font-family:var(--f-body);font-size:15px;line-height:1.4;position:relative;isolation:isolate}
 /* sfondo tematico: luce dall'alto (Cielo), bagliore dal basso (Inferi) */
@@ -262,7 +262,10 @@ div.hcard{cursor:default}
 .bigrow .tags{font-size:10.5px}
 .swipe2{font-size:11px;color:var(--muted);text-align:right}
 /* home e menu */
-.start .sub{font-size:17px;line-height:1.4;color:var(--fg);max-width:34ch;text-wrap:balance}
+.start .sub{font-size:17px;line-height:1.45;color:var(--fg);text-align:justify;hyphens:auto;margin:0 0 14px}
+.start .lead{margin:0;color:var(--muted)}
+.start .savebox p{text-align:justify;hyphens:auto}
+.start .mh{margin-bottom:8px}
 .start .mh{font-family:var(--f-display);font-weight:400;font-size:24px;margin:0}
 .start .mh3{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:6px 0 0}
 .start .btns .opt.back{background:none;box-shadow:none;font-weight:400;font-size:15px;padding:10px 14px;border-style:dashed}
@@ -1203,21 +1206,32 @@ function render(){
         <button class="opt fc" data-start="cpu" data-h="1"><span class="bi">${ico('back1')}</span><span class="bt">Gioca con i Corrotti<small>Contro il computer</small></span><span class="ar">›</span></button>
         <button class="opt" data-start="hot"><span class="bt">Due giocatori sullo stesso telefono<small>Passatevi il telefono a ogni turno</small></span><span class="ar">›</span></button>
         <button class="opt back" data-menu="mode">Indietro</button></div>`;
-    else if(m==='options'){
+    else if(m==='options')body=`<h2 class="mh">Opzioni</h2><div class="btns">
+        <button class="opt" data-menu="opt-look"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M2 12c4-7 16-7 20 0-4 7-16 7-20 0z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></span><span class="bt">Aspetto<small>Dimensione delle carte e tema</small></span><span class="ar">›</span></button>
+        <button class="opt" data-menu="opt-stats"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M6 20V11M12 20V5M18 20v-6"/></svg></span><span class="bt">Statistiche<small>Le tue partite vinte e perse</small></span><span class="ar">›</span></button>
+        <button class="opt" data-menu="opt-save"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg></span><span class="bt">Salva i tuoi progressi<small>Codice da conservare o condividere</small></span><span class="ar">›</span></button>
+        <button class="opt back" data-menu="home">Indietro</button></div>`;
+    else if(m==='opt-look'){
       const seg=(k,opts)=>`<div class="seg">${opts.map(([v,l])=>`<button class="opt ${OPT[k]===v?'on':''}" data-setopt="${k}" data-v="${v}" aria-pressed="${OPT[k]===v}">${l}</button>`).join('')}</div>`;
-      const st=loadStats(),row=(i)=>{const x=st[i],n=x.w+x.l+x.d;return`<tr><th class="${i?'c':'s'}">${FAC[i]}</th><td>${n}</td><td>${x.w}</td><td>${x.l}</td><td>${x.d}</td><td>${n?Math.round(100*x.w/n)+'%':'–'}</td></tr>`};
-      body=`<h2 class="mh">Opzioni</h2>
+      body=`<h2 class="mh">Aspetto</h2>
       <div class="optlist">
         <div class="optrow"><span>La tua mano</span>${seg('hand',[['big','Grande'],['compact','Compatta']])}</div>
         <div class="optrow"><span>Le tue carte in campo</span>${seg('mine',[['big','Grandi'],['compact','Compatte']])}</div>
         <div class="optrow"><span>Carte avversarie in campo</span>${seg('opp',[['big','Grandi'],['compact','Compatte']])}</div>
-        <div class="optrow"><span>Tema</span>${seg('theme',[['auto','Automatico'],['light','Chiaro'],['dark','Scuro']])}</div>
+        <div class="optrow"><span>Tema</span>${seg('theme',[['auto','Automatico'],['light','Santi · chiaro'],['dark','Corrotti · scuro']])}<small class="meta">Automatico segue l’impostazione del telefono.</small></div>
       </div>
-      <h3 class="mh3">Le tue partite contro il computer</h3>
+      <div class="btns"><button class="opt back" data-menu="options">Indietro</button></div>`;
+    }
+    else if(m==='opt-stats'){
+      const st=loadStats(),row=(i)=>{const x=st[i],n=x.w+x.l+x.d;return`<tr><th class="${i?'c':'s'}">${FAC[i]}</th><td>${n}</td><td>${x.w}</td><td>${x.l}</td><td>${x.d}</td><td>${n?Math.round(100*x.w/n)+'%':'–'}</td></tr>`};
+      body=`<h2 class="mh">Statistiche</h2>
+      <p class="lead">Le tue partite contro il computer.</p>
       <div class="tblwrap"><table class="stats"><thead><tr><th>Fazione</th><th>Partite</th><th>Vinte</th><th>Perse</th><th>Pari</th><th>% vinte</th></tr></thead><tbody>${row(0)}${row(1)}</tbody></table></div>
       <p class="meta">Le statistiche restano salvate su questo dispositivo e in questo browser.</p>
       ${S.confirmReset?`<div class="opts"><span>Azzerare tutte le statistiche?</span><button class="opt main" data-resetstats="yes">Sì, azzera</button><button class="opt" data-resetstats="no">Annulla</button></div>`:`<div class="opts"><button class="opt" data-resetstats="ask">Azzera statistiche</button></div>`}
-      <h3 class="mh3">Salva i tuoi progressi</h3>
+      <div class="btns"><button class="opt back" data-menu="options">Indietro</button></div>`;
+    }
+    else if(m==='opt-save')body=`<h2 class="mh">Salva i tuoi progressi</h2>
       <div class="savebox">
         <p><b>Perché conviene.</b> Statistiche e opzioni restano solo in questo browser: se cambi telefono o browser, o cancelli i dati di navigazione, ripartono da zero. Con il codice di salvataggio le ritrovi in un attimo, ovunque.</p>
         <textarea id="code-out" class="code" readonly rows="2" aria-label="Il tuo codice di salvataggio">${exportCode()}</textarea>
@@ -1228,8 +1242,7 @@ function render(){
         <div class="opts"><button class="opt" data-code="load">Carica codice</button></div>
         ${S.codeMsg?`<p class="codemsg ${S.codeOk?'ok':'ko'}" role="status">${esc(S.codeMsg)}</p>`:''}
       </div>
-      <div class="btns"><button class="opt back" data-menu="home">Indietro</button></div>`;
-    }
+      <div class="btns"><button class="opt back" data-menu="options">Indietro</button></div>`;
     app.innerHTML=`<div class="wrap start">
       <div class="emblem"><span class="s">${ico('back0')}</span><span class="c">${ico('back1')}</span></div>
       <h1><span class="s">Santi</span> <span class="v">vs</span> <span class="c">Corrotti</span></h1>
