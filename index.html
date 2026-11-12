@@ -182,6 +182,7 @@ details.log li.r{color:var(--fg);font-weight:700}
 .start .btns .opt:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 1px 0 rgb(255 255 255 / .35) inset,0 6px 14px rgb(0 0 0 / .14)}
 .start .btns .opt:not(:disabled):active{transform:translateY(1px) scale(.99);box-shadow:0 1px 3px rgb(0 0 0 / .12)}
 .start .btns .opt.main{background:linear-gradient(135deg,#5a55c4,#2b2875);color:#fff;border-color:transparent;font-size:18px;padding:16px}
+.start .btns .opt.resume{background:linear-gradient(135deg,#2f8a55,#14512f);color:#fff}
 .start .btns .opt.main .bi,.start .btns .opt.fs .bi,.start .btns .opt.fc .bi{background:rgb(255 255 255 / .2);color:inherit}
 .start .btns .opt.fs{background:linear-gradient(135deg,#d6a63a,#9a6f14 55%,#5e420a);border-color:transparent;color:#fffaf0;text-shadow:0 1px 1px rgb(0 0 0 / .25)}
 .start .btns .opt.fc{background:linear-gradient(135deg,#c8414f,#922634 55%,#4f0f1a);border-color:transparent;color:#fff6f6;text-shadow:0 1px 1px rgb(0 0 0 / .25)}
@@ -456,12 +457,40 @@ const sleep=ms=>{const g=GID;return FAST?Promise.resolve():new Promise(r=>setTim
 const esc=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
 
 /* ---------- stato ---------- */
+/* partita in corso salvata a ogni passaggio, per poterla riprendere */
+function snapshot(){
+  if(FAST||typeof localStorage==='undefined'||S.screen!=='game'||S.final)return;
+  const ci=c=>c?Object.assign({},c,{def:undefined,prot:c.prot&&c.prot.uid||false}):null;
+  const data={v:1,UID,S:{mode:S.mode,human:S.human,round:S.round,totals:S.totals,history:S.history,removed:S.removed,costSum:S.costSum,
+    log:S.log.slice(0,60),auras:S.auras,actCount:S.actCount,phase:S.phase,turn:S.turn,starter:S.starter,first:S.first,noRe:S.noRe,
+    imposed:S.imposed?S.imposed.map(c=>c?{id:c.id}:null):null,status:S.status,
+    players:S.players.map(P=>Object.assign({},P,{board:P.board.map(ci),last:P.last?P.last.uid:null}))}};
+  try{localStorage.setItem('svc-game',JSON.stringify(data))}catch(e){}
+}
+function savedGame(){try{const d=JSON.parse(localStorage.getItem('svc-game')||'null');return d&&d.v===1&&d.S&&d.S.players?d:null}catch(e){return null}}
+function clearSaved(){try{localStorage.removeItem('svc-game')}catch(e){}}
+function resumeGame(){
+  const d=savedGame();if(!d)return;
+  GID++;UID=Math.max(UID,d.UID+1);
+  const X=d.S;
+  S=Object.assign({screen:'game',viewer:X.mode==='cpu'?X.human:-1,prompt:null,overlay:null,detail:null,handWait:null,final:null},X);
+  const all=[];
+  S.players=X.players.map(P=>{const b=P.board.map(c=>c?Object.assign(c,{def:DEF[c.id]}):null);b.forEach(c=>c&&all.push(c));return Object.assign(P,{board:b})});
+  for(const c of all)c.prot=c.prot?all.find(x=>x.uid===c.prot)||false:false;
+  S.players.forEach(P=>P.last=P.last?all.find(x=>x.uid===P.last)||null:null);
+  log('Partita ripresa.',true);
+  armBack();render();
+  playGame(true).catch(e=>{console.error(e);S.status='Errore interno: '+e.message;render()});
+}
+/* tasto indietro del telefono: chiede conferma invece di uscire */
+let backArmed=false;
+function armBack(){if(typeof history==='undefined'||backArmed)return;try{history.pushState({svc:1},'');backArmed=true}catch(e){}}
 function newGame(mode,human){
   GID++;
   S={screen:'game',mode,human,round:1,totals:[0,0],history:[],removed:[[],[]],costSum:[0,0],log:[],
      viewer:mode==='cpu'?human:-1,prompt:null,overlay:null,detail:null,handWait:null,status:'',players:null,
      auras:[],actCount:[0,0],phase:'deploy',turn:0,final:null,noRe:OPT.noRe};
-  render();
+  clearSaved();armBack();render();
   playGame().catch(e=>{console.error(e);S.status='Errore interno: '+e.message;render();if(typeof process!=='undefined')throw e;});
 }
 const isCpu=p=>p!==null&&S.mode==='cpu'&&p!==S.human;
@@ -772,16 +801,19 @@ function setupRound(){
   S.auras=[];S.actCount=[0,0];if(S.round===1)S.first=rnd(2);S.starter=S.round===1?S.first:1-S.first;
   [0,1].forEach(p=>refill(p,true));
 }
-async function playGame(){
-  for(S.round=1;S.round<=2;S.round++){
-    setupRound();S.phase='deploy';
-    log(S.round===1?`Sorteggio: iniziano i ${FAC[S.starter]}.`:`Round 2: iniziano i ${FAC[S.starter]}.`,true);
-    {let who=S.starter,guard=0;while(S.players.some(P=>P.board.includes(null))&&guard++<20){if(S.players[who].board.includes(null))await deployTurn(who);who=1-who}}
-    await activationPhase();
-    await endRound();
+async function playGame(resume){
+  let res=resume?S.phase:null;
+  for(S.round=resume?S.round:1;S.round<=2;S.round++){
+    if(!res){setupRound();S.phase='deploy';
+      log(S.round===1?`Sorteggio: iniziano i ${FAC[S.starter]}.`:`Round 2: iniziano i ${FAC[S.starter]}.`,true);}
+    if(!res||res==='deploy'){let who=res?S.turn:S.starter,guard=0;while(S.players.some(P=>P.board.includes(null))&&guard++<20){if(S.players[who].board.includes(null))await deployTurn(who);who=1-who}}
+    if(res!=='end')await activationPhase(res==='activate');
+    snapshotEnd();await endRound();
+    res=null;
   }
   gameOver();
 }
+function snapshotEnd(){if(S)S.phase='end';snapshot()}
 function cpuDeployOld(p){
   const P=S.players[p],pl=P.hand.filter(h=>costOf(p,h)<=P.hand.length-1);
   let card=pl[0],bs=-1;
@@ -900,7 +932,7 @@ async function humanDeploy(p){
   }
 }
 async function deployTurn(p){
-  const P=S.players[p];S.turn=p;refill(p);
+  const P=S.players[p];S.turn=p;S.phase='deploy';snapshot();refill(p);
   S.status=isCpu(p)?`I ${FAC[p]} stanno schierando…`:`Tocca ai ${FAC[p]}.`;
   if(S.mode==='hot')await ensureViewer(p);
   render();
@@ -930,13 +962,13 @@ async function deployTurn(p){
   if(up)await recap(p,c,`${FAC[p]}: ${c.def.name} scoperta`,mark);
   refill(p);render();
 }
-async function activationPhase(){
+async function activationPhase(resumed){
   S.phase='activate';
   const fu=[0,1].map(p=>S.players[p].fuCount),paid=[0,1].map(p=>S.players[p].paid);
   const prec=fu[0]!==fu[1]?(fu[0]>fu[1]?0:1):paid[0]!==paid[1]?(paid[0]<paid[1]?0:1):S.starter;
   const why=fu[0]!==fu[1]?'più carte scoperte':paid[0]!==paid[1]?'ha pagato meno':'ha iniziato il round';
-  log(`Attivazioni. Nei pareggi d’iniziativa hanno la precedenza i ${FAC[prec]} (${why}).`,true);
-  if(!FAST){
+  if(!resumed)log(`Attivazioni. Nei pareggi d’iniziativa hanno la precedenza i ${FAC[prec]} (${why}).`,true);
+  if(!FAST&&!resumed){
     const ord=both().slice().sort((x,y)=>init(x)-init(y)||(x.owner===prec?-1:1));
     const vw=S.mode==='cpu'?S.human:null;
     const nm=c=>(vw!==null?canShow(c,vw):c.faceUp)?c.def.name:(c.fixed?'carta imposta':'carta coperta');
@@ -957,7 +989,7 @@ async function activationPhase(){
     let c=mine[0];
     if(mine.length>1)c=await pick(who,`Più tue carte con iniziativa ${m}: quale si attiva prima?`,mine,{ai:()=>Math.random()});
     lastTier=m;lastOwner=who;
-    await activate(c);await sleep(S.mode==='cpu'?900:500);
+    snapshot();await activate(c);await sleep(S.mode==='cpu'?900:500);
   }
 }
 async function activate(c){
@@ -1027,7 +1059,7 @@ function gameOver(){
   if(a!==b)w=a>b?0:1;
   else if(S.costSum[0]!==S.costSum[1]){w=S.costSum[0]<S.costSum[1]?0:1;why=' Parità di Dominio: vince chi ha schierato carte con costo stampato totale più basso nel round 2.'}
   else w=null;
-  S.phase='over';S.final={w,why};S.endFx=true;S.status=w===null?'Pareggio.':`Vincono i ${FAC[w]}.`;recordResult();render();
+  S.phase='over';S.final={w,why};S.endFx=true;S.status=w===null?'Pareggio.':`Vincono i ${FAC[w]}.`;recordResult();clearSaved();render();
 }
 
 
@@ -1192,7 +1224,9 @@ function render(){
     const m=S&&S.menu||'home';let body='';
     if(m==='home')body=`<p class="sub">Santi e Corrotti competono per dominare gli esseri umani. Scegli da che parte stare!</p>
       <div class="btns">
-        <button class="opt main" data-menu="mode"><span class="bi"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></span><span class="bt">Gioca</span><span class="ar">›</span></button>
+        ${(()=>{const g=savedGame();if(!g)return'';const X=g.S;const who=X.mode==='cpu'?`${FAC[X.human]} contro il computer`:'Due giocatori';
+          return`<button class="opt main resume" data-resume><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></svg></span><span class="bt">Riprendi la partita<small>${who} · round ${X.round} · ${X.totals[0]}–${X.totals[1]}</small></span><span class="ar">›</span></button>`})()}
+        <button class="opt ${savedGame()?'':'main'}" data-menu="mode"><span class="bi"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></span><span class="bt">Gioca</span><span class="ar">›</span></button>
         <button class="opt" data-help="breve"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7"/></svg></span><span class="bt">Come si gioca<small>Regole in breve e tutorial</small></span><span class="ar">›</span></button>
         <button class="opt" data-menu="options"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 13a7.5 7.5 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-1.7-1L15 3h-4l-.4 2.6a7 7 0 0 0-1.7 1l-2.4-1-2 3.4L6.6 11a7.5 7.5 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 1.7 1L11 21h4l.4-2.6a7 7 0 0 0 1.7-1l2.4 1 2-3.4z"/></svg></span><span class="bt">Opzioni<small>Carte, tema, statistiche, salvataggio</small></span><span class="ar">›</span></button>
         <button class="opt" data-credits><span class="bi"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.1-5.4 3.1 1.3-6L3.3 9.2l6.1-.6z"/></svg></span><span class="bt">Crediti</span><span class="ar">›</span></button>
@@ -1292,7 +1326,7 @@ function modalHtml(){
     <p>Santi vs Corrotti è un gioco leggero, ironico, e non vuole offendere nessuno — ad eccezione di Adinolfi, lui può sentirsi offeso.</p>
     <dl><dt>Idea malvagia di</dt><dd>Sara Bassetti e sua figlia Sole</dd><dt>Realizzazione perversa di</dt><dd>Daniele Radavero</dd></dl>
     <button class="big" data-close>Chiudi</button></div></div>`;
-  if(S.detail==='quit')return`<div class="modal" data-close><div><h2>Terminare la partita?</h2><p class="meta">La partita in corso andrà persa e tornerai alla schermata iniziale.</p><button class="big" data-home>Termina e torna alla home</button><button class="opt" data-close>Continua a giocare</button></div></div>`;
+  if(S.detail==='quit')return`<div class="modal" data-close><div><h2>Vuoi uscire dalla partita?</h2><p class="meta">Non perdi nulla: la partita resta salvata e puoi riprenderla dalla home con «Riprendi la partita».</p><button class="big" data-close>Continua a giocare</button><button class="opt" data-home>Esci e torna alla home</button></div></div>`;
   if(S.detail==='rules')return`<div class="modal" data-close><div><h2>Regole adottate</h2><p class="meta">Dove il regolamento lascia spazio a interpretazioni, il prototipo fa queste scelte.</p><ul class="rules">${RULES.map(r=>`<li>${esc(r)}</li>`).join('')}</ul><button class="big" data-close>Chiudi</button></div></div>`;
   const{d,c}=S.detail;
   return`<div class="modal" data-close><div>${ART[d.id]?`<img class="bigart ${d.f?'cor':'san'}" src="${ART[d.id]}" alt="${esc(d.name)}">`:''}<h2>${esc(d.name)}</h2>${NICK[d.id]?`<div class="nkbig">${esc(NICK[d.id])}</div>`:''}<div class="meta">${FAC[d.f]} · ${d.cat} · Costo ${d.cost} · Dominio stampato ${d.dom}${c?` · Dominio attuale ${c.dom} · Iniziativa ${init(c)}`:''}</div>${fxHtml(d)}<button class="big" data-close>Chiudi</button></div></div>`;
@@ -1332,10 +1366,11 @@ if(typeof document!=='undefined'){
   document.addEventListener('click',e=>{if(lpFired){lpFired=false;e.stopPropagation();e.preventDefault()}},true);
   document.documentElement.addEventListener('pointerleave',()=>{tip.hidden=true});
   document.addEventListener('click',e=>{
-    const t=e.target.closest('[data-code],[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
+    const t=e.target.closest('[data-resume],[data-code],[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
     if(!t)return;
     if(t.dataset.start!==undefined){newGame(t.dataset.start,t.dataset.start==='cpu'?+t.dataset.h:null);return}
     if(t.dataset.info!==undefined&&S.prompt){const od=optDef(S.prompt.opts[+t.dataset.info],S.prompt);if(od){S.detail=od;render()}return}
+    if(t.dataset.resume!==undefined){resumeGame();return}
     if(t.dataset.code!==undefined){const a=t.dataset.code,out=document.getElementById('code-out'),code=exportCode();
       const msg=(m,ok)=>{S.codeMsg=m;S.codeOk=ok;render()};
       if(a==='copy'){const sel=()=>{const o=document.getElementById('code-out');if(o){o.focus();o.select()}};
@@ -1377,6 +1412,8 @@ if(typeof document!=='undefined'){
       if(S.handWait&&!pr){S.handWait(h);return}
       S.detail={d:DEF[h.id]};render();return}
   });
+  window.addEventListener('popstate',()=>{backArmed=false;
+    if(S&&S.screen==='game'&&!S.final){armBack();S.detail='quit';render()}});
   applyTheme();
   S={screen:'start'};render();
 }
