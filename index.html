@@ -187,6 +187,7 @@ details.log li.r{color:var(--fg);font-weight:700}
 .start .btns .opt:not(:disabled):hover{transform:translateY(-1px);box-shadow:0 1px 0 rgb(255 255 255 / .35) inset,0 6px 14px rgb(0 0 0 / .14)}
 .start .btns .opt:not(:disabled):active{transform:translateY(1px) scale(.99);box-shadow:0 1px 3px rgb(0 0 0 / .12)}
 .start .btns .opt.main{background:linear-gradient(135deg,#5a55c4,#2b2875);color:#fff;border-color:transparent;font-size:18px;padding:16px}
+.start .btns .opt.xp{background:linear-gradient(135deg,#8a3fd1,#3d1166);color:#fff}
 .start .btns .opt.resume{background:linear-gradient(135deg,#2f8a55,#14512f);color:#fff}
 .start .btns .opt.main .bi,.start .btns .opt.fs .bi,.start .btns .opt.fc .bi{background:rgb(255 255 255 / .2);color:inherit}
 .start .btns .opt.fs{background:linear-gradient(135deg,#d6a63a,#9a6f14 55%,#5e420a);border-color:transparent;color:#fffaf0;text-shadow:0 1px 1px rgb(0 0 0 / .25)}
@@ -263,6 +264,7 @@ div.hcard{cursor:default}
 .bigrow .card .nk,.bigrow .card .nk.sm{font-size:10px}
 .bigrow .ini,.bigrow .dom{min-width:28px;height:28px;font-size:16px}
 .bigrow .tags{font-size:10.5px}
+.xtag{font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:700;color:var(--accent)}
 .ibar{display:flex;flex-direction:column;gap:3px}
 .ibh{font-size:10.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
 .ibr{display:flex;gap:6px;overflow-x:auto;padding:5px 4px 4px;scrollbar-width:none}
@@ -315,6 +317,7 @@ div.hcard{cursor:default}
 .endfx.san .eft{background:linear-gradient(100deg,#b07d18 0%,#f4cf6a 30%,#fff7d6 45%,#f4cf6a 60%,#b07d18 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgb(244 207 106 / .45))}
 .endfx.cor .eft{color:#c48aff;text-shadow:2px 0 #ff2e7e,-2px 0 #3d0063,0 0 22px rgb(150 60 255 / .6)}
 .efs{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.efu{font-weight:700;font-size:16px;padding:8px 14px;border-radius:20px;background:rgb(255 255 255 / .14)}
 .efm{margin:0;font-family:var(--f-display);font-size:18px;line-height:1.3;opacity:.9;text-wrap:balance}
 .endfx .tap{color:inherit;opacity:.6;font-size:12px}
 .endfx.lose .eft{opacity:.85}
@@ -460,11 +463,13 @@ function importCode(txt){
     if(d.o){for(const k of ['hand','mine','opp'])if(['big','compact'].includes(d.o[k]))OPT[k]=d.o[k];if(['auto','light','dark'].includes(d.o.theme))OPT.theme=d.o.theme;saveOpt();applyTheme()}
     return true}catch(e){return false}
 }
+function expertUnlocked(){const st=loadStats();return st[0].w>0&&st[1].w>0}
 function recordResult(){
   if(FAST||S.mode!=='cpu'||!(S.human===0||S.human===1)||S.recorded)return;
-  S.recorded=true;const st=loadStats(),me=st[S.human];
+  S.recorded=true;const was=expertUnlocked(),st=loadStats(),me=st[S.human];
   if(S.final.w===null)me.d++;else if(S.final.w===S.human)me.w++;else me.l++;
   saveStats(st);
+  if(!was&&expertUnlocked())S.unlocked=true;
 }
 function setOpt(k,v){OPT[k]=v;saveOpt();if(k==='theme')applyTheme();render()}
 const rnd=n=>Math.floor(Math.random()*n);
@@ -478,7 +483,7 @@ function snapshot(){
   if(FAST||typeof localStorage==='undefined'||S.screen!=='game'||S.final)return;
   const ci=c=>c?Object.assign({},c,{def:undefined,prot:c.prot&&c.prot.uid||false}):null;
   const data={v:1,UID,S:{mode:S.mode,human:S.human,round:S.round,totals:S.totals,history:S.history,removed:S.removed,costSum:S.costSum,
-    log:S.log.slice(0,60),actOrder:S.actOrder||[],auras:S.auras,actCount:S.actCount,phase:S.phase,turn:S.turn,starter:S.starter,first:S.first,noRe:S.noRe,
+    log:S.log.slice(0,60),actOrder:S.actOrder||[],auras:S.auras,actCount:S.actCount,phase:S.phase,turn:S.turn,starter:S.starter,first:S.first,noRe:S.noRe,expert:!!S.expert,
     imposed:S.imposed?S.imposed.map(c=>c?{id:c.id}:null):null,status:S.status,
     players:S.players.map(P=>Object.assign({},P,{board:P.board.map(ci),last:P.last?P.last.uid:null}))}};
   try{localStorage.setItem('svc-game',JSON.stringify(data))}catch(e){}
@@ -501,11 +506,11 @@ function resumeGame(){
 /* tasto indietro del telefono: chiede conferma invece di uscire */
 let backArmed=false;
 function armBack(){if(typeof history==='undefined'||backArmed)return;try{history.pushState({svc:1},'');backArmed=true}catch(e){}}
-function newGame(mode,human){
+function newGame(mode,human,expert){
   GID++;
   S={screen:'game',mode,human,round:1,totals:[0,0],history:[],removed:[[],[]],costSum:[0,0],log:[],
      viewer:mode==='cpu'?human:-1,prompt:null,overlay:null,detail:null,handWait:null,status:'',players:null,
-     auras:[],actCount:[0,0],phase:'deploy',turn:0,final:null,noRe:OPT.noRe};
+     auras:[],actCount:[0,0],phase:'deploy',turn:0,final:null,noRe:OPT.noRe,expert:!!expert};
   clearSaved();armBack();render();
   playGame().catch(e=>{console.error(e);S.status='Errore interno: '+e.message;render();if(typeof process!=='undefined')throw e;});
 }
@@ -1040,8 +1045,17 @@ async function activate(c){
 }
 async function endRound(){
   S.phase='end';
-  const sc=[0,1].map(p=>live(p).reduce((a,c)=>a+c.dom,0));
-  S.totals[0]+=sc[0];S.totals[1]+=sc[1];S.history.push(sc);
+  const sc=[0,1].map(p=>live(p).reduce((a,c)=>a+c.dom,0)),bonus=[];
+  /* gioco base: 1 punto a chi ha meno gettoni iniziativa sulle carte in gioco */
+  const tk=[0,1].map(p=>live(p).reduce((a,c)=>a+Math.max(0,init(c)),0));
+  if(tk[0]!==tk[1]){const b=tk[0]<tk[1]?0:1;sc[b]+=1;bonus.push(`Meno gettoni iniziativa in gioco (${tk[b]} contro ${tk[1-b]}): +1 punto ai ${FAC[b]}`)}
+  else bonus.push(`Stessi gettoni iniziativa in gioco (${tk[0]}): nessun punto extra`);
+  /* variante esperti: tris e poker di categoria */
+  if(S.expert)for(const p of [0,1]){const cnt={};live(p).forEach(c=>cnt[c.def.cat]=(cnt[c.def.cat]||0)+1);
+    const [cat,n]=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]||[null,0];
+    if(n>=4){sc[p]+=5;bonus.push(`Poker di ${cat}: +5 punti ai ${FAC[p]}`)}else if(n===3){sc[p]+=3;bonus.push(`Tris di ${cat}: +3 punti ai ${FAC[p]}`)}}
+  S.totals[0]+=sc[0];S.totals[1]+=sc[1];S.history.push(sc);S.lastBonus=bonus;
+  bonus.forEach(b=>log(b+'.'));
   S.status=`Fine round ${S.round}: Santi ${sc[0]}, Corrotti ${sc[1]}.`;
   log(S.status,true);
   if(S.round===2)return;
@@ -1074,7 +1088,7 @@ async function endRound(){
     if(imp[o])lines.push(`Anche a te hanno imposto una carta, coperta nella tua prima posizione: la scoprirai quando si attiverà`);}
   else lines.push(`Ogni giocatore ha eliminato in segreto una carta avversaria e ne ha imposta un’altra, che resterà coperta nella prima posizione. Nessuno sa quali carte proprie mancano o gli sono state imposte`);
   log('Eliminazioni definitive fatte in segreto.');
-  await ask(S.mode==='cpu'?S.human:null,{title:`Il primo round si è concluso ${sc[0]} a ${sc[1]}`,epic:epic(sc[0],sc[1]),text:lines.join('. ')+`. Nel secondo round tenete la mano e ripartite dal mazzo rimasto; si schierano le carte mancanti. Iniziano i ${FAC[1-S.starter]}.`,opts:[{label:'Inizia il round 2',v:1,main:true}]});
+  await ask(S.mode==='cpu'?S.human:null,{title:`Il primo round si è concluso ${sc[0]} a ${sc[1]}`,epic:epic(sc[0],sc[1]),text:bonus.concat(lines).join('. ')+`. Nel secondo round tenete la mano e ripartite dal mazzo rimasto; si schierano le carte mancanti. Iniziano i ${FAC[1-S.starter]}.`,opts:[{label:'Inizia il round 2',v:1,main:true}]});
   S.log=[];
 }
 function gameOver(){
@@ -1103,7 +1117,7 @@ const HELP_BRIEF=`
 <li><b>Schieramento.</b> A turno giocate una carta dalla mano, pagandone il costo con altre carte scartate, finché ne avete quattro in campo.</li>
 <li><b>Scoperta o coperta.</b> Scoperta: applichi subito il suo effetto di schieramento e togli un gettone iniziativa da una tua carta a scelta, che così si attiverà prima. Coperta: l’avversario non sa cos’è, ma vede la sua iniziativa.</li>
 <li><b>Attivazione.</b> Le carte si attivano dalla iniziativa più bassa alla più alta. Ogni carta risolve il suo effetto principale e poi il secondario.</li>
-<li><b>Punteggio.</b> Sommate il Dominio delle carte sopravvissute.</li>
+<li><b>Punteggio.</b> Sommate il Dominio delle carte sopravvissute. Chi ha meno gettoni iniziativa sulle proprie carte in gioco prende 1 punto in più; a parità, nessuno.</li>
 </ol>
 <h3>Fra il primo e il secondo round</h3>
 <ol class="lst">
@@ -1286,13 +1300,14 @@ function render(){
       </div>`;
     else if(m==='mode')body=`<h2 class="mh">Scegli il gioco</h2><div class="btns">
         <button class="opt main" data-menu="side"><span class="bt">Gioco base<small>Le regole del regolamento 0.8</small></span><span class="ar">›</span></button>
-        <button class="opt soon" disabled aria-disabled="true"><span class="bt">Variante esperti</span><span class="badge">coming soon</span></button>
+        ${expertUnlocked()?`<button class="opt main xp" data-menu="side-x"><span class="bt">Variante esperti<small>Tris di categoria +3, poker +5</small></span><span class="ar">›</span></button>`
+          :(()=>{const st=loadStats();return`<button class="opt soon" disabled aria-disabled="true"><span class="bt">Variante esperti<small>Da sbloccare: vinci una partita con i Santi ${st[0].w?'✓':'○'} e una con i Corrotti ${st[1].w?'✓':'○'}</small></span><span class="badge">bloccata</span></button>`})()}
         <button class="opt back" data-menu="home">Indietro</button></div>`;
-    else if(m==='side')body=`<h2 class="mh">Da che parte stai?</h2><div class="btns">
-        <button class="opt fs" data-start="cpu" data-h="0"><span class="bi">${ico('back0')}</span><span class="bt">Gioca con i Santi<small>Contro il computer</small></span><span class="ar">›</span></button>
-        <button class="opt fc" data-start="cpu" data-h="1"><span class="bi">${ico('back1')}</span><span class="bt">Gioca con i Corrotti<small>Contro il computer</small></span><span class="ar">›</span></button>
-        <button class="opt" data-start="hot"><span class="bt">Due giocatori sullo stesso telefono<small>Passatevi il telefono a ogni turno</small></span><span class="ar">›</span></button>
-        <button class="opt back" data-menu="mode">Indietro</button></div>`;
+    else if(m==='side'||m==='side-x'){const X=m==='side-x'?' data-x="1"':'';body=`<h2 class="mh">${X?'Variante esperti · ':''}Da che parte stai?</h2><div class="btns">
+        <button class="opt fs" data-start="cpu" data-h="0"${X}><span class="bi">${ico('back0')}</span><span class="bt">Gioca con i Santi<small>Contro il computer</small></span><span class="ar">›</span></button>
+        <button class="opt fc" data-start="cpu" data-h="1"${X}><span class="bi">${ico('back1')}</span><span class="bt">Gioca con i Corrotti<small>Contro il computer</small></span><span class="ar">›</span></button>
+        <button class="opt" data-start="hot"${X}><span class="bt">Due giocatori sullo stesso telefono<small>Passatevi il telefono a ogni turno</small></span><span class="ar">›</span></button>
+        <button class="opt back" data-menu="mode">Indietro</button></div>`;}
     else if(m==='options')body=`<h2 class="mh">Opzioni</h2><div class="btns">
         <button class="opt" data-menu="opt-look"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M2 12c4-7 16-7 20 0-4 7-16 7-20 0z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></span><span class="bt">Aspetto<small>Dimensione delle carte e tema</small></span><span class="ar">›</span></button>
         <button class="opt" data-menu="opt-stats"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" d="M6 20V11M12 20V5M18 20v-6"/></svg></span><span class="bt">Statistiche<small>Le tue partite vinte e perse</small></span><span class="ar">›</span></button>
@@ -1352,7 +1367,7 @@ function render(){
     ${S.final.why?`<div class="meta">${S.final.why}</div>`:''}
     <div class="opts"><button class="opt main" data-restart>Nuova partita</button></div></div>`}
   app.innerHTML=`<div class="wrap">
-    <div class="top"><h1>Round ${S.round>2?2:S.round} <i>di 2</i></h1>
+    ${S.expert?'<div class="xtag">Variante esperti</div>':''}<div class="top"><h1>Round ${S.round>2?2:S.round} <i>di 2</i></h1>
       <div class="score"><span>Santi <b class="s">${S.totals[0]}</b></span><span>Corrotti <b class="c">${S.totals[1]}</b></span><button class="linkbtn" data-help="breve">Regole</button><button class="linkbtn" data-quit>Esci</button></div></div>
     ${initBarHtml()}
     ${S.players?rowHtml(top,true):''}
@@ -1376,7 +1391,7 @@ function endFxHtml(){
   return`<div class="endfx ${fac?'cor':'san'} ${win?'win':'lose'}" data-endfx role="dialog" aria-label="${title}">
     <div class="efp">${parts}</div>
     <div class="efc"><div class="efe">${ico(fac?'back1':'back0')}</div><h2 class="eft">${title}</h2>
-    <div class="efs">Santi ${a} · Corrotti ${b}</div><p class="efm">${esc(S.epic||'')}</p><div class="tap">Tocca ovunque per continuare</div></div></div>`;
+    <div class="efs">Santi ${a} · Corrotti ${b}</div>${S.unlocked?'<div class="efu">Hai sbloccato la variante esperti!</div>':''}<p class="efm">${esc(S.epic||'')}</p><div class="tap">Tocca ovunque per continuare</div></div></div>`;
 }
 function modalHtml(){
   if(!S||!S.detail)return'';
@@ -1429,7 +1444,7 @@ if(typeof document!=='undefined'){
   document.addEventListener('click',e=>{
     const t=e.target.closest('[data-ib],[data-album],[data-albtab],[data-resume],[data-code],[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
     if(!t)return;
-    if(t.dataset.start!==undefined){newGame(t.dataset.start,t.dataset.start==='cpu'?+t.dataset.h:null);return}
+    if(t.dataset.start!==undefined){newGame(t.dataset.start,t.dataset.start==='cpu'?+t.dataset.h:null,t.dataset.x==='1');return}
     if(t.dataset.info!==undefined&&S.prompt){const od=optDef(S.prompt.opts[+t.dataset.info],S.prompt);if(od){S.detail=od;render()}return}
     if(t.dataset.ib!==undefined){const c=findCard(+t.dataset.ib),info=c&&hoverInfo({dataset:{card:String(c.uid)}});if(info){S.detail=info;render()}return}
     if(t.dataset.album!==undefined){S.detail={d:DEF[t.dataset.album]};render();return}
