@@ -573,7 +573,7 @@ function optDef(o,pr){
 }
 function resolvePrompt(v){const pr=S.prompt;S.prompt=null;render();pr.res(v)}
 async function pick(p,title,cands,{optional=false,ai,priv=false}={}){
-  if(!cands.length)return null;
+  if(!cands.length){if(S&&S.phase==='activate'&&!title.startsWith('Carta scoperta'))log(`${title}: nessuna carta valida in gioco, l’effetto non si applica.`);return null}
   const f=ai||(c=>harm(c,p));
   return ask(p,{title,optional,priv,opts:cands.map(c=>({label:lab(c,p),v:c,uid:c.uid,ai:f(c)}))});
 }
@@ -583,7 +583,10 @@ async function actRecap(c,mark,ini){
   if(FAST)return;
   const n=S.log.length-mark;
   let lines=S.log.slice(0,Math.max(0,n)).reverse().map(l=>l.t).filter(t=>!t.startsWith('▸')&&!t.startsWith('Si rivela'));
-  if(!lines.length)lines=[MAIN[c.id]||SEC[c.id]?'Non succede nulla: nessun bersaglio valido o condizione non soddisfatta.':'Questa carta non ha effetti da applicare all’attivazione.'];
+  if(!lines.length)lines=[MAIN[c.id]||SEC[c.id]?'Non succede nulla: nessun bersaglio valido o condizione non soddisfatta.'
+    :c.def.s?(c.depUp?`${c.def.name} ha solo un effetto da schieramento scoperto, già applicato quando è stata giocata. All’attivazione non fa altro.`
+      :`${c.def.name} ha solo un effetto da schieramento scoperto, che vale soltanto quando la carta viene giocata scoperta. È stata giocata coperta, quindi non succede nulla.`)
+    :'Questa carta non ha effetti da applicare all’attivazione.'];
   if(S.mode==='hot')await ensureViewer(null);
   render();
   await ask(S.mode==='cpu'?S.human:null,{pop:true,inst:c,who:`Attivazione · ${FAC[c.owner]} · iniziativa ${ini}`,title:`Si attiva ${c.def.name}`,lines,opts:[{label:'Ok',v:1,main:true}]});
@@ -940,7 +943,7 @@ async function humanDeploy(p){
     S.status=`Tocca ai ${FAC[p]}: tocca una carta della mano per schierarla. Tieni premuta una carta per leggerne i poteri.`;
     const card=await new Promise(res=>{S.handWait=res;render()});S.handWait=null;
     const d=DEF[card.id],cost=costOf(p,card),ok=cost<=P.hand.length-1;
-    const r=await ask(p,{title:d.name,card:d,text:ok?`Costo ${cost}: scarti ${cost} ${cost===1?'carta':'carte'} dalla mano.`:`Costo ${cost}: non hai abbastanza carte in mano.`,
+    const r=await ask(p,{title:d.name,card:d,text:ok?`Costo ${cost}: scarti ${cost} ${cost===1?'carta':'carte'} dalla mano.${d.s?' Attenzione: l’effetto da schieramento scoperto si applica solo se la giochi scoperta.':''}`:`Costo ${cost}: non hai abbastanza carte in mano.`,
       opts:[...(ok?[{label:'Schiera scoperta',v:'up',main:true},{label:'Schiera coperta',v:'down',main:true}]:[]),{label:'Scegli un’altra carta',v:'back'}]});
     if(r==='back')continue;
     const others=P.hand.filter(h=>h!==card);let disc=[];
