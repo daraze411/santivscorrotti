@@ -380,7 +380,7 @@ D('engels','Friedrich Engels',1,'Comunisti',1,2,'Due carte differenti ottengono 
 D('ozzy','Ozzy Osbourne',1,'Artisti',2,2,'Scegli una categoria avversaria: −1 Dominio a tutte le sue carte scoperte, anche a quelle che verranno scoperte dopo.','Ozzy ottiene +1 Dominio.',null),
 D('siffredi','Rocco Siffredi',1,'Artisti',2,2,'Se è l’ultima carta dei Corrotti ad attivarsi, ottiene +2 Dominio.',null,null),
 D('baudelaire','Charles Baudelaire',1,'Artisti',3,4,null,'Aggiungi un gettone iniziativa a una carta avversaria.','Se viene eliminato, anche prima di attivarsi, −1 Dominio a un’altra carta a tua scelta.'),
-D('dali','Salvador Dalí',1,'Artisti',2,2,'Scambia i valori attuali di Dominio di due carte.',null,null),
+D('dali','Salvador Dalí',1,'Artisti',2,2,'Scambia i valori attuali di Dominio di due carte scoperte.',null,null),
 D('diocleziano','Diocleziano',1,'Persecutori',3,1,'Elimina una carta avversaria coperta.',null,null),
 D('nerone','Nerone',1,'Persecutori',3,3,'Se hai un Demone o Eretico già attivato, copia l’effetto principale di un altro Corrotto già attivato e ancora in gioco.',null,null),
 D('giuliano','Giuliano l’Apostata',1,'Persecutori',2,2,'Se hai un Artista scoperto, −2 Dominio a una carta avversaria.','Annulla il prossimo effetto da schieramento scoperto dell’avversario.',null),
@@ -433,7 +433,6 @@ const RULES=[
  'Engels: le due carte possono essere anche avversarie; servono almeno due carte in gioco.',
  'Baudelaire: l’effetto scatta quando viene eliminato, anche prima di attivarsi e anche se è coperto; sceglie il suo proprietario.',
  'Paolo Brosio e Santa Barbara: la nuova carta prende posizione, orientamento e gettoni iniziativa di quella sostituita, non si paga, e la carta sostituita va negli scarti.',
- 'Dalí: lo scambio vale anche per le carte coperte, che si scelgono alla cieca.',
  'Santa Rita può copiare un Santo già attivato anche se nel frattempo è stato eliminato.',
  'Santa Barbara: “Mistico attivo” significa un tuo Mistico già attivato e ancora in gioco.',
  'San Gennaro: una carta che perde l’effetto non applica né principale, né secondario, né passivi. Le due eliminazioni definitive valgono se San Gennaro si è attivato nel primo round, anche se poi è stato eliminato.',
@@ -753,7 +752,7 @@ const MAIN={
     const cat=await ask(p,{title:'Ozzy: scegli una categoria avversaria',opts:cats.map(k=>({label:k,v:k,ai:live(1-p).filter(x=>x.faceUp&&x.def.cat===k).length+Math.random()*.5}))});
     S.auras.push({owner:p,cat,key:UID++});log(`Ozzy colpisce la categoria ${cat}.`);refreshOzzy()},
   async siffredi(c){if(!live(c.owner).some(x=>x!==c&&!x.activated)){addDom(c,2);log('Rocco Siffredi chiude il round: +2 Dominio.')}else log('Rocco Siffredi non è l’ultima carta dei Corrotti.')},
-  async dali(c){const p=c.owner,cands=both();if(c.virtual)cands.push(c);if(cands.length<2)return;
+  async dali(c){const p=c.owner,cands=both().filter(x=>x.faceUp);if(c.virtual)cands.push(c);if(cands.length<2)return;
     const a=await pick(p,'Dalí: prima carta dello scambio',cands,{ai:x=>x.owner!==p?(canShow(x,p)?x.dom:2.5):-1});
     const b=await pick(p,'Dalí: seconda carta dello scambio',cands.filter(x=>x!==a),{ai:x=>x.owner===p?-(canShow(x,p)?x.dom:2.5):-9});
     [a.dom,b.dom]=[b.dom,a.dom];log(`Dalí scambia il Dominio di ${a.def.name} e ${b.def.name}.`)},
