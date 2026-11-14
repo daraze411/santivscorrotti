@@ -386,7 +386,7 @@ D('nerone','Nerone',1,'Persecutori',3,3,'Se hai un Demone o Eretico già attivat
 D('giuliano','Giuliano l’Apostata',1,'Persecutori',2,2,'Se hai un Artista scoperto, −2 Dominio a una carta avversaria.','Annulla il prossimo effetto da schieramento scoperto dell’avversario.',null),
 D('lutero','Martin Lutero',1,'Persecutori',2,2,'Scegli una tua carta che non si è ancora attivata. Il suo effetto secondario è annullato.',null,null),
 D('lucifero','Lucifero',1,'Demoni ed Eretici',3,3,'Elimina una carta avversaria scoperta. Se hai un Persecutore già attivato, −1 Dominio a un’altra carta avversaria.',null,'L’avversario pesca 2 carte dal proprio mazzo e applica subito l’effetto principale di quella meno costosa.','demone'),
-D('belzebu','Belzebù',1,'Demoni ed Eretici',3,2,'Elimina una carta avversaria, scoperta o coperta, con ≤ 2 gettoni iniziativa.',null,null,'demone'),
+D('belzebu','Belzebù',1,'Demoni ed Eretici',3,2,'Elimina un Martire avversario, scoperto o coperto, con ≤ 2 gettoni iniziativa.',null,null,'demone'),
 D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,null,'Puoi eliminare un tuo Comunista già schierato, anche coperto: se lo fai, Giordano Bruno ottiene +3 Dominio.',null,'eretico'),
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.','Guarda una carta avversaria coperta. La carta resta coperta e soltanto tu ne conosci l’identità.',null,'eretico'),
 ];
@@ -433,6 +433,7 @@ const RULES=[
  'Engels: le due carte possono essere anche avversarie; servono almeno due carte in gioco.',
  'Baudelaire: l’effetto scatta quando viene eliminato, anche prima di attivarsi e anche se è coperto; sceglie il suo proprietario.',
  'Paolo Brosio e Santa Barbara: la nuova carta prende posizione, orientamento e gettoni iniziativa di quella sostituita, non si paga, e la carta sostituita va negli scarti.',
+ 'Belzebù può colpire un Martire coperto solo se ne conosce l’identità, per esempio dopo averlo guardato con Galileo.',
  'Santa Rita può copiare un Santo già attivato anche se nel frattempo è stato eliminato.',
  'Santa Barbara: “Mistico attivo” significa un tuo Mistico già attivato e ancora in gioco.',
  'San Gennaro: una carta che perde l’effetto non applica né principale, né secondario, né passivi. Le due eliminazioni definitive valgono se San Gennaro si è attivato nel primo round, anche se poi è stato eliminato.',
@@ -770,7 +771,7 @@ const MAIN={
     if(S.players[p].board.some(x=>x&&x.activated&&x!==c&&x.def.cat==='Persecutori')){
       const y=await pick(p,'Lucifero: un’altra carta avversaria perde 1 Dominio',live(1-p).filter(x=>x!==t));if(y){addDom(y,-1);log(`${pn(y)} perde 1 Dominio.`)}}},
   async belzebu(c){const p=c.owner;
-    const t=await pick(p,'Belzebù: elimina una carta avversaria con ≤ 2 gettoni iniziativa',live(1-p).filter(x=>init(x)<=2),{ai:x=>canShow(x,p)?harm(x,p):1.6});
+    const t=await pick(p,'Belzebù: elimina un Martire avversario con ≤ 2 gettoni iniziativa',live(1-p).filter(x=>init(x)<=2&&canShow(x,p)&&x.def.cat==='Martiri'),{ai:x=>canShow(x,p)?harm(x,p):1.6});
     if(t)await eliminate(t,c)},
   async galileo(c){await swapTokens(c.owner,'Galileo: scambia i gettoni iniziativa di due carte coperte',both().filter(x=>!x.faceUp),true)},
 };
@@ -864,9 +865,9 @@ function oppView(p){
 }
 /* quanto un killer avversario può colpire proprio questa carta */
 function hits(kid,d,up){
-  if(!up)return kid==='belzebu'?(d.cost<=2?1:.3):({diocleziano:1,giorgio:1,paolo:.4}[kid]||0);
+  if(!up)return kid==='belzebu'?(d.cat==='Martiri'&&d.cost<=2?.3:0):({diocleziano:1,giorgio:1,paolo:.4}[kid]||0);
   switch(kid){
-    case 'belzebu':return d.cost<=2?1:.3;
+    case 'belzebu':return d.cat==='Martiri'&&d.cost<=2?1:0;
     case 'barbara':return d.dom<=2?1:d.dom<=3?.5:0;
     case 'ferretti':return d.dom<=2&&(d.cat==='Comunisti'||d.cat==='Artisti')?1:0;
     case 'pantaleone':return d.cat==='Comunisti'?1:d.sub==='eretico'?.5:0;
@@ -892,7 +893,7 @@ function mainValue(id,p){
     case 'giorgio':return el(()=>true)-0.6;
     case 'barbara':{const lim=mine.some(x=>x.def.cat==='Mistici')?3:2;return el(x=>x.faceUp&&x.dom<=lim)}
     case 'lucifero':return el(x=>x.faceUp)+0.3;
-    case 'belzebu':return el(x=>init(x)<=2);
+    case 'belzebu':return el(x=>init(x)<=2&&canShow(x,p)&&x.def.cat==='Martiri');
     case 'lenin':return (commUp||commHand?1:0.15)*el(x=>x.faceUp);
     case 'stalin':return commUp+commHand>0?el(x=>x.faceUp)-1.5:0;
     case 'diocleziano':return el(x=>!x.faceUp);
@@ -1170,7 +1171,7 @@ const TUT=[
  n:'Conviene imporre una carta che, attivandosi per prima, non serve a nulla: Santa Rita e Nerone non hanno niente da copiare, San Pietro nessuna carta da recuperare, Siffredi non può essere l’ultimo. Nel secondo round si tiene la mano e si schierano solo 3 carte.'},
 {t:'Qualche consiglio',x:()=>'',
  p:'Prima di giocare, guarda l’iniziativa delle carte avversarie: ti dice quando colpiranno e cosa puoi ancora fare prima.',
- l:['Gestisci il mazzo: ogni carta scartata per pagare un costo è persa fino al round successivo.','Coperta contro Lucifero e Lenin, che colpiscono solo carte scoperte. Belzebù colpisce anche le coperte, purché abbiano ≤ 2 gettoni iniziativa: le carte che agiscono presto sono le più esposte.','Scoperta contro San Giorgio e Diocleziano, che colpiscono carte coperte. San Giorgio, però, colpisce entrambe.','Una carta da 1 giocata presto ti lascia la mano piena per le carte più forti.','Giocare scoperto fa attivare prima: utile per colpire prima che l’avversario colpisca te.','Tieni d’occhio i gettoni iniziativa: spostare l’iniziativa di una carta di un solo punto può cambiare tutto il round.']},
+ l:['Gestisci il mazzo: ogni carta scartata per pagare un costo è persa fino al round successivo.','Coperta contro Lucifero e Lenin, che colpiscono solo carte scoperte. Belzebù colpisce i Martiri con ≤ 2 gettoni iniziativa, anche coperti se li ha già visti.','Scoperta contro San Giorgio e Diocleziano, che colpiscono carte coperte. San Giorgio, però, colpisce entrambe.','Una carta da 1 giocata presto ti lascia la mano piena per le carte più forti.','Giocare scoperto fa attivare prima: utile per colpire prima che l’avversario colpisca te.','Tieni d’occhio i gettoni iniziativa: spostare l’iniziativa di una carta di un solo punto può cambiare tutto il round.']},
 ];
 function helpHtml(){
   const tab=S.helpTab||'breve';
