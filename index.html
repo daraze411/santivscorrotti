@@ -355,11 +355,11 @@ const CATS=[['Martiri','Miracoli','Mistici','Devoti'],['Comunisti','Artisti','Pe
 const D=(id,name,f,cat,cost,dom,m,s,c,sub)=>({id,name,f,cat,cost,dom,m,s,c,sub});
 const DEFS=[
 D('giorgio','San Giorgio',0,'Martiri',3,2,'Elimina una carta avversaria, scoperta o coperta.',null,'Annulla l’effetto principale della tua prossima carta ad attivarsi. Se San Giorgio è l’ultima delle tue carte ad attivarsi, devi invece eliminare una tua carta in gioco, a tua scelta.'),
-D('sebastiano','San Sebastiano',0,'Martiri',3,3,'Dall’attivazione in poi non può essere eliminato per il resto del round.',null,'Il suo Dominio diventa 1 se, al momento dell’attivazione, l’avversario ha già attivato più carte di te.'),
-D('barbara','Santa Barbara',0,'Martiri',2,2,'Elimina una carta avversaria scoperta con Dominio 2 o inferiore, oppure 3 o inferiore se hai un Mistico già attivato e ancora in gioco.','L’avversario sostituisce l’ultima carta che ha schierato con una dalla propria mano, se possibile. La sostituzione è gratuita e conserva posizione, orientamento e gettoni iniziativa.',null),
-D('lorenzo','San Lorenzo',0,'Martiri',1,2,'Passivo: se viene eliminato da una carta avversaria, elimina anche quella carta. Funziona anche quando San Lorenzo è coperto.','Togli un gettone iniziativa da una tua carta.',null),
-D('gennaro','San Gennaro',0,'Miracoli',3,4,'Passivo: se vinci il primo round e San Gennaro è ancora in gioco, elimini definitivamente due carte avversarie anziché una.',null,'La carta alla sua sinistra, nella tua fila, perde il proprio effetto se coperta, oppure il proprio Dominio se scoperta. Se non esiste una carta a sinistra, non succede nulla.'),
-D('rocco','San Rocco',0,'Miracoli',2,3,'Protegge, per il resto del round, una tua carta di categoria differente, anche coperta. Quando quella carta sta per essere eliminata, puoi far intervenire San Rocco: la carta non viene eliminata e San Rocco perde 1 Dominio. Per intervenire deve essere ancora in gioco.','Aggiungi un gettone iniziativa a una carta avversaria.',null),
+D('sebastiano','San Sebastiano',0,'Martiri',3,3,'Non può essere eliminato.',null,'Il suo Dominio diventa 1 se, al momento dell’attivazione, l’avversario ha già attivato più carte di te.'),
+D('barbara','Santa Barbara',0,'Martiri',2,2,'Elimina una carta avversaria scoperta con Dominio ≤ 2, oppure ≤ 3 se hai un Mistico già attivato e ancora in gioco.','L’avversario sostituisce l’ultima carta che ha schierato con una dalla propria mano, se possibile. La nuova carta conserva i gettoni iniziativa e non va pagata.',null),
+D('lorenzo','San Lorenzo',0,'Martiri',1,2,'Se viene eliminato da una carta avversaria, elimina anche quella carta. Funziona anche quando San Lorenzo è coperto.','Togli un gettone iniziativa da una tua carta.',null),
+D('gennaro','San Gennaro',0,'Miracoli',3,4,'Se vinci il primo round elimini definitivamente due carte avversarie anziché una.',null,'La carta alla sua sinistra perde il proprio effetto se coperta, oppure il proprio Dominio se scoperta.'),
+D('rocco','San Rocco',0,'Miracoli',2,3,'Se una carta sta per essere eliminata, San Rocco la protegge, riducendo il proprio Dominio a 1.','Aggiungi un gettone iniziativa a una carta avversaria.',null),
 D('pantaleone','San Pantaleone',0,'Miracoli',2,2,'Elimina un Comunista avversario. Se hai almeno due carte in mano, puoi scegliere invece un Eretico.',null,'L’avversario può spostare un gettone iniziativa da una carta a un’altra, anche fra fazioni diverse.'),
 D('rita','Santa Rita',0,'Miracoli',3,2,'Copia l’effetto principale di un altro Santo già attivato, se possibile.',null,'Se ha copiato San Giorgio, elimina anche uno dei tuoi Santi con Dominio attuale almeno 2.'),
 D('pietro','San Pietro',0,'Mistici',3,4,'Rimette in gioco una tua carta eliminata, nello slot originario. Il suo effetto non viene riattivato.',null,'Scegli una carta avversaria, coperta o scoperta, che non si sia ancora attivata e che, se possibile, abbia un effetto principale. Quando si attiva, il suo effetto principale si applica due volte.'),
@@ -426,12 +426,12 @@ const RULES=[
  'San Pantaleone può colpire solo carte che conosci (scoperte o già guardate). Gli Eretici sono Giordano Bruno e Galileo.',
  'Giuliano l’Apostata (scoperta): annulla il prossimo effetto da schieramento scoperto dell’avversario.',
  'Stalin: serve sia un bersaglio sia un Comunista da sacrificare, altrimenti non succede nulla.',
- 'San Rocco: la protezione dura tutto il round. Per intervenire San Rocco deve essere ancora in gioco, e ogni intervento gli costa 1 Dominio.',
+ 'San Rocco: dopo essersi attivato protegge le altre tue carte, anche coperte, fino a fine round. Interviene da solo, la prima volta che una tua carta sta per essere eliminata, e solo se è ancora in gioco con Dominio superiore a 1.',
  'Engels: servono due tue carte in gioco, Engels compreso.',
  'Baudelaire: l’effetto scatta quando viene eliminato, anche prima di attivarsi; sceglie il suo proprietario.',
  'Santa Rita può copiare un Santo già attivato anche se nel frattempo è stato eliminato.',
  'Santa Barbara: “Mistico attivo” significa un tuo Mistico già attivato e ancora in gioco.',
- 'San Gennaro: una carta che perde l’effetto non applica né principale, né secondario, né passivi.',
+ 'San Gennaro: una carta che perde l’effetto non applica né principale, né secondario, né passivi. Le due eliminazioni definitive valgono se San Gennaro si è attivato nel primo round, anche se poi è stato eliminato.',
  'Una carta eliminata va negli scarti e mostra la sua identità.',
  'Dopo il secondo round non si eliminano carte definitivamente.',
  'Le carte eliminate definitivamente non vengono rivelate: chi le perde non sa quali sono.',
@@ -616,6 +616,8 @@ async function eliminate(t,src){
       opts:[{label:'Intervieni',v:true,main:true,ai:t.dom-0.5},{label:'Lascia eliminare',v:false,ai:0}]});
     if(go){addDom(r,-1);log(`${r.def.name} interviene e salva ${pn(t)}: perde 1 Dominio.`);return false}
     log(`${r.def.name} non interviene.`)}
+  {const r=live(t.owner).find(x=>x.guard&&x!==t&&!x.lost&&x.dom>1);
+   if(r){r.dom=1;log(`${r.def.name} salva ${pn(t)}: il suo Dominio scende a 1.`);return false}}
   t.eliminated=true;
   S.players[t.owner].discard.push({uid:t.cardUid,id:t.id});
   log(`${t.def.name} (${FAC[t.owner]}) viene eliminato.`);
@@ -699,8 +701,8 @@ const MAIN={
   async sebastiano(c){c.immune=true;log(`${c.def.name} non può più essere eliminato in questo round.`)},
   async barbara(c){const p=c.owner,lim=live(p).some(x=>x.def.cat==='Mistici'&&x.activated)?3:2;
     const t=await pick(p,`Santa Barbara: elimina una carta avversaria scoperta con Dominio ${lim} o meno`,live(1-p).filter(x=>x.faceUp&&x.dom<=lim));if(t)await eliminate(t,c)},
-  async rocco(c){const x=await pick(c.owner,'San Rocco: proteggi una tua carta di categoria differente',live(c.owner).filter(x=>x!==c&&x.def.cat!==c.def.cat),{ai:x=>help(x,c.owner)});
-    if(x){x.prot=c;log(`${pn(x)} è protetta da ${c.def.name}.`)}},
+  async rocco(c){c.guard=true;log(`${c.def.name} protegge le altre carte dei ${FAC[c.owner]} fino a fine round.`)},
+  async gennaro(c){if(S.round===1){S.players[c.owner].gen=true;log('San Gennaro: se i Santi vincono il primo round, elimineranno definitivamente due carte.')}else log('San Gennaro: nel secondo round il suo effetto principale non ha conseguenze.')},
   async pantaleone(c){const p=c.owner,er=S.players[p].hand.length>=2;
     const t=await pick(p,`San Pantaleone: elimina un Comunista${er?' o un Eretico':''}`,live(1-p).filter(x=>canShow(x,p)&&(x.def.cat==='Comunisti'||(er&&x.def.sub==='eretico'))));if(t)await eliminate(t,c)},
   async rita(c){const p=c.owner;
@@ -1060,7 +1062,7 @@ async function endRound(){
   log(S.status,true);
   if(S.round===2)return;
   const w=sc[0]>sc[1]?0:sc[1]>sc[0]?1:null,n=[1,1];
-  if(w===0&&live(0).some(c=>c.id==='gennaro'&&!c.lost)){n[0]=2;log('San Gennaro: i Santi eliminano definitivamente due carte.')}
+  if(w===0&&S.players[0].gen){n[0]=2;log('San Gennaro: i Santi eliminano definitivamente due carte.')}
   const picks=[[],[]];
   for(const p of [0,1]){
     const cands=live(1-p),k=Math.min(n[p],cands.length);if(!k)continue;
@@ -1209,7 +1211,7 @@ function cardEl(c,i){
   if(c.eliminated)tags.push('eliminata');else if(c.activated)tags.push('attivata');
   if(!c.faceUp&&show&&!c.eliminated)tags.push('coperta');
   if(c.fixed&&!c.activated)tags.push('imposta');
-  if(c.immune)tags.push('immune');if(c.prot)tags.push('protetta');if(c.lost)tags.push('senza effetto');if(c.secX)tags.push('sec. annullato');if(c.dbl)tags.push('effetto ×2');
+  if(c.immune)tags.push('immune');if(c.prot)tags.push('protetta');if(c.guard&&c.dom>1)tags.push('protegge');if(c.lost)tags.push('senza effetto');if(c.secX)tags.push('sec. annullato');if(c.dbl)tags.push('effetto ×2');
   const dc=c.dom>c.def.dom?'up':c.dom<c.def.dom?'dn':'';
   if(chosen)tags.unshift('✓ scelta');
   const tg=tags.length?`<span class="tags">${tags.join(' · ')}</span>`:'';
