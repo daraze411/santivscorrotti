@@ -112,6 +112,9 @@ h1{font-family:var(--f-display);font-weight:400;margin:0;line-height:1;text-wrap
 .nm{font-family:var(--f-display);font-size:12.5px;line-height:1.05;text-wrap:balance;overflow-wrap:break-word;word-break:normal;hyphens:manual}
 .nm.lg{font-size:11px}
 .nm.q{color:var(--muted)!important;font-size:11px}
+.kw{color:var(--cc);font-weight:700}
+:root[data-theme="dark"] .kw{filter:brightness(1.45) saturate(1.1)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kw{filter:brightness(1.45) saturate(1.1)}}
 .ct{font-size:8.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);line-height:1.1}
 .tags{font-size:8.5px;line-height:1.15;color:var(--accent);font-weight:700}
 .emblem{display:flex;gap:14px}
@@ -360,32 +363,32 @@ D('barbara','Santa Barbara',0,'Martiri',2,2,'Elimina una carta avversaria scoper
 D('lorenzo','San Lorenzo',0,'Martiri',1,2,'Se viene eliminato da una carta avversaria, elimina anche quella carta. Funziona anche quando San Lorenzo è coperto.','Togli un gettone iniziativa da una tua carta.',null),
 D('gennaro','San Gennaro',0,'Miracoli',3,4,'Se vinci il primo round elimini definitivamente due carte avversarie anziché una.',null,'La carta alla sua sinistra perde il proprio effetto se coperta, oppure il proprio Dominio se scoperta.'),
 D('rocco','San Rocco',0,'Miracoli',2,3,'Se una carta sta per essere eliminata, San Rocco la protegge, riducendo il proprio Dominio a 1.','Aggiungi un gettone iniziativa a una carta avversaria.',null),
-D('pantaleone','San Pantaleone',0,'Miracoli',2,2,'Elimina un Comunista avversario. Se hai almeno due carte in mano, puoi scegliere invece un Eretico.',null,'L’avversario può spostare un gettone iniziativa da una carta a un’altra, anche fra fazioni diverse.'),
-D('rita','Santa Rita',0,'Miracoli',3,2,'Copia l’effetto principale di un altro Santo già attivato, se possibile.',null,'Se ha copiato San Giorgio, elimina anche uno dei tuoi Santi con Dominio attuale almeno 2.'),
-D('pietro','San Pietro',0,'Mistici',3,4,'Rimette in gioco una tua carta eliminata, nello slot originario. Il suo effetto non viene riattivato.',null,'Scegli una carta avversaria, coperta o scoperta, che non si sia ancora attivata e che, se possibile, abbia un effetto principale. Quando si attiva, il suo effetto principale si applica due volte.'),
+D('pantaleone','San Pantaleone',0,'Miracoli',2,2,'Elimina un Comunista avversario. Se hai ≥ 2 carte in mano, puoi scegliere invece un Eretico.',null,'L’avversario può spostare un gettone iniziativa da una carta a un’altra, anche fra Santi e Corrotti.'),
+D('rita','Santa Rita',0,'Miracoli',3,2,'Copia l’effetto principale di un altro Santo già attivato, se possibile.',null,'Se ha copiato San Giorgio, elimina anche uno dei tuoi Santi con Dominio ≥ 2.'),
+D('pietro','San Pietro',0,'Mistici',3,4,'Rimette in gioco una tua carta eliminata, nello slot originario. Il suo effetto non viene riattivato.',null,'Scegli una carta avversaria non ancora attivata: il suo effetto principale si applicherà due volte.'),
 D('benedetto','San Benedetto',0,'Mistici',2,2,'Annulla l’effetto principale della prossima carta avversaria ad attivarsi. Se non possiede un effetto principale, non succede nulla.','Puoi riprendere in mano una carta dagli scarti.',null),
 D('lucia','Santa Lucia',0,'Mistici',1,2,'Scambia i gettoni iniziativa di due tue carte.','Guarda una carta avversaria coperta. La carta resta coperta e soltanto tu ne conosci l’identità.',null),
-D('paolo','San Paolo',0,'Mistici',3,2,'Una carta avversaria, scoperta o coperta, perde 2 Dominio.','Sposta un gettone iniziativa da una carta qualsiasi a una carta avversaria.',null),
-D('ferretti','Giovanni Lindo Ferretti',0,'Devoti',3,4,'Elimina un Comunista o un Artista avversario scoperto con Dominio 2 o inferiore.',null,null),
-D('adinolfi','Mario Adinolfi',0,'Devoti',2,3,'Un altro Santo ottiene +1 Dominio.',null,'Se hai almeno altre due carte scoperte, Mario Adinolfi ottiene +1 Dominio.'),
-D('koll','Claudia Koll',0,'Devoti',2,2,'Due Santi differenti ottengono +1 Dominio ciascuno. Claudia Koll può essere uno dei due.',null,'L’avversario può togliere fino a due gettoni iniziativa da qualsiasi carta, anche dalle proprie.'),
-D('brosio','Paolo Brosio',0,'Devoti',2,2,'Sostituisci una tua carta ancora da attivare, scoperta o coperta, con una dalla tua mano. La sostituta non va pagata e mantiene posizione, orientamento e gettoni iniziativa della carta precedente. La carta sostituita viene scartata.',null,null),
-D('marx','Karl Marx',1,'Comunisti',2,2,'Ogni altro tuo Comunista già schierato scoperto ottiene +1 Dominio. Il bonus non si applica ai Comunisti schierati successivamente.','Il prossimo Comunista che schieri costa 1 in meno, soltanto nel round corrente.',null),
-D('lenin','Vladimir Lenin',1,'Comunisti',3,2,'Se hai un altro Comunista scoperto, anche non ancora attivato, elimina una carta avversaria scoperta.',null,null),
+D('paolo','San Paolo',0,'Mistici',3,2,'−2 Dominio a una carta avversaria, scoperta o coperta.','Sposta un gettone iniziativa da una carta qualsiasi a una carta avversaria.',null),
+D('ferretti','Giovanni Lindo Ferretti',0,'Devoti',3,4,'Elimina un Comunista o un Artista avversario scoperto con Dominio ≤ 2.',null,null),
+D('adinolfi','Mario Adinolfi',0,'Devoti',2,3,'Un altro Santo ottiene +1 Dominio.',null,'Se hai ≥ 2 altre carte scoperte, Mario Adinolfi ottiene +1 Dominio.'),
+D('koll','Claudia Koll',0,'Devoti',2,2,'Due Santi ottengono +1 Dominio.',null,'L’avversario può togliere fino a 2 gettoni iniziativa da qualsiasi carta, anche dalle proprie.'),
+D('brosio','Paolo Brosio',0,'Devoti',2,2,'Sostituisci una tua carta non ancora attivata con una carta dalla tua mano.',null,null),
+D('marx','Karl Marx',1,'Comunisti',2,2,'+1 Dominio agli altri Comunisti scoperti.','Il prossimo Comunista che schieri costa 1 in meno.',null),
+D('lenin','Vladimir Lenin',1,'Comunisti',3,2,'Se hai un altro Comunista scoperto, elimina una carta avversaria scoperta.',null,null),
 D('stalin','Joseph Stalin',1,'Comunisti',2,3,'Elimina una carta avversaria scoperta e un altro tuo Comunista scoperto. Se non puoi eliminarli entrambi, l’effetto non si applica. Stalin non può sacrificare sé stesso.','Togli un gettone iniziativa da un tuo Corrotto.',null),
-D('engels','Friedrich Engels',1,'Comunisti',1,2,'Due carte differenti della tua fazione ottengono +1 Dominio ciascuna. Engels può essere una delle due.',null,null),
-D('ozzy','Ozzy Osbourne',1,'Artisti',2,2,'Scegli una categoria avversaria. Tutte le carte scoperte di quella categoria perdono 1 Dominio, comprese quelle che diventeranno scoperte successivamente.','Ozzy ottiene +1 Dominio.',null),
+D('engels','Friedrich Engels',1,'Comunisti',1,2,'Due carte differenti ottengono +1 Dominio ciascuna. Engels può essere una delle due.',null,null),
+D('ozzy','Ozzy Osbourne',1,'Artisti',2,2,'Scegli una categoria avversaria: −1 Dominio a tutte le sue carte scoperte, anche a quelle che verranno scoperte dopo.','Ozzy ottiene +1 Dominio.',null),
 D('siffredi','Rocco Siffredi',1,'Artisti',2,2,'Se è l’ultima carta dei Corrotti ad attivarsi, ottiene +2 Dominio.',null,null),
-D('baudelaire','Charles Baudelaire',1,'Artisti',3,4,null,'Aggiungi un gettone iniziativa a una carta avversaria.','Passivo: se viene eliminato, anche prima di attivarsi, un’altra carta a tua scelta perde 1 Dominio.'),
-D('dali','Salvador Dalí',1,'Artisti',2,2,'Scambia i valori attuali di Dominio di due carte scoperte, anche di fazioni diverse, includendo i modificatori.',null,null),
-D('diocleziano','Diocleziano',1,'Persecutori',3,1,'Elimina una carta avversaria coperta. Se non ce ne sono, non succede nulla.',null,null),
+D('baudelaire','Charles Baudelaire',1,'Artisti',3,4,null,'Aggiungi un gettone iniziativa a una carta avversaria.','Se viene eliminato, anche prima di attivarsi, −1 Dominio a un’altra carta a tua scelta.'),
+D('dali','Salvador Dalí',1,'Artisti',2,2,'Scambia i valori attuali di Dominio di due carte.',null,null),
+D('diocleziano','Diocleziano',1,'Persecutori',3,1,'Elimina una carta avversaria coperta.',null,null),
 D('nerone','Nerone',1,'Persecutori',3,3,'Se hai un Demone o Eretico già attivato, copia l’effetto principale di un altro Corrotto già attivato e ancora in gioco.',null,null),
-D('giuliano','Giuliano l’Apostata',1,'Persecutori',2,2,'Se hai un Artista scoperto, una carta avversaria perde 2 Dominio.','Annulla il prossimo effetto da schieramento scoperto dell’avversario in questo round.',null),
+D('giuliano','Giuliano l’Apostata',1,'Persecutori',2,2,'Se hai un Artista scoperto, −2 Dominio a una carta avversaria.','Annulla il prossimo effetto da schieramento scoperto dell’avversario.',null),
 D('lutero','Martin Lutero',1,'Persecutori',2,2,'Scegli una tua carta che non si è ancora attivata. Il suo effetto secondario è annullato.',null,null),
-D('lucifero','Lucifero',1,'Demoni ed Eretici',3,3,'Elimina una carta avversaria scoperta. Se hai un Persecutore già attivato, un’altra carta avversaria perde 1 Dominio.',null,'L’avversario pesca due carte dal proprio mazzo e applica subito l’effetto principale di quella meno costosa, scegliendo lui i bersagli; poi la scarta. A pari costo sceglie l’avversario quale applicare. L’altra carta torna in fondo al mazzo. Non si applicano effetti secondari.','demone'),
-D('belzebu','Belzebù',1,'Demoni ed Eretici',3,2,'Elimina una carta avversaria, scoperta o coperta, il cui Dominio attuale sia 2 o inferiore. Una carta coperta si indica alla cieca: si rivela al solo giocatore dei Corrotti e, se il suo Dominio è superiore a 2, non viene eliminata e torna coperta.',null,null,'demone'),
-D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,null,'Puoi eliminare un tuo Comunista già schierato, anche coperto. Se lo fai, Giordano Bruno ottiene +3 Dominio.',null,'eretico'),
-D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Se vuoi, scambia i gettoni iniziativa di due carte coperte.','Guarda una carta avversaria coperta. La carta resta coperta e soltanto tu ne conosci l’identità.',null,'eretico'),
+D('lucifero','Lucifero',1,'Demoni ed Eretici',3,3,'Elimina una carta avversaria scoperta. Se hai un Persecutore già attivato, −1 Dominio a un’altra carta avversaria.',null,'L’avversario pesca 2 carte dal proprio mazzo e applica subito l’effetto principale di quella meno costosa.','demone'),
+D('belzebu','Belzebù',1,'Demoni ed Eretici',3,2,'Elimina una carta avversaria, scoperta o coperta, con ≤ 2 gettoni iniziativa.',null,null,'demone'),
+D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,null,'Puoi eliminare un tuo Comunista già schierato, anche coperto: se lo fai, Giordano Bruno ottiene +3 Dominio.',null,'eretico'),
+D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.','Guarda una carta avversaria coperta. La carta resta coperta e soltanto tu ne conosci l’identità.',null,'eretico'),
 ];
 const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));
 const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
@@ -418,8 +421,8 @@ const RULES=[
  'Ogni carta giocata scoperta permette di togliere un gettone iniziativa da una propria carta a scelta, anche diversa da quella giocata.',
  'Scambiare i gettoni iniziativa di due carte significa scambiarne l’iniziativa.',
  '“A sinistra” indica la carta nello slot precedente della stessa riga.',
- 'Lucifero (secondario): i bersagli dell’effetto pescato li sceglie l’avversario. La seconda carta pescata torna nel mazzo.',
- 'San Pietro (secondario): raddoppia solo l’effetto principale all’attivazione, non i passivi.',
+ 'Lucifero (secondario): i bersagli dell’effetto pescato li sceglie l’avversario, che a pari costo decide anche quale carta usare. Poi la carta usata va negli scarti e l’altra torna in fondo al mazzo. Gli effetti secondari non si applicano.',
+ 'San Pietro (secondario): raddoppia solo l’effetto principale all’attivazione, non i passivi. Fra le carte coperte si sceglie alla cieca; fra le scoperte, una che abbia un effetto principale.',
  'Una carta coperta che si attiva viene girata e da quel momento conta come scoperta.',
  'All’inizio di ogni turno di schieramento si pesca fino a 4 carte (serve dopo Santa Barbara).',
  'San Giorgio: “ultima carta ad attivarsi” significa l’ultima fra le tue.',
@@ -427,8 +430,10 @@ const RULES=[
  'Giuliano l’Apostata (scoperta): annulla il prossimo effetto da schieramento scoperto dell’avversario.',
  'Stalin: serve sia un bersaglio sia un Comunista da sacrificare, altrimenti non succede nulla.',
  'San Rocco: dopo essersi attivato protegge le altre tue carte, anche coperte, fino a fine round. Interviene da solo, la prima volta che una tua carta sta per essere eliminata, e solo se è ancora in gioco con Dominio superiore a 1.',
- 'Engels: servono due tue carte in gioco, Engels compreso.',
- 'Baudelaire: l’effetto scatta quando viene eliminato, anche prima di attivarsi; sceglie il suo proprietario.',
+ 'Engels: le due carte possono essere anche avversarie; servono almeno due carte in gioco.',
+ 'Baudelaire: l’effetto scatta quando viene eliminato, anche prima di attivarsi e anche se è coperto; sceglie il suo proprietario.',
+ 'Paolo Brosio e Santa Barbara: la nuova carta prende posizione, orientamento e gettoni iniziativa di quella sostituita, non si paga, e la carta sostituita va negli scarti.',
+ 'Dalí: lo scambio vale anche per le carte coperte, che si scelgono alla cieca.',
  'Santa Rita può copiare un Santo già attivato anche se nel frattempo è stato eliminato.',
  'Santa Barbara: “Mistico attivo” significa un tuo Mistico già attivato e ancora in gioco.',
  'San Gennaro: una carta che perde l’effetto non applica né principale, né secondario, né passivi. Le due eliminazioni definitive valgono se San Gennaro si è attivato nel primo round, anche se poi è stato eliminato.',
@@ -465,7 +470,7 @@ function importCode(txt){
 }
 function expertUnlocked(){const st=loadStats();return st[0].w>0&&st[1].w>0}
 function recordResult(){
-  if(FAST||S.mode!=='cpu'||!(S.human===0||S.human===1)||S.recorded)return;
+  if(FAST||S.demo||S.mode!=='cpu'||!(S.human===0||S.human===1)||S.recorded)return;
   S.recorded=true;const was=expertUnlocked(),st=loadStats(),me=st[S.human];
   if(S.final.w===null)me.d++;else if(S.final.w===S.human)me.w++;else me.l++;
   saveStats(st);
@@ -480,7 +485,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 /* ---------- stato ---------- */
 /* partita in corso salvata a ogni passaggio, per poterla riprendere */
 function snapshot(){
-  if(FAST||typeof localStorage==='undefined'||S.screen!=='game'||S.final)return;
+  if(FAST||S.demo||typeof localStorage==='undefined'||S.screen!=='game'||S.final)return;
   const ci=c=>c?Object.assign({},c,{def:undefined,prot:c.prot&&c.prot.uid||false}):null;
   const data={v:1,UID,S:{mode:S.mode,human:S.human,round:S.round,totals:S.totals,history:S.history,removed:S.removed,costSum:S.costSum,
     log:S.log.slice(0,60),actOrder:S.actOrder||[],auras:S.auras,actCount:S.actCount,phase:S.phase,turn:S.turn,starter:S.starter,first:S.first,noRe:S.noRe,expert:!!S.expert,
@@ -506,15 +511,15 @@ function resumeGame(){
 /* tasto indietro del telefono: chiede conferma invece di uscire */
 let backArmed=false;
 function armBack(){if(typeof history==='undefined'||backArmed)return;try{history.pushState({svc:1},'');backArmed=true}catch(e){}}
-function newGame(mode,human,expert){
+function newGame(mode,human,expert,demo){
   GID++;
   S={screen:'game',mode,human,round:1,totals:[0,0],history:[],removed:[[],[]],costSum:[0,0],log:[],
      viewer:mode==='cpu'?human:-1,prompt:null,overlay:null,detail:null,handWait:null,status:'',players:null,
-     auras:[],actCount:[0,0],phase:'deploy',turn:0,final:null,noRe:OPT.noRe,expert:!!expert};
-  clearSaved();armBack();render();
+     auras:[],actCount:[0,0],phase:'deploy',turn:0,final:null,noRe:OPT.noRe,expert:!!expert,demo:!!demo};
+  if(!demo)clearSaved();armBack();render();
   playGame().catch(e=>{console.error(e);S.status='Errore interno: '+e.message;render();if(typeof process!=='undefined')throw e;});
 }
-const isCpu=p=>p!==null&&S.mode==='cpu'&&p!==S.human;
+const isCpu=p=>p!==null&&S.mode==='cpu'&&(S.demo||p!==S.human);
 const live=p=>S.players[p].board.filter(c=>c&&!c.eliminated);
 const both=()=>live(0).concat(live(1));
 const init=c=>c.fixed?-1:Math.max(0,c.base+c.tokens);
@@ -567,7 +572,7 @@ function cpuChoose(o){
 async function ask(p,o){
   o.opts=o.opts||[];
   if(!o.opts.length)return o.multi?[]:null;
-  if(isCpu(p)){S.cpuActed=true;return cpuChoose(o)}
+  if(isCpu(p)&&!(S.demo&&(o.pop||o.demoShow))){S.cpuActed=true;return cpuChoose(o)}
   if(S.mode==='hot') await ensureViewer((o.priv||S.phase==='deploy')?p:null);
   return new Promise(res=>{S.prompt={p,...o,sel:[],res};render();});
 }
@@ -598,12 +603,12 @@ async function actRecap(c,mark,ini){
 }
 async function recap(actor,c,title,mark){
   if(S.mode!=='cpu'||FAST)return;
-  const mine=actor===S.human,acted=S.cpuActed;S.cpuActed=false;
+  const mine=!S.demo&&actor===S.human,acted=S.cpuActed;S.cpuActed=false;
   if(mine&&!acted)return;
   if(mine)title=`${title}: la risposta dei ${FAC[1-S.human]}`;
   const n=S.log.length-mark;if(n<=0)return;
   const lines=S.log.slice(0,n).reverse().map(l=>l.t).filter(t=>!t.startsWith('▸')&&!t.startsWith('Si rivela'));
-  await ask(S.human,{pop:true,title,inst:c,lines:lines.length?lines:['Nessun effetto.'],opts:[{label:'Ok',v:1,main:true}]});
+  await ask(S.human,{pop:true,who:`Mosse dei ${FAC[actor]}`,title,inst:c,lines:lines.length?lines:['Nessun effetto.'],opts:[{label:'Ok',v:1,main:true}]});
 }
 async function info(p,title,text){ if(isCpu(p))return; await ask(p,{title,text,priv:true,opts:[{label:'Ok',v:1}]}) }
 
@@ -652,10 +657,10 @@ async function moveToken(p,title,srcs,dests,optional){
   const ia=init(a),ib=init(b);a.tokens--;b.tokens++;
   log(`I ${FAC[p]} spostano un gettone iniziativa da ${pn(a)} (${ia} → ${init(a)}) a ${pn(b)} (${ib} → ${init(b)}).`);
 }
-async function swapTokens(p,title,cands){
+async function swapTokens(p,title,cands,must){
   cands=cands.filter(tokOk);
   if(cands.length<2)return;
-  const a=await pick(p,title+': prima carta',cands,{optional:true,ai:x=>x.owner===p?init(x)-2.5:-1});
+  const a=await pick(p,title+': prima carta',cands,{optional:!must,ai:x=>x.owner===p?init(x)-2.5:-1});
   if(!a)return;
   const b=await pick(p,title+': seconda carta',cands.filter(x=>x!==a),{ai:x=>x.owner===p?-init(x):init(x)});
   if(!b)return;
@@ -740,7 +745,7 @@ const MAIN={
     const t=await pick(p,'Stalin: elimina una carta avversaria scoperta',tg);
     const s=await pick(p,'Stalin: sacrifica un tuo Comunista scoperto',sac,{ai:x=>-x.dom});
     await eliminate(t,c);await eliminate(s,c)},
-  async engels(c){const p=c.owner,cands=live(p);if(c.virtual)cands.push(c);if(cands.length<2)return;
+  async engels(c){const p=c.owner,cands=both();if(c.virtual)cands.push(c);if(cands.length<2)return;
     const a=await pick(p,'Engels: prima carta che riceve Dominio',cands,{ai:x=>help(x,p)});
     const b=await pick(p,'Engels: seconda carta che riceve Dominio',cands.filter(x=>x!==a),{ai:x=>help(x,p)});
     addDom(a,1);addDom(b,1);log(`Engels: +1 a ${pn(a)} e +1 a ${pn(b)}.`)},
@@ -748,9 +753,9 @@ const MAIN={
     const cat=await ask(p,{title:'Ozzy: scegli una categoria avversaria',opts:cats.map(k=>({label:k,v:k,ai:live(1-p).filter(x=>x.faceUp&&x.def.cat===k).length+Math.random()*.5}))});
     S.auras.push({owner:p,cat,key:UID++});log(`Ozzy colpisce la categoria ${cat}.`);refreshOzzy()},
   async siffredi(c){if(!live(c.owner).some(x=>x!==c&&!x.activated)){addDom(c,2);log('Rocco Siffredi chiude il round: +2 Dominio.')}else log('Rocco Siffredi non è l’ultima carta dei Corrotti.')},
-  async dali(c){const p=c.owner,cands=both().filter(x=>x.faceUp);if(c.virtual)cands.push(c);if(cands.length<2)return;
-    const a=await pick(p,'Dalí: prima carta dello scambio',cands,{ai:x=>x.owner!==p?x.dom:-1});
-    const b=await pick(p,'Dalí: seconda carta dello scambio',cands.filter(x=>x!==a),{ai:x=>x.owner===p?-x.dom:-9});
+  async dali(c){const p=c.owner,cands=both();if(c.virtual)cands.push(c);if(cands.length<2)return;
+    const a=await pick(p,'Dalí: prima carta dello scambio',cands,{ai:x=>x.owner!==p?(canShow(x,p)?x.dom:2.5):-1});
+    const b=await pick(p,'Dalí: seconda carta dello scambio',cands.filter(x=>x!==a),{ai:x=>x.owner===p?-(canShow(x,p)?x.dom:2.5):-9});
     [a.dom,b.dom]=[b.dom,a.dom];log(`Dalí scambia il Dominio di ${a.def.name} e ${b.def.name}.`)},
   async diocleziano(c){const t=await pick(c.owner,'Diocleziano: elimina una carta avversaria coperta',live(1-c.owner).filter(x=>!x.faceUp));if(t)await eliminate(t,c)},
   async nerone(c){const p=c.owner;
@@ -766,13 +771,9 @@ const MAIN={
     if(S.players[p].board.some(x=>x&&x.activated&&x!==c&&x.def.cat==='Persecutori')){
       const y=await pick(p,'Lucifero: un’altra carta avversaria perde 1 Dominio',live(1-p).filter(x=>x!==t));if(y){addDom(y,-1);log(`${pn(y)} perde 1 Dominio.`)}}},
   async belzebu(c){const p=c.owner;
-    /* le coperte si possono indicare alla cieca: se il Dominio supera 2, Belzebù ne scopre solo l'identità */
-    const t=await pick(p,'Belzebù: elimina una carta avversaria con Dominio 2 o meno (una coperta si sceglie alla cieca)',live(1-p).filter(x=>canShow(x,p)?x.dom<=2:true),{ai:x=>canShow(x,p)?harm(x,p):1.6});
-    if(!t)return;
-    if(t.dom<=2){await eliminate(t,c);return}
-    t.known[p]=true;log(`Belzebù indica ${pn(t)}, ma ha Dominio ${t.dom}: non viene eliminata.`);
-    if(!isCpu(p))await info(p,`È ${t.def.name}`,`Ha Dominio ${t.dom}, troppo alto per Belzebù. Resta coperta, ma ora ne conosci l’identità.`)},
-  async galileo(c){await swapTokens(c.owner,'Galileo: scambia i gettoni iniziativa di due carte coperte',both().filter(x=>!x.faceUp))},
+    const t=await pick(p,'Belzebù: elimina una carta avversaria con ≤ 2 gettoni iniziativa',live(1-p).filter(x=>init(x)<=2),{ai:x=>canShow(x,p)?harm(x,p):1.6});
+    if(t)await eliminate(t,c)},
+  async galileo(c){await swapTokens(c.owner,'Galileo: scambia i gettoni iniziativa di due carte coperte',both().filter(x=>!x.faceUp),true)},
 };
 
 /* ---------- effetti secondari ---------- */
@@ -864,9 +865,9 @@ function oppView(p){
 }
 /* quanto un killer avversario può colpire proprio questa carta */
 function hits(kid,d,up){
-  if(!up)return kid==='belzebu'?(d.dom<=2?1:0):({diocleziano:1,giorgio:1,paolo:.4}[kid]||0);
+  if(!up)return kid==='belzebu'?(d.cost<=2?1:.3):({diocleziano:1,giorgio:1,paolo:.4}[kid]||0);
   switch(kid){
-    case 'belzebu':return d.dom<=2?1:0;
+    case 'belzebu':return d.cost<=2?1:.3;
     case 'barbara':return d.dom<=2?1:d.dom<=3?.5:0;
     case 'ferretti':return d.dom<=2&&(d.cat==='Comunisti'||d.cat==='Artisti')?1:0;
     case 'pantaleone':return d.cat==='Comunisti'?1:d.sub==='eretico'?.5:0;
@@ -892,7 +893,7 @@ function mainValue(id,p){
     case 'giorgio':return el(()=>true)-0.6;
     case 'barbara':{const lim=mine.some(x=>x.def.cat==='Mistici')?3:2;return el(x=>x.faceUp&&x.dom<=lim)}
     case 'lucifero':return el(x=>x.faceUp)+0.3;
-    case 'belzebu':return el(x=>x.dom<=2);
+    case 'belzebu':return el(x=>init(x)<=2);
     case 'lenin':return (commUp||commHand?1:0.15)*el(x=>x.faceUp);
     case 'stalin':return commUp+commHand>0?el(x=>x.faceUp)-1.5:0;
     case 'diocleziano':return el(x=>!x.faceUp);
@@ -1083,14 +1084,14 @@ async function endRound(){
   const lines=[];
   for(const p of [0,1])for(const c of picks[p])S.removed[c.owner].push(c.id);
   const cnt=p=>picks[p].length,word=n=>n===1?'una carta':n+' carte';
-  if(S.mode==='cpu'&&S.human>=0){const h=S.human,o=1-h;
+  if(S.mode==='cpu'&&S.human>=0&&!S.demo){const h=S.human,o=1-h;
     lines.push(cnt(h)?`Hai eliminato ${picks[h].map(c=>c.def.name).join(' e ')}`:'Non hai eliminato carte');
     lines.push(cnt(o)?`I ${FAC[o]} hanno eliminato in segreto ${word(cnt(o))} delle tue: non saprai quale`:`I ${FAC[o]} non hanno eliminato carte`);
     if(imp[h])lines.push(`Hai imposto ${imp[h].def.name}: starà coperta nella prima posizione dei ${FAC[o]}`);
     if(imp[o])lines.push(`Anche a te hanno imposto una carta, coperta nella tua prima posizione: la scoprirai quando si attiverà`);}
   else lines.push(`Ogni giocatore ha eliminato in segreto una carta avversaria e ne ha imposta un’altra, che resterà coperta nella prima posizione. Nessuno sa quali carte proprie mancano o gli sono state imposte`);
   log('Eliminazioni definitive fatte in segreto.');
-  await ask(S.mode==='cpu'?S.human:null,{title:`Il primo round si è concluso ${sc[0]} a ${sc[1]}`,epic:epic(sc[0],sc[1]),text:bonus.concat(lines).join('. ')+`. Nel secondo round tenete la mano e ripartite dal mazzo rimasto; si schierano le carte mancanti. Iniziano i ${FAC[1-S.starter]}.`,opts:[{label:'Inizia il round 2',v:1,main:true}]});
+  await ask(S.mode==='cpu'?S.human:null,{title:`Il primo round si è concluso ${sc[0]} a ${sc[1]}`,epic:epic(sc[0],sc[1]),text:bonus.concat(lines).join('. ')+`. Nel secondo round tenete la mano e ripartite dal mazzo rimasto; si schierano le carte mancanti. Iniziano i ${FAC[1-S.starter]}.`,opts:[{label:'Inizia il round 2',v:1,main:true}],demoShow:true});
   S.log=[];
 }
 function gameOver(){
@@ -1170,7 +1171,7 @@ const TUT=[
  n:'Conviene imporre una carta che, attivandosi per prima, non serve a nulla: Santa Rita e Nerone non hanno niente da copiare, San Pietro nessuna carta da recuperare, Siffredi non può essere l’ultimo. Nel secondo round si tiene la mano e si schierano solo 3 carte.'},
 {t:'Qualche consiglio',x:()=>'',
  p:'Prima di giocare, guarda l’iniziativa delle carte avversarie: ti dice quando colpiranno e cosa puoi ancora fare prima.',
- l:['Gestisci il mazzo: ogni carta scartata per pagare un costo è persa fino al round successivo.','Coperta contro Lucifero e Lenin, che colpiscono solo carte scoperte. Belzebù colpisce anche le coperte, purché abbiano Dominio 2 o meno.','Scoperta contro San Giorgio e Diocleziano, che colpiscono carte coperte. San Giorgio, però, colpisce entrambe.','Una carta da 1 giocata presto ti lascia la mano piena per le carte più forti.','Giocare scoperto fa attivare prima: utile per colpire prima che l’avversario colpisca te.','Tieni d’occhio i gettoni iniziativa: spostare l’iniziativa di una carta di un solo punto può cambiare tutto il round.']},
+ l:['Gestisci il mazzo: ogni carta scartata per pagare un costo è persa fino al round successivo.','Coperta contro Lucifero e Lenin, che colpiscono solo carte scoperte. Belzebù colpisce anche le coperte, purché abbiano ≤ 2 gettoni iniziativa: le carte che agiscono presto sono le più esposte.','Scoperta contro San Giorgio e Diocleziano, che colpiscono carte coperte. San Giorgio, però, colpisce entrambe.','Una carta da 1 giocata presto ti lascia la mano piena per le carte più forti.','Giocare scoperto fa attivare prima: utile per colpire prima che l’avversario colpisca te.','Tieni d’occhio i gettoni iniziativa: spostare l’iniziativa di una carta di un solo punto può cambiare tutto il round.']},
 ];
 function helpHtml(){
   const tab=S.helpTab||'breve';
@@ -1230,8 +1231,10 @@ function handEl(h,p){
   if(pr&&pr.multi){const i=pr.opts.findIndex(o=>o.hand===h.uid);if(i>=0)st=pr.sel.includes(i)?'sel':'tgt';else if(pr.playing===h.uid)st='play'}
   return hcardHtml(d,costOf(p,h),st,`data-hand="${h.uid}"`);
 }
+const CATWORD=[[/\b(Martir[ei])\b/g,'Martiri'],[/\b(Miracol[io])\b/g,'Miracoli'],[/\b(Mistic[oi])\b/g,'Mistici'],[/\b(Devot[oi])\b/g,'Devoti'],[/\b(Comunist[ai])\b/g,'Comunisti'],[/\b(Artist[ai])\b/g,'Artisti'],[/\b(Persecutor[ei])\b/g,'Persecutori'],[/\b(Demon[ei]|Eretic[oi])\b/g,'Demoni ed Eretici']];
+function catTint(h){for(const [re,k] of CATWORD)h=h.replace(re,`<b class="kw" style="--cc:${CATCOL[k]}">$1</b>`);return h}
 function fxHtml(d){
-  const part=(lab,t)=>{if(!t)return'';const pas=t.startsWith('Passivo: ');return`<span><b>${lab}${pas?', passivo':''}.</b> ${esc(pas?t.slice(9,10).toUpperCase()+t.slice(10):t)}</span>`};
+  const part=(lab,t)=>{if(!t)return'';const pas=t.startsWith('Passivo: ');return`<span><b>${lab}${pas?', passivo':''}.</b> ${catTint(esc(pas?t.slice(9,10).toUpperCase()+t.slice(10):t))}</span>`};
   return`<div class="fx">${part('Principale',d.m)}${part('Scoperta',d.s)}${part('Secondario',d.c)}</div>`;
 }
 function precOwner(){
@@ -1304,6 +1307,7 @@ function render(){
         <button class="opt main" data-menu="side"><span class="bt">Gioco base<small>Le regole del regolamento 0.8</small></span><span class="ar">›</span></button>
         ${expertUnlocked()?`<button class="opt main xp" data-menu="side-x"><span class="bt">Variante esperti<small>Tris di categoria +3, poker +5</small></span><span class="ar">›</span></button>`
           :(()=>{const st=loadStats();return`<button class="opt soon" disabled aria-disabled="true"><span class="bt">Variante esperti<small>Da sbloccare: vinci una partita con i Santi ${st[0].w?'✓':'○'} e una con i Corrotti ${st[1].w?'✓':'○'}</small></span><span class="badge">bloccata</span></button>`})()}
+        <button class="opt demo" data-start="demo"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M2 12c4-7 16-7 20 0-4 7-16 7-20 0z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></span><span class="bt">Guarda una partita simulata<small>Il computer gioca per entrambe le fazioni</small></span><span class="ar">›</span></button>
         <button class="opt back" data-menu="home">Indietro</button></div>`;
     else if(m==='side'||m==='side-x'){const X=m==='side-x'?' data-x="1"':'';body=`<h2 class="mh">${X?'Variante esperti · ':''}Da che parte stai?</h2><div class="btns">
         <button class="opt fs" data-start="cpu" data-h="0"${X}><span class="bi">${ico('back0')}</span><span class="bt">Gioca con i Santi<small>Contro il computer</small></span><span class="ar">›</span></button>
@@ -1369,14 +1373,14 @@ function render(){
     ${S.final.why?`<div class="meta">${S.final.why}</div>`:''}
     <div class="opts"><button class="opt main" data-restart>Nuova partita</button></div></div>`}
   app.innerHTML=`<div class="wrap">
-    ${S.expert?'<div class="xtag">Variante esperti</div>':''}<div class="top"><h1>Round ${S.round>2?2:S.round} <i>di 2</i></h1>
+    ${S.demo?'<div class="xtag">Partita simulata · il computer gioca per entrambi</div>':S.expert?'<div class="xtag">Variante esperti</div>':''}<div class="top"><h1>Round ${S.round>2?2:S.round} <i>di 2</i></h1>
       <div class="score"><span>Santi <b class="s">${S.totals[0]}</b></span><span>Corrotti <b class="c">${S.totals[1]}</b></span><button class="linkbtn" data-help="breve">Regole</button><button class="linkbtn" data-quit>Esci</button></div></div>
     ${initBarHtml()}
     ${S.players?rowHtml(top,true):''}
     <div class="status">${esc(S.status)}</div>
     ${S.players?rowHtml(bottom,false):''}
     ${promptHtml()}${fin}
-    ${handP!==null&&S.players?`<section class="side ${handP?'cor':'san'}"><div class="rowhead"><b class="${handP?'cor':'san'}">La tua mano</b><span>${S.handWait?'tocca per giocare':''}${OPT.hand==='big'&&S.players[handP].hand.length>2?'<span class="swipe"> · scorri →</span>':''}<button class="lay" data-setopt="hand" data-v="${OPT.hand==='big'?'compact':'big'}">${OPT.hand==='big'?'Mano compatta':'Mano grande'}</button></span></div>
+    ${handP!==null&&S.players?`<section class="side ${handP?'cor':'san'}"><div class="rowhead"><b class="${handP?'cor':'san'}">${S.demo?'Mano dei '+FAC[handP]:'La tua mano'}</b><span>${S.handWait?'tocca per giocare':''}${OPT.hand==='big'&&S.players[handP].hand.length>2?'<span class="swipe"> · scorri →</span>':''}<button class="lay" data-setopt="hand" data-v="${OPT.hand==='big'?'compact':'big'}">${OPT.hand==='big'?'Mano compatta':'Mano grande'}</button></span></div>
       <div class="hand ${OPT.hand==='big'?'bighand':''} ${S.handWait?'wait':''}">${S.players[handP].hand.map(h=>handEl(h,handP)).join('')}</div></section>`:''}
     <details class="log" open><summary>Cronaca</summary><ol>${S.log.slice(0,60).map(l=>`<li class="${l.r?'r':''}">${esc(l.t)}</li>`).join('')}</ol></details>
   </div>
@@ -1386,9 +1390,9 @@ function render(){
 }
 function endFxHtml(){
   const[a,b]=S.totals,w=S.final.w;let title,fac;
-  if(S.mode==='cpu'&&(S.human===0||S.human===1)){fac=S.human;title=w===null?'PAREGGIO':w===S.human?'HAI VINTO':'HAI PERSO'}
+  if(S.mode==='cpu'&&!S.demo&&(S.human===0||S.human===1)){fac=S.human;title=w===null?'PAREGGIO':w===S.human?'HAI VINTO':'HAI PERSO'}
   else{fac=w===null?0:w;title=w===null?'PAREGGIO':`VINCONO I ${FAC[w].toUpperCase()}`}
-  const win=w!==null&&(S.mode!=='cpu'||w===S.human);
+  const win=w!==null&&(S.mode!=='cpu'||S.demo||w===S.human);
   const parts=Array.from({length:28},(_,i)=>`<i style="--x:${(i*37)%100}%;--d:${(i%7)*0.35}s;--s:${0.6+(i%5)*0.25};--t:${2.6+(i%4)*0.7}s"></i>`).join('');
   return`<div class="endfx ${fac?'cor':'san'} ${win?'win':'lose'}" data-endfx role="dialog" aria-label="${title}">
     <div class="efp">${parts}</div>
@@ -1446,6 +1450,7 @@ if(typeof document!=='undefined'){
   document.addEventListener('click',e=>{
     const t=e.target.closest('[data-ib],[data-album],[data-albtab],[data-resume],[data-code],[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
     if(!t)return;
+    if(t.dataset.start==='demo'){newGame('cpu',0,false,true);return}
     if(t.dataset.start!==undefined){newGame(t.dataset.start,t.dataset.start==='cpu'?+t.dataset.h:null,t.dataset.x==='1');return}
     if(t.dataset.info!==undefined&&S.prompt){const od=optDef(S.prompt.opts[+t.dataset.info],S.prompt);if(od){S.detail=od;render()}return}
     if(t.dataset.ib!==undefined){const c=findCard(+t.dataset.ib),info=c&&hoverInfo({dataset:{card:String(c.uid)}});if(info){S.detail=info;render()}return}
