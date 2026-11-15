@@ -1338,10 +1338,10 @@ function render(){
       <div class="btns"><button class="opt back" data-menu="options">Indietro</button></div>`;
     }
     else if(m==='opt-stats'){
-      const st=loadStats(),row=(i)=>{const x=st[i],n=x.w+x.l+x.d;return`<tr><th class="${i?'c':'s'}">${FAC[i]}</th><td>${n}</td><td>${x.w}</td><td>${x.l}</td><td>${x.d}</td><td>${n?Math.round(100*x.w/n)+'%':'–'}</td></tr>`};
+      const st=loadStats(),row=(i)=>{const x=st[i],n=x.w+x.l+x.d;return`<tr><th class="${i?'c':'s'}">${FAC[i]}</th><td>${n}</td><td>${x.w}</td><td>${x.l}</td><td>${x.d}</td></tr>`};
       body=`<h2 class="mh">Statistiche</h2>
       <p class="lead">Le tue partite contro il computer.</p>
-      <div class="tblwrap"><table class="stats"><thead><tr><th>Fazione</th><th>Partite</th><th>Vinte</th><th>Perse</th><th>Pari</th><th>% vinte</th></tr></thead><tbody>${row(0)}${row(1)}</tbody></table></div>
+      <div class="tblwrap"><table class="stats"><thead><tr><th>Fazione</th><th>Partite</th><th>Vinte</th><th>Perse</th><th>Pari</th></tr></thead><tbody>${row(0)}${row(1)}</tbody></table></div>
       <p class="meta">Le statistiche restano salvate su questo dispositivo e in questo browser.</p>
       ${S.confirmReset?`<div class="opts"><span>Azzerare tutte le statistiche?</span><button class="opt main" data-resetstats="yes">Sì, azzera</button><button class="opt" data-resetstats="no">Annulla</button></div>`:`<div class="opts"><button class="opt" data-resetstats="ask">Azzera statistiche</button></div>`}
       <div class="btns"><button class="opt back" data-menu="options">Indietro</button></div>`;
