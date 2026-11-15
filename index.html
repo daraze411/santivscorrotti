@@ -582,7 +582,7 @@ function cpuChoose(o){
 async function ask(p,o){
   o.opts=o.opts||[];
   if(!o.opts.length)return o.multi?[]:null;
-  if(isCpu(p)&&!(S.demo&&(o.pop||o.demoShow))){S.cpuActed=true;return cpuChoose(o)}
+  if(isCpu(p)&&!(S.demo&&(o.pop||o.demoShow||(!o.multi&&o.opts.length===1&&(o.opts[0].v===null||typeof o.opts[0].v!=='object')&&(o.title||o.text||o.lines))))){S.cpuActed=true;return cpuChoose(o)}
   if(S.mode==='hot') await ensureViewer((o.priv||S.phase==='deploy')?p:null);
   return new Promise(res=>{S.prompt={p,...o,sel:[],res};render();});
 }
@@ -981,7 +981,7 @@ async function deployTurn(p){
     await info(p,'Non puoi pagare nessuna carta','Il mazzo è finito e non hai abbastanza carte in mano: salti questo turno.');
     return}
   let ch;if(isCpu(p)){await sleep(700);ch=cpuDeploy(p)}else ch=await humanDeploy(p);
-  const{card,up,disc}=ch,cost=costOf(p,card),mark=S.log.length;S.cpuActed=false;
+  const{card,up,disc}=ch,cost=costOf(p,card),mark=S.log.length;S.cpuActed=false;const tok0=card.cost;
   if(DEF[card.id].cat==='Comunisti')P.comDiscount=0;
   P.hand=P.hand.filter(h=>h!==card&&!disc.includes(h));P.discard.push(...disc);
   const c=inst(card,p);c.slot=P.board.indexOf(null);P.board[c.slot]=c;c.faceUp=up;c.depUp=up;c.known[p]=true;
@@ -999,8 +999,22 @@ async function deployTurn(p){
       log(t?`Carta scoperta: i ${FAC[p]} tolgono un gettone iniziativa da ${pn(t)}, iniziativa ${removeTok(t)}.`:`Carta scoperta: i ${FAC[p]} non tolgono gettoni iniziativa.`)}
   }
   refreshOzzy();
-  if(up)await recap(p,c,`${FAC[p]}: ${c.def.name} scoperta`,mark);
+  if(S.demo)await demoDeploy(p,c,up,cost,disc,mark);
+  else if(up)await recap(p,c,`${FAC[p]}: ${c.def.name} scoperta`,mark);
   refill(p);render();
+}
+async function demoDeploy(p,c,up,cost,disc,mark){
+  const d=c.def,o=FAC[1-p],n=S.log.length-mark;
+  const fx=S.log.slice(0,Math.max(0,n)).reverse().map(l=>l.t).filter(t=>!t.startsWith('▸')&&!/: schierano /.test(t));
+  const lines=[`Pagano ${cost===0?'0: non scartano nulla':cost+' scartando '+disc.map(h=>h.name||DEF[h.id].name).join(', ')}.`,
+    `${d.name} è ${d.cat==='Demoni ed Eretici'?'un Demone/Eretico':'della categoria '+d.cat}, ha Dominio ${d.dom} e va in posizione ${c.slot+1}, con iniziativa ${init(c)}: più è bassa, prima si attiva.`];
+  if(up){lines.push(`Perché scoperta: l’effetto da schieramento si applica subito e si toglie un gettone iniziativa a una propria carta. In cambio i ${o} sanno chi è e possono colpirla.`);
+    lines.push(...fx)}
+  else{lines.push(`Perché coperta: i ${o} vedono solo l’iniziativa e non sanno chi è, quindi gli effetti che colpiscono solo carte scoperte non la possono toccare.${SCOP[c.id]?' In cambio rinuncia al suo effetto da schieramento.':''}`);
+    lines.push(`Lo spettatore la vede, i ${o} no.`)}
+  if(d.m)lines.push(`Quando si attiverà: ${d.m}`);
+  if(d.c)lines.push(`Poi: ${d.c}`);
+  await ask(S.human,{pop:true,who:`Schieramento dei ${FAC[p]}`,title:`I ${FAC[p]} schierano ${d.name} ${up?'scoperta':'coperta'}`,inst:Object.assign(Object.create(Object.getPrototypeOf(c)),c,{faceUp:true}),lines,opts:[{label:'Avanti',v:1,main:true}]});
 }
 async function activationPhase(resumed){
   S.phase='activate';
@@ -1099,6 +1113,9 @@ async function endRound(){
     lines.push(cnt(o)?`I ${FAC[o]} hanno eliminato in segreto ${word(cnt(o))} delle tue: non saprai quale`:`I ${FAC[o]} non hanno eliminato carte`);
     if(imp[h])lines.push(`Hai imposto ${imp[h].def.name}: starà coperta nella prima posizione dei ${FAC[o]}`);
     if(imp[o])lines.push(`Anche a te hanno imposto una carta, coperta nella tua prima posizione: la scoprirai quando si attiverà`);}
+  else if(S.demo){for(const p of [0,1]){if(cnt(p))lines.push(`I ${FAC[p]} eliminano in segreto ${picks[p].map(c=>c.def.name).join(' e ')} dei ${FAC[1-p]}: puntano sulle carte con più Dominio`);
+      if(imp[p])lines.push(`I ${FAC[p]} impongono ${imp[p].def.name} ai ${FAC[1-p]}: starà coperta nella loro prima posizione e si attiverà per prima, con iniziativa −1`)}
+    lines.push('Nella partita vera queste scelte restano segrete')}
   else lines.push(`Ogni giocatore ha eliminato in segreto una carta avversaria e ne ha imposta un’altra, che resterà coperta nella prima posizione. Nessuno sa quali carte proprie mancano o gli sono state imposte`);
   log('Eliminazioni definitive fatte in segreto.');
   await ask(S.mode==='cpu'?S.human:null,{title:`Il primo round si è concluso ${sc[0]} a ${sc[1]}`,epic:epic(sc[0],sc[1]),text:bonus.concat(lines).join('. ')+`. Nel secondo round tenete la mano e ripartite dal mazzo rimasto; si schierano le carte mancanti. Iniziano i ${FAC[1-S.starter]}.`,opts:[{label:'Inizia il round 2',v:1,main:true}],demoShow:true});
