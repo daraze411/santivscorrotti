@@ -136,6 +136,7 @@ h1{font-family:var(--f-display);font-weight:400;margin:0;line-height:1;text-wrap
 .fx{font-size:14px;display:flex;flex-direction:column;gap:3px}
 .fx b{font-weight:700}
 .fx .sym{font-size:1.25em;font-weight:700;letter-spacing:.02em;color:var(--fg)}
+.eyec{font-style:normal;position:relative;display:inline-block;opacity:.6}.eyec::after{content:'';position:absolute;left:-2px;right:-2px;top:50%;border-top:2px solid currentColor;transform:rotate(-35deg)}
 .hsym,.csym{font-weight:700;color:var(--fg);line-height:1.15;text-wrap:balance;overflow-wrap:anywhere}
 .hsym{font-size:13px}.hand.bighand .hsym{font-size:15px}
 .csym{font-size:10.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
@@ -375,13 +376,13 @@ const FAC=['Santi','Corrotti'];
 const CATS=[['Martiri','Miracoli','Mistici','Devoti'],['Comunisti','Artisti','Persecutori','Demoni ed Eretici']];
 const D=(id,name,f,cat,cost,dom,m,s,c,sub)=>({id,name,f,cat,cost,dom,m,s,c,sub});
 const DEFS=[
-D('giorgio','San Giorgio',0,'Martiri',3,2,'Elimina una carta avversaria.',null,null),
+D('giorgio','San Giorgio',0,'Martiri',3,2,'Elimina una carta avversaria, scoperta o coperta.',null,null),
 D('sebastiano','San Sebastiano',0,'Martiri',3,3,'Non può essere eliminato.',null,null),
 D('barbara','Santa Barbara',0,'Martiri',2,2,'Elimina una carta avversaria scoperta con Dominio ≤ 2.',null,null),
 D('lorenzo','San Lorenzo',0,'Martiri',1,2,'Se viene eliminato da una carta avversaria, elimina anche quella carta. Funziona anche quando San Lorenzo è coperto.',null,null),
 D('gennaro','San Gennaro',0,'Miracoli',3,3,'Se vinci il primo round elimini definitivamente due carte avversarie anziché una.',null,null),
 D('rocco','San Rocco',0,'Miracoli',2,3,'Se una carta sta per essere eliminata, San Rocco la protegge, riducendo il proprio Dominio a 1.',null,null),
-D('pantaleone','San Pantaleone',0,'Miracoli',2,2,'Elimina un Comunista o un Eretico avversario.',null,null),
+D('pantaleone','San Pantaleone',0,'Miracoli',2,2,'Elimina un Comunista o un Eretico avversario, scoperto o coperto.',null,null),
 D('rita','Santa Rita',0,'Miracoli',3,2,'Tutti i tuoi Santi ottengono +1 Dominio.',null,null),
 D('pietro','San Pietro',0,'Mistici',3,3,'Rimette in gioco una tua carta eliminata, nello slot originario. Il suo effetto non viene riattivato.',null,null),
 D('benedetto','San Benedetto',0,'Mistici',2,2,'Annulla l’effetto principale della prossima carta avversaria ad attivarsi.',null,null),
@@ -399,7 +400,7 @@ D('ozzy','Ozzy Osbourne',1,'Artisti',2,2,'Scegli una categoria avversaria: −1 
 D('siffredi','Rocco Siffredi',1,'Artisti',2,2,'Se è l’ultima carta dei Corrotti ad attivarsi, ottiene +3 Dominio.',null,null),
 D('baudelaire','Charles Baudelaire',1,'Artisti',3,3,'Aggiungi un gettone iniziativa a una carta avversaria.',null,null),
 D('dali','Salvador Dalí',1,'Artisti',2,2,'Scambia i valori attuali di Dominio di due carte scoperte.',null,null),
-D('diocleziano','Diocleziano',1,'Persecutori',3,2,'Elimina una carta avversaria coperta.',null,null),
+D('diocleziano','Diocleziano',1,'Persecutori',3,2,'Elimina una carta avversaria.',null,null),
 D('nerone','Nerone',1,'Persecutori',3,3,'Tutte le carte avversarie scoperte perdono 1 Dominio.',null,null),
 D('giuliano','Giuliano l’Apostata',1,'Persecutori',2,2,'Se hai un Artista scoperto, −2 Dominio a una carta avversaria.',null,null),
 D('lutero','Martin Lutero',1,'Persecutori',2,2,'Se è la prima carta dei Corrotti ad attivarsi, ottiene +3 Dominio.',null,null),
@@ -408,7 +409,8 @@ D('belzebu','Belzebù',1,'Demoni ed Eretici',3,3,'Elimina un Martire avversario,
 D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,'Puoi eliminare un tuo Comunista già schierato, anche coperto: se lo fai, Giordano Bruno ottiene +3 Dominio.',null,null,'eretico'),
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.',null,null,'eretico'),
 ];
-const SYM={'giorgio': '☠ avv.', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta', 'pantaleone': '☠ Comunista/Eretico', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima avv.', 'lucia': '🔍 coperta', 'paolo': '▼2 avv.', 'ferretti': '☠ 👁 Comunista/Artista ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se Comunista', 'stalin': '☠ 👁 · ▼1 mia', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria avv. 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ avv.', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ coperta', 'nerone': '▼1 tutte avv. 👁', 'giuliano': '▼2 avv. · se Artista', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ due coperte'};
+const SYM={'giorgio': '☠ avv. 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta', 'pantaleone': '☠ Comunista/Eretico 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima avv.', 'lucia': '🔍 {c}', 'paolo': '▼2 avv.', 'ferretti': '☠ 👁 Comunista/Artista ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 mia', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria avv. 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ avv.', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ avv.', 'nerone': '▼1 tutte avv. 👁', 'giuliano': '▼2 avv. · se Artista', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁{c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}'};
+const symHtml=id=>esc(SYM[id]||'').replace(/\{c\}/g,'<i class="eyec">👁</i>');
 const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));
 const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
   marx:'Plusvalore',lenin:'Obladi oblada',stalin:'Grande purga',ozzy:'Pipistrello',siffredi:'Gran finale',baudelaire:'Fiori malvagi',dali:'Baffi onirici',diocleziano:'Editto letale',nerone:'Fuoco nel fuoco',lutero:'Lutero è mio e lo gestisco io',galileo:'Dito medio',bruno:'Mente ardente',engels:'Fedeltà totale',giuliano:'Nostalgia canaglia',lucifero:'Amore disperato',belzebu:'Fame insaziabile'};
@@ -437,7 +439,8 @@ function pic(d){
 const RULES=[
  'Sulle carte: a sinistra l’iniziativa, a destra il Dominio. Un numero colorato indica un valore cambiato durante il round. In mano il numero a sinistra è il costo.',
  'Ogni carta entra in campo con tanti gettoni iniziativa quanto il suo costo. Togliere un gettone iniziativa abbassa l’iniziativa di 1, aggiungerlo la alza di 1. Si può togliere un gettone iniziativa da qualsiasi carta con iniziativa sopra zero.',
- 'Simboli: ☠ elimina · ▲ più Dominio · ▼ meno Dominio · ◐ gettoni iniziativa · ⛨ proteggi o annulla · ↺ sostituisci o rimetti in gioco · 🔍 guarda una carta coperta · 👁 carta scoperta, cioè già attivata.',
+ 'Simboli: ☠ elimina · ▲ più Dominio · ▼ meno Dominio · ◐ gettoni iniziativa · ⛨ proteggi o annulla · ↺ sostituisci o rimetti in gioco · 🔍 guarda una carta coperta · 👁 carta scoperta, cioè già attivata · occhio barrato: carta coperta, non ancora attivata.',
+ 'Regola base: un effetto che elimina colpisce solo carte coperte, a meno che la carta non dica altrimenti (👁 scoperta, oppure 👁 e occhio barrato insieme: scoperta o coperta).',
  'Scambiare i gettoni iniziativa di due carte significa scambiarne l’iniziativa.',
  '“A sinistra” indica la carta nello slot precedente della stessa riga.',
  'Le carte si schierano sempre coperte e si scoprono quando si attivano: “scoperta” significa quindi già attivata. L’avversario vede solo la posizione e l’iniziativa di una carta coperta.',
@@ -956,7 +959,7 @@ async function demoDeploy(p,c,up,cost,disc,mark){
     `${d.name} è ${d.cat==='Demoni ed Eretici'?'un Demone/Eretico':'della categoria '+d.cat}, ha Dominio ${d.dom} e va in posizione ${c.slot+1}, con iniziativa ${init(c)}: più è bassa, prima si attiva.`];
   lines.push(`Ogni carta si schiera coperta: i ${o} vedono solo la posizione e l’iniziativa, non sanno chi è, e gli effetti che colpiscono solo carte scoperte non la possono toccare. Si scoprirà quando si attiverà. Lo spettatore la vede, i ${o} no.`);
   if(xs.length)lines.push('Carte pagate in più: ogni carta scartata oltre al costo sposta di 1 l’iniziativa di una propria carta.',...xs);
-  if(d.m)lines.push(`Quando si attiverà: ${SYM[d.id]} (${d.m})`);
+  if(d.m)lines.push(`Quando si attiverà: ${(SYM[d.id]||'').replace(/\{c\}/g,'(coperta)')} (${d.m})`);
   await ask(S.human,{pop:true,who:`Schieramento dei ${FAC[p]}`,title:`I ${FAC[p]} schierano ${d.name}, coperta`,inst:Object.assign(Object.create(Object.getPrototypeOf(c)),c,{faceUp:true}),lines,opts:[{label:'Avanti',v:1,main:true}]});
 }
 async function activationPhase(resumed){
@@ -1183,14 +1186,14 @@ function cardEl(c,i){
   if(chosen)tags.unshift('✓ scelta');
   const tg=tags.length?`<span class="tags">${tags.join(' · ')}</span>`:'';
   return`<button class="card ${c.owner?'cor':'san'} ${show?'art':'back'} ${c.faceUp?'':'down'} ${c.eliminated?'dead':''} ${chosen?'chosen':tgt?'tgt':''}" data-card="${c.uid}" aria-label="${esc(show?c.def.name:'Carta coperta')}">
-    ${show?`${pic(c.def)}<span class="mid"><span class="nm ${c.def.name.length>15?'lg':''}">${esc(c.def.name)}</span><span class="csym">${esc(SYM[c.def.id]||'')}</span>${tg}</span>`
+    ${show?`${pic(c.def)}<span class="mid"><span class="nm ${c.def.name.length>15?'lg':''}">${esc(c.def.name)}</span><span class="csym">${symHtml(c.def.id)}</span>${tg}</span>`
           :`<span class="mid"><span class="ico">${ico('back'+c.owner)}</span><span class="nm q">${FAC[c.owner]}</span>${tg}</span>`}
     <span class="foot"><span class="ini ${iniCls(c)}" title="Iniziativa">${iniTxt(c)}</span>${show?`<span class="dom ${dc}" title="Dominio">${c.dom}</span>`:''}</span></button>`;
 }
 function hcardHtml(d,cost,st,attr){
   const lab=st==='sel'?'scarta':st==='play'?'in gioco':'';
   return`<${attr?'button':'div'} class="hcard ${d.f?'cor':'san'} ${st||''}" ${attr||''}><span class="card art ${d.f?'cor':'san'} himg">${pic(d)}</span>
-    <span class="hcap"><span class="hnm">${esc(d.name)}</span><span class="hsym">${esc(SYM[d.id]||'')}</span><span class="hnum"><span class="ini" title="Costo">${cost}</span><span class="hlab">costo · dominio</span><span class="dom" title="Dominio">${d.dom}</span></span>${lab?`<span class="hst">${lab}</span>`:''}</span></${attr?'button':'div'}>`;
+    <span class="hcap"><span class="hnm">${esc(d.name)}</span><span class="hsym">${symHtml(d.id)}</span><span class="hnum"><span class="ini" title="Costo">${cost}</span><span class="hlab">costo · dominio</span><span class="dom" title="Dominio">${d.dom}</span></span>${lab?`<span class="hst">${lab}</span>`:''}</span></${attr?'button':'div'}>`;
 }
 function handEl(h,p){
   const d=DEF[h.id],pr=S.prompt;let st='';
@@ -1200,7 +1203,7 @@ function handEl(h,p){
 const CATWORD=[[/\b(Martir[ei])\b/g,'Martiri'],[/\b(Miracol[io])\b/g,'Miracoli'],[/\b(Mistic[oi])\b/g,'Mistici'],[/\b(Devot[oi])\b/g,'Devoti'],[/\b(Comunist[ai])\b/g,'Comunisti'],[/\b(Artist[ai])\b/g,'Artisti'],[/\b(Persecutor[ei])\b/g,'Persecutori'],[/\b(Demon[ei]|Eretic[oi])\b/g,'Demoni ed Eretici']];
 function catTint(h){for(const [re,k] of CATWORD)h=h.replace(re,`<b class="kw" style="--cc:${CATCOL[k]}">$1</b>`);return h}
 function fxHtml(d){
-  return`<div class="fx"><span class="sym">${esc(SYM[d.id]||'')}</span><span>${catTint(esc(d.m))}</span></div>`;
+  return`<div class="fx"><span class="sym">${symHtml(d.id)}</span><span>${catTint(esc(d.m))}</span></div>`;
 }
 function precOwner(){
   const paid=[0,1].map(p=>S.players[p].paid);
