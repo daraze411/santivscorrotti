@@ -382,7 +382,7 @@ D('barbara','Santa Barbara',0,'Martiri',2,2,'Elimina una carta avversaria scoper
 D('lorenzo','San Lorenzo',0,'Martiri',1,2,'Se viene eliminato da una carta avversaria, elimina anche quella carta. Funziona anche quando San Lorenzo è coperto.',null,null),
 D('gennaro','San Gennaro',0,'Miracoli',3,3,'Se vinci il primo round elimini definitivamente due carte avversarie anziché una.',null,null),
 D('rocco','San Rocco',0,'Miracoli',2,3,'Se una carta sta per essere eliminata, San Rocco la protegge, riducendo il proprio Dominio a 1.',null,null),
-D('pantaleone','San Pantaleone',0,'Miracoli',2,2,'Elimina un Comunista o un Eretico avversario, scoperto o coperto.',null,null),
+D('pantaleone','San Pantaleone',0,'Miracoli',2,2,'Elimina un Comunista o un Eretico avversario, scoperto o coperto. Se scegli una carta coperta che non lo è, non succede nulla.',null,null),
 D('rita','Santa Rita',0,'Miracoli',3,2,'Tutti i tuoi Santi ottengono +1 Dominio.',null,null),
 D('pietro','San Pietro',0,'Mistici',3,3,'Rimette in gioco una tua carta eliminata, nello slot originario. Il suo effetto non viene riattivato.',null,null),
 D('benedetto','San Benedetto',0,'Mistici',2,2,'Annulla l’effetto principale della prossima carta avversaria ad attivarsi.',null,null),
@@ -405,7 +405,7 @@ D('nerone','Nerone',1,'Persecutori',3,3,'Tutte le carte avversarie scoperte perd
 D('giuliano','Giuliano l’Apostata',1,'Persecutori',2,2,'Se hai un Artista scoperto, −2 Dominio a una carta avversaria.',null,null),
 D('lutero','Martin Lutero',1,'Persecutori',2,2,'Se è la prima carta dei Corrotti ad attivarsi, ottiene +3 Dominio.',null,null),
 D('lucifero','Lucifero',1,'Demoni ed Eretici',3,2,'Elimina una carta avversaria scoperta.',null,null,'demone'),
-D('belzebu','Belzebù',1,'Demoni ed Eretici',3,3,'Elimina un Martire avversario, scoperto o coperto.',null,null,'demone'),
+D('belzebu','Belzebù',1,'Demoni ed Eretici',3,3,'Elimina un Martire avversario, scoperto o coperto. Se scegli una carta coperta che non è un Martire, non succede nulla.',null,null,'demone'),
 D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,'Puoi eliminare un tuo Comunista già schierato, anche coperto: se lo fai, Giordano Bruno ottiene +3 Dominio.',null,null,'eretico'),
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.',null,null,'eretico'),
 ];
@@ -445,11 +445,10 @@ const RULES=[
  '“A sinistra” indica la carta nello slot precedente della stessa riga.',
  'Le carte si schierano sempre coperte e si scoprono quando si attivano: “scoperta” significa quindi già attivata. L’avversario vede solo la posizione e l’iniziativa di una carta coperta.',
  'All’inizio di ogni turno di schieramento si pesca fino a 4 carte.',
- 'San Pantaleone può colpire solo carte che conosci (scoperte o già guardate). Gli Eretici sono Giordano Bruno e Galileo.',
+ 'Belzebù e San Pantaleone possono puntare anche una carta coperta che non conosci, alla cieca: se è della categoria giusta viene eliminata, altrimenti non succede nulla. Gli Eretici sono Giordano Bruno e Galileo.',
  'San Rocco: dopo essersi attivato protegge le altre tue carte, anche coperte, fino a fine round. Interviene da solo, la prima volta che una tua carta sta per essere eliminata, e solo se è ancora in gioco con Dominio superiore a 1.',
  'Engels: le due carte possono essere anche avversarie; servono almeno due carte in gioco.',
  'Paolo Brosio: la nuova carta prende posizione, orientamento e gettoni iniziativa di quella sostituita, non si paga, e la carta sostituita va negli scarti.',
- 'Belzebù può colpire un Martire coperto solo se ne conosce l’identità, per esempio dopo averlo guardato con Galileo.',
  'San Gennaro: le due eliminazioni definitive valgono se San Gennaro si è attivato nel primo round, anche se poi è stato eliminato.',
  'Una carta eliminata va negli scarti e mostra la sua identità.',
  'Dopo il secondo round non si eliminano carte definitivamente.',
@@ -690,7 +689,7 @@ const MAIN={
   async rocco(c){c.guard=true;log(`${c.def.name} protegge le altre carte dei ${FAC[c.owner]} fino a fine round.`)},
   async gennaro(c){if(S.round===1){S.players[c.owner].gen=true;log('San Gennaro: se i Santi vincono il primo round, elimineranno definitivamente due carte.')}else log('San Gennaro: nel secondo round il suo effetto principale non ha conseguenze.')},
   async pantaleone(c){const p=c.owner,er=true;
-    const t=await pick(p,`San Pantaleone: elimina un Comunista${er?' o un Eretico':''}`,live(1-p).filter(x=>canShow(x,p)&&(x.def.cat==='Comunisti'||(er&&x.def.sub==='eretico'))));if(t)await eliminate(t,c)},
+    const t=await pick(p,`San Pantaleone: elimina un Comunista${er?' o un Eretico':''}`,live(1-p).filter(x=>canShow(x,p)?(x.def.cat==='Comunisti'||(er&&x.def.sub==='eretico')):!x.faceUp));if(t){if(t.def.cat==='Comunisti'||t.def.sub==='eretico')await eliminate(t,c);else log('San Pantaleone: non era un Comunista né un Eretico, nessun effetto.')}},
   async rita(c){const xs=live(c.owner).filter(x=>x.def.f===0);xs.forEach(x=>addDom(x,1));log(xs.length?`Santa Rita: +1 Dominio a ${xs.map(pn).join(', ')}.`:'Santa Rita: nessun Santo in gioco.')},
   async pietro(c){const p=c.owner,P=S.players[p];
     const ok=x=>P.discard.some(d=>d.uid===x.cardUid)||P.deck.some(d=>d.uid===x.cardUid);
@@ -742,8 +741,8 @@ const MAIN={
   async lutero(c){if(S.actCount[c.owner]===0){addDom(c,3);log('Martin Lutero apre il round: +3 Dominio.')}else log('Martin Lutero non è la prima carta dei Corrotti.')},
   async lucifero(c){const p=c.owner;const t=await pick(p,'Lucifero: elimina una carta avversaria scoperta',live(1-p).filter(x=>x.faceUp));if(t)await eliminate(t,c)},
   async belzebu(c){const p=c.owner;
-    const t=await pick(p,'Belzebù: elimina un Martire avversario',live(1-p).filter(x=>canShow(x,p)&&x.def.cat==='Martiri'),{ai:x=>canShow(x,p)?harm(x,p):1.6});
-    if(t)await eliminate(t,c)},
+    const t=await pick(p,'Belzebù: elimina un Martire avversario',live(1-p).filter(x=>canShow(x,p)?x.def.cat==='Martiri':!x.faceUp),{ai:x=>canShow(x,p)?harm(x,p):1.6});
+    if(t){if(t.def.cat==='Martiri')await eliminate(t,c);else log(`Belzebù: non era un Martire, nessun effetto.`)}},
   async baudelaire(c){const x=await pick(c.owner,'Baudelaire: aggiungi un gettone iniziativa a una carta avversaria',live(1-c.owner).filter(tokOk));
     if(x){const b=init(x);x.tokens++;log(`${pn(x)} riceve un gettone iniziativa: ${b} → ${init(x)}.`)}},
   async bruno(c){const x=await pick(c.owner,'Giordano Bruno: puoi eliminare un tuo Comunista per ottenere +3 Dominio',live(c.owner).filter(x=>!x.fixed&&x.def.cat==='Comunisti'),{optional:true,ai:x=>3-x.dom});
