@@ -135,7 +135,11 @@ h1{font-family:var(--f-display);font-weight:400;margin:0;line-height:1;text-wrap
 .sheet h2{font-family:var(--f-display);font-weight:400;font-size:19px;margin:0;line-height:1.15;text-wrap:balance}
 .fx{font-size:14px;display:flex;flex-direction:column;gap:3px}
 .fx b{font-weight:700}
-.fx .sym{font-size:1.25em;font-weight:700;letter-spacing:.02em;color:var(--ink,#2b2340)}
+.fx .sym{font-size:1.25em;font-weight:700;letter-spacing:.02em;color:var(--fg)}
+.hsym,.csym{font-weight:700;color:var(--fg);line-height:1.15;text-wrap:balance;overflow-wrap:anywhere}
+.hsym{font-size:13px}.hand.bighand .hsym{font-size:15px}
+.csym{font-size:10.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.bigrow .card .csym{font-size:13px}
 .opts{display:flex;flex-wrap:wrap;gap:6px}
 .opt{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 11px;cursor:pointer;text-align:left;font-size:14px;min-width:0}
 .opt.on{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
@@ -401,7 +405,7 @@ D('belzebu','Belzebù',1,'Demoni ed Eretici',3,3,'Elimina un Martire avversario,
 D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,'Puoi eliminare un tuo Comunista già schierato, anche coperto: se lo fai, Giordano Bruno ottiene +3 Dominio.',null,null,'eretico'),
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.',null,null,'eretico'),
 ];
-const SYM={'giorgio': '☠ avv.', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ scoperta · Dom ≤ 2', 'lorenzo': '⛨ se eliminato: ☠ chi lo colpisce', 'gennaro': 'vinci il round 1: ☠☠', 'rocco': '⛨ una tua carta', 'pantaleone': '☠ Comunista o Eretico', 'rita': '▲1 tutti i tuoi Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima carta avv.', 'lucia': '👁 carta coperta', 'paolo': '▼2 avv.', 'ferretti': '☠ Comunista o Artista scoperto · Dom ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti', 'lenin': '☠ scoperta · se hai un Comunista', 'stalin': '☠ scoperta · ▼1 una tua', 'engels': '▲1 due carte', 'ozzy': '▼1 una categoria avv.', 'siffredi': '▲2 se è l’ultima', 'baudelaire': '◐+ avv.', 'dali': '⇄ Dominio di due carte', 'diocleziano': '☠ coperta', 'nerone': '▼1 tutte le avv. scoperte', 'giuliano': '▼2 avv. · se hai un Artista', 'lutero': '▲3 se è la prima', 'lucifero': '☠ scoperta', 'belzebu': '☠ Martire', 'bruno': '☠ un tuo Comunista → ▲3', 'galileo': '◐⇄ due carte coperte'};
+const SYM={'giorgio': '☠ avv.', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ scoperta · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta', 'pantaleone': '☠ Comunista/Eretico', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima avv.', 'lucia': '👁 coperta', 'paolo': '▼2 avv.', 'ferretti': '☠ Comunista/Artista ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti', 'lenin': '☠ scoperta · se Comunista', 'stalin': '☠ scoperta · ▼1 mia', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria avv.', 'siffredi': '▲2 se è l’ultima', 'baudelaire': '◐+ avv.', 'dali': '⇄ Dominio di due carte', 'diocleziano': '☠ coperta', 'nerone': '▼1 tutte avv. scoperte', 'giuliano': '▼2 avv. · se Artista', 'lutero': '▲3 se è la prima', 'lucifero': '☠ scoperta', 'belzebu': '☠ Martire', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ due carte coperte'};
 const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));
 const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
   marx:'Plusvalore',lenin:'Obladi oblada',stalin:'Grande purga',ozzy:'Pipistrello',siffredi:'Gran finale',baudelaire:'Fiori malvagi',dali:'Baffi onirici',diocleziano:'Editto letale',nerone:'Fuoco nel fuoco',lutero:'Lutero è mio e lo gestisco io',galileo:'Dito medio',bruno:'Mente ardente',engels:'Fedeltà totale',giuliano:'Nostalgia canaglia',lucifero:'Amore disperato',belzebu:'Fame insaziabile'};
@@ -1175,14 +1179,14 @@ function cardEl(c,i){
   if(chosen)tags.unshift('✓ scelta');
   const tg=tags.length?`<span class="tags">${tags.join(' · ')}</span>`:'';
   return`<button class="card ${c.owner?'cor':'san'} ${show?'art':'back'} ${c.faceUp?'':'down'} ${c.eliminated?'dead':''} ${chosen?'chosen':tgt?'tgt':''}" data-card="${c.uid}" aria-label="${esc(show?c.def.name:'Carta coperta')}">
-    ${show?`${pic(c.def)}<span class="mid"><span class="nm ${c.def.name.length>15?'lg':''}">${esc(c.def.name)}</span>${nick(c.def)}${tg}</span>`
+    ${show?`${pic(c.def)}<span class="mid"><span class="nm ${c.def.name.length>15?'lg':''}">${esc(c.def.name)}</span><span class="csym">${esc(SYM[c.def.id]||'')}</span>${tg}</span>`
           :`<span class="mid"><span class="ico">${ico('back'+c.owner)}</span><span class="nm q">${FAC[c.owner]}</span>${tg}</span>`}
     <span class="foot"><span class="ini ${iniCls(c)}" title="Iniziativa">${iniTxt(c)}</span>${show?`<span class="dom ${dc}" title="Dominio">${c.dom}</span>`:''}</span></button>`;
 }
 function hcardHtml(d,cost,st,attr){
   const lab=st==='sel'?'scarta':st==='play'?'in gioco':'';
   return`<${attr?'button':'div'} class="hcard ${d.f?'cor':'san'} ${st||''}" ${attr||''}><span class="card art ${d.f?'cor':'san'} himg">${pic(d)}</span>
-    <span class="hcap"><span class="hnm">${esc(d.name)}</span>${nick(d)}<span class="hnum"><span class="ini" title="Costo">${cost}</span><span class="hlab">costo · dominio</span><span class="dom" title="Dominio">${d.dom}</span></span>${lab?`<span class="hst">${lab}</span>`:''}</span></${attr?'button':'div'}>`;
+    <span class="hcap"><span class="hnm">${esc(d.name)}</span><span class="hsym">${esc(SYM[d.id]||'')}</span><span class="hnum"><span class="ini" title="Costo">${cost}</span><span class="hlab">costo · dominio</span><span class="dom" title="Dominio">${d.dom}</span></span>${lab?`<span class="hst">${lab}</span>`:''}</span></${attr?'button':'div'}>`;
 }
 function handEl(h,p){
   const d=DEF[h.id],pr=S.prompt;let st='';
