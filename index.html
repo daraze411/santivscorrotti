@@ -381,7 +381,7 @@ D('sebastiano','San Sebastiano',0,'Martiri',3,3,'Non può essere eliminato.',nul
 D('barbara','Santa Barbara',0,'Martiri',2,2,'Elimina una carta avversaria scoperta con Dominio ≤ 2.',null,null),
 D('lorenzo','San Lorenzo',0,'Martiri',1,2,'Se viene eliminato da una carta avversaria, elimina anche quella carta. Funziona anche quando San Lorenzo è coperto.',null,null),
 D('gennaro','San Gennaro',0,'Miracoli',3,3,'Se vinci il primo round elimini definitivamente due carte avversarie anziché una.',null,null),
-D('rocco','San Rocco',0,'Miracoli',2,3,'Se una carta sta per essere eliminata, San Rocco la protegge, riducendo il proprio Dominio a 1.',null,null),
+D('rocco','San Rocco',0,'Miracoli',2,3,'Se una carta sta per essere eliminata, anche San Rocco stesso, la protegge e il suo Dominio scende a 1.',null,null),
 D('pantaleone','San Pantaleone',0,'Miracoli',2,2,'Elimina un Comunista o un Eretico avversario, scoperto o coperto. Se scegli una carta coperta che non lo è, non succede nulla.',null,null),
 D('rita','Santa Rita',0,'Miracoli',3,2,'Tutti i tuoi Santi ottengono +1 Dominio.',null,null),
 D('pietro','San Pietro',0,'Mistici',3,3,'Rimette in gioco una tua carta eliminata, nello slot originario. Il suo effetto non viene riattivato.',null,null),
@@ -409,7 +409,7 @@ D('belzebu','Belzebù',1,'Demoni ed Eretici',3,3,'Elimina un Martire avversario 
 D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,'Puoi eliminare un tuo Comunista già schierato, anche coperto: se lo fai, Giordano Bruno ottiene +3 Dominio.',null,null,'eretico'),
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.',null,null,'eretico'),
 ];
-const SYM={'giorgio': '☠ avv. 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta', 'pantaleone': '☠ Comunista/Eretico 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima avv.', 'lucia': '🔍 {c}', 'paolo': '▼2 avv.', 'ferretti': '☠ 👁 Comunista/Artista ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 mia', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria avv. 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ avv.', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ avv.', 'nerone': '▼1 tutte avv. 👁', 'giuliano': '▼2 avv. · se Artista', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁 · o ⛨ {c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}'};
+const SYM={'giorgio': '☠ ↑ 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta (anche sé)', 'pantaleone': '☠ Comunista/Eretico 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima ↑', 'lucia': '🔍 {c}', 'paolo': '▼2 ↑', 'ferretti': '☠ 👁 Comunista/Artista ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 ↓', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria ↑ 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ ↑', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ ↑', 'nerone': '▼1 tutte ↑ 👁', 'giuliano': '▼2 ↑ · se Artista 👁', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁 · o ⛨ {c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}'};
 const symHtml=id=>esc(SYM[id]||'').replace(/\{c\}/g,'<i class="eyec">👁</i>');
 const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));
 const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
@@ -439,14 +439,14 @@ function pic(d){
 const RULES=[
  'Sulle carte: a sinistra l’iniziativa, a destra il Dominio. Un numero colorato indica un valore cambiato durante il round. In mano il numero a sinistra è il costo.',
  'Ogni carta entra in campo con tanti gettoni iniziativa quanto il suo costo. Togliere un gettone iniziativa abbassa l’iniziativa di 1, aggiungerlo la alza di 1. Si può togliere un gettone iniziativa da qualsiasi carta con iniziativa sopra zero.',
- 'Simboli: ☠ elimina · ▲ più Dominio · ▼ meno Dominio · ◐ gettoni iniziativa · ⛨ proteggi o annulla · ↺ sostituisci o rimetti in gioco · 🔍 guarda una carta coperta · 👁 carta scoperta, cioè già attivata · occhio barrato: carta coperta, non ancora attivata.',
+ 'Simboli: ☠ elimina · ▲ più Dominio · ▼ meno Dominio · ◐ gettoni iniziativa · ⛨ proteggi o annulla · ↺ sostituisci o rimetti in gioco · 🔍 guarda una carta coperta · 👁 carta scoperta, cioè già attivata · occhio barrato: carta coperta, non ancora attivata · ↑ lato avversario · ↓ lato tuo.',
  'Regola base: un effetto che elimina colpisce solo carte coperte, a meno che la carta non dica altrimenti (👁 scoperta, oppure 👁 e occhio barrato insieme: scoperta o coperta).',
  'Scambiare i gettoni iniziativa di due carte significa scambiarne l’iniziativa.',
  '“A sinistra” indica la carta nello slot precedente della stessa riga.',
  'Le carte si schierano sempre coperte e si scoprono quando si attivano: “scoperta” significa quindi già attivata. L’avversario vede solo la posizione e l’iniziativa di una carta coperta.',
  'All’inizio di ogni turno di schieramento si pesca fino a 4 carte.',
  'San Pantaleone può puntare anche una carta coperta che non conosci, alla cieca: se è della categoria giusta viene eliminata, altrimenti non succede nulla. Belzebù non elimina carte coperte: ne annulla l’effetto, che è perso anche se la carta si attiva. Gli Eretici sono Giordano Bruno e Galileo.',
- 'San Rocco: dopo essersi attivato protegge le altre tue carte, anche coperte, fino a fine round. Interviene da solo, la prima volta che una tua carta sta per essere eliminata, e solo se è ancora in gioco con Dominio superiore a 1.',
+ 'San Rocco: dopo essersi attivato protegge le tue carte, anche coperte, e anche sé stesso, fino a fine round. Interviene da solo, la prima volta che una tua carta sta per essere eliminata, e solo se è ancora in gioco con Dominio superiore a 1.',
  'Engels: le due carte possono essere anche avversarie; servono almeno due carte in gioco.',
  'Paolo Brosio: la nuova carta prende posizione, orientamento e gettoni iniziativa di quella sostituita, non si paga, e la carta sostituita va negli scarti.',
  'San Gennaro: le due eliminazioni definitive valgono se San Gennaro si è attivato nel primo round, anche se poi è stato eliminato.',
@@ -631,8 +631,8 @@ async function eliminate(t,src){
       opts:[{label:'Intervieni',v:true,main:true,ai:t.dom-0.5},{label:'Lascia eliminare',v:false,ai:0}]});
     if(go){addDom(r,-1);log(`${r.def.name} interviene e salva ${pn(t)}: perde 1 Dominio.`);return false}
     log(`${r.def.name} non interviene.`)}
-  {const r=live(t.owner).find(x=>x.guard&&x!==t&&!x.lost&&x.dom>1);
-   if(r){r.dom=1;log(`${r.def.name} salva ${pn(t)}: il suo Dominio scende a 1.`);return false}}
+  {const r=live(t.owner).find(x=>x.guard&&!x.lost&&x.dom>1);
+   if(r){r.dom=1;log(r===t?`${r.def.name} resiste: il suo Dominio scende a 1.`:`${r.def.name} salva ${pn(t)}: il suo Dominio scende a 1.`);return false}}
   t.eliminated=true;
   S.players[t.owner].discard.push({uid:t.cardUid,id:t.id});
   log(`${t.def.name} (${FAC[t.owner]}) viene eliminato.`);
