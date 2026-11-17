@@ -405,11 +405,11 @@ D('nerone','Nerone',1,'Persecutori',3,3,'Tutte le carte avversarie scoperte perd
 D('giuliano','Giuliano l’Apostata',1,'Persecutori',2,2,'Se hai un Artista scoperto, −2 Dominio a una carta avversaria.',null,null),
 D('lutero','Martin Lutero',1,'Persecutori',2,2,'Se è la prima carta dei Corrotti ad attivarsi, ottiene +3 Dominio.',null,null),
 D('lucifero','Lucifero',1,'Demoni ed Eretici',3,2,'Elimina una carta avversaria scoperta.',null,null,'demone'),
-D('belzebu','Belzebù',1,'Demoni ed Eretici',3,3,'Elimina un Martire avversario, scoperto o coperto. Se scegli una carta coperta che non è un Martire, non succede nulla.',null,null,'demone'),
+D('belzebu','Belzebù',1,'Demoni ed Eretici',3,3,'Elimina un Martire avversario scoperto, oppure annulla l’effetto di una carta avversaria coperta.',null,null,'demone'),
 D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,'Puoi eliminare un tuo Comunista già schierato, anche coperto: se lo fai, Giordano Bruno ottiene +3 Dominio.',null,null,'eretico'),
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.',null,null,'eretico'),
 ];
-const SYM={'giorgio': '☠ avv. 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta', 'pantaleone': '☠ Comunista/Eretico 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima avv.', 'lucia': '🔍 {c}', 'paolo': '▼2 avv.', 'ferretti': '☠ 👁 Comunista/Artista ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 mia', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria avv. 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ avv.', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ avv.', 'nerone': '▼1 tutte avv. 👁', 'giuliano': '▼2 avv. · se Artista', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁{c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}'};
+const SYM={'giorgio': '☠ avv. 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta', 'pantaleone': '☠ Comunista/Eretico 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima avv.', 'lucia': '🔍 {c}', 'paolo': '▼2 avv.', 'ferretti': '☠ 👁 Comunista/Artista ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 mia', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria avv. 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ avv.', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ avv.', 'nerone': '▼1 tutte avv. 👁', 'giuliano': '▼2 avv. · se Artista', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁 · o ⛨ {c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}'};
 const symHtml=id=>esc(SYM[id]||'').replace(/\{c\}/g,'<i class="eyec">👁</i>');
 const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));
 const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
@@ -445,7 +445,7 @@ const RULES=[
  '“A sinistra” indica la carta nello slot precedente della stessa riga.',
  'Le carte si schierano sempre coperte e si scoprono quando si attivano: “scoperta” significa quindi già attivata. L’avversario vede solo la posizione e l’iniziativa di una carta coperta.',
  'All’inizio di ogni turno di schieramento si pesca fino a 4 carte.',
- 'Belzebù e San Pantaleone possono puntare anche una carta coperta che non conosci, alla cieca: se è della categoria giusta viene eliminata, altrimenti non succede nulla. Gli Eretici sono Giordano Bruno e Galileo.',
+ 'San Pantaleone può puntare anche una carta coperta che non conosci, alla cieca: se è della categoria giusta viene eliminata, altrimenti non succede nulla. Belzebù non elimina carte coperte: ne annulla l’effetto, che è perso anche se la carta si attiva. Gli Eretici sono Giordano Bruno e Galileo.',
  'San Rocco: dopo essersi attivato protegge le altre tue carte, anche coperte, fino a fine round. Interviene da solo, la prima volta che una tua carta sta per essere eliminata, e solo se è ancora in gioco con Dominio superiore a 1.',
  'Engels: le due carte possono essere anche avversarie; servono almeno due carte in gioco.',
  'Paolo Brosio: la nuova carta prende posizione, orientamento e gettoni iniziativa di quella sostituita, non si paga, e la carta sostituita va negli scarti.',
@@ -741,8 +741,9 @@ const MAIN={
   async lutero(c){if(S.actCount[c.owner]===0){addDom(c,3);log('Martin Lutero apre il round: +3 Dominio.')}else log('Martin Lutero non è la prima carta dei Corrotti.')},
   async lucifero(c){const p=c.owner;const t=await pick(p,'Lucifero: elimina una carta avversaria scoperta',live(1-p).filter(x=>x.faceUp));if(t)await eliminate(t,c)},
   async belzebu(c){const p=c.owner;
-    const t=await pick(p,'Belzebù: elimina un Martire avversario',live(1-p).filter(x=>canShow(x,p)?x.def.cat==='Martiri':!x.faceUp),{ai:x=>canShow(x,p)?harm(x,p):1.6});
-    if(t){if(t.def.cat==='Martiri')await eliminate(t,c);else log(`Belzebù: non era un Martire, nessun effetto.`)}},
+    const t=await pick(p,'Belzebù: elimina un Martire scoperto, oppure annulla l’effetto di una carta coperta',live(1-p).filter(x=>x.faceUp?x.def.cat==='Martiri':!x.activated),{ai:x=>x.faceUp?harm(x,p)+1:1.2});
+    if(!t)return;
+    if(t.faceUp)await eliminate(t,c);else{t.lost=true;log(`Belzebù: ${pn(t)} perde il proprio effetto.`)}},
   async baudelaire(c){const x=await pick(c.owner,'Baudelaire: aggiungi un gettone iniziativa a una carta avversaria',live(1-c.owner).filter(tokOk));
     if(x){const b=init(x);x.tokens++;log(`${pn(x)} riceve un gettone iniziativa: ${b} → ${init(x)}.`)}},
   async bruno(c){const x=await pick(c.owner,'Giordano Bruno: puoi eliminare un tuo Comunista per ottenere +3 Dominio',live(c.owner).filter(x=>!x.fixed&&x.def.cat==='Comunisti'),{optional:true,ai:x=>3-x.dom});
@@ -803,7 +804,7 @@ function oppView(p){
 }
 /* quanto un killer avversario può colpire proprio questa carta */
 function hits(kid,d,up){
-  if(!up)return kid==='belzebu'?(d.cat==='Martiri'?.3:0):({diocleziano:1,giorgio:1,paolo:.4}[kid]||0);
+  if(!up)return kid==='belzebu'?.35:({diocleziano:1,giorgio:1,paolo:.4}[kid]||0);
   switch(kid){
     case 'belzebu':return d.cat==='Martiri'?1:0;
     case 'barbara':return d.dom<=2?1:d.dom<=3?.5:0;
@@ -831,7 +832,7 @@ function mainValue(id,p){
     case 'giorgio':return el(()=>true)-0.6;
     case 'barbara':return el(x=>x.faceUp&&x.dom<=2)
     case 'lucifero':return el(x=>x.faceUp)+0.3;
-    case 'belzebu':return el(x=>canShow(x,p)&&x.def.cat==='Martiri');
+    case 'belzebu':return Math.max(1.2,el(x=>x.faceUp&&x.def.cat==='Martiri'));
     case 'lenin':return (commUp||commHand?1:0.15)*el(x=>x.faceUp);
     case 'stalin':return el(x=>x.faceUp)-0.8;
     case 'diocleziano':return el(x=>!x.faceUp);
