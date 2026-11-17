@@ -369,7 +369,7 @@ const D=(id,name,f,cat,cost,dom,m,s,c,sub)=>({id,name,f,cat,cost,dom,m,s,c,sub})
 const DEFS=[
 D('giorgio','San Giorgio',0,'Martiri',3,2,'Elimina una carta avversaria, scoperta o coperta.',null,'Annulla l’effetto principale della tua prossima carta ad attivarsi. Se San Giorgio è l’ultima delle tue carte ad attivarsi, devi invece eliminare una tua carta in gioco, a tua scelta.'),
 D('sebastiano','San Sebastiano',0,'Martiri',3,3,'Non può essere eliminato.',null,'Il suo Dominio diventa 1 se, al momento dell’attivazione, l’avversario ha già attivato più carte di te.'),
-D('barbara','Santa Barbara',0,'Martiri',2,2,'Elimina una carta avversaria scoperta con Dominio ≤ 2, oppure ≤ 3 se hai un Mistico già attivato e ancora in gioco.','L’avversario sostituisce l’ultima carta che ha schierato con una dalla propria mano, se possibile. La nuova carta conserva i gettoni iniziativa e non va pagata.',null),
+D('barbara','Santa Barbara',0,'Martiri',2,2,'Elimina una carta avversaria scoperta con Dominio ≤ 2, oppure ≤ 3 se hai un Mistico già attivato e ancora in gioco.',null,null),
 D('lorenzo','San Lorenzo',0,'Martiri',1,2,'Se viene eliminato da una carta avversaria, elimina anche quella carta. Funziona anche quando San Lorenzo è coperto.','Togli un gettone iniziativa da una tua carta.',null),
 D('gennaro','San Gennaro',0,'Miracoli',3,4,'Se vinci il primo round elimini definitivamente due carte avversarie anziché una.',null,'La carta alla sua sinistra perde il proprio effetto se coperta, oppure il proprio Dominio se scoperta.'),
 D('rocco','San Rocco',0,'Miracoli',2,3,'Se una carta sta per essere eliminata, San Rocco la protegge, riducendo il proprio Dominio a 1.','Aggiungi un gettone iniziativa a una carta avversaria.',null),
@@ -383,17 +383,17 @@ D('ferretti','Giovanni Lindo Ferretti',0,'Devoti',3,4,'Elimina un Comunista o un
 D('adinolfi','Mario Adinolfi',0,'Devoti',2,3,'Un altro Santo ottiene +1 Dominio.',null,'Se hai ≥ 2 altre carte scoperte, Mario Adinolfi ottiene +1 Dominio.'),
 D('koll','Claudia Koll',0,'Devoti',2,2,'Due Santi ottengono +1 Dominio.',null,'L’avversario può togliere fino a 2 gettoni iniziativa da qualsiasi carta, anche dalle proprie.'),
 D('brosio','Paolo Brosio',0,'Devoti',2,2,'Sostituisci una tua carta non ancora attivata con una carta dalla tua mano.',null,null),
-D('marx','Karl Marx',1,'Comunisti',2,2,'+1 Dominio agli altri Comunisti scoperti.','Il prossimo Comunista che schieri costa 1 in meno.',null),
+D('marx','Karl Marx',1,'Comunisti',2,2,'+1 Dominio agli altri Comunisti scoperti.',null,null),
 D('lenin','Vladimir Lenin',1,'Comunisti',3,2,'Se hai un altro Comunista scoperto, elimina una carta avversaria scoperta.',null,null),
 D('stalin','Joseph Stalin',1,'Comunisti',2,3,'Elimina una carta avversaria scoperta e un altro tuo Comunista scoperto. Se non puoi eliminarli entrambi, l’effetto non si applica. Stalin non può sacrificare sé stesso.','Togli un gettone iniziativa da un tuo Corrotto.',null),
 D('engels','Friedrich Engels',1,'Comunisti',1,2,'Due carte differenti ottengono +1 Dominio ciascuna. Engels può essere una delle due.',null,null),
-D('ozzy','Ozzy Osbourne',1,'Artisti',2,2,'Scegli una categoria avversaria: −1 Dominio a tutte le sue carte scoperte, anche a quelle che verranno scoperte dopo.','Ozzy ottiene +1 Dominio.',null),
+D('ozzy','Ozzy Osbourne',1,'Artisti',2,2,'Scegli una categoria avversaria: −1 Dominio a tutte le sue carte scoperte, anche a quelle che verranno scoperte dopo.',null,null),
 D('siffredi','Rocco Siffredi',1,'Artisti',2,2,'Se è l’ultima carta dei Corrotti ad attivarsi, ottiene +2 Dominio.',null,null),
-D('baudelaire','Charles Baudelaire',1,'Artisti',3,4,null,'Aggiungi un gettone iniziativa a una carta avversaria.','Se viene eliminato, anche prima di attivarsi, −1 Dominio a un’altra carta a tua scelta.'),
+D('baudelaire','Charles Baudelaire',1,'Artisti',3,3,null,'Aggiungi un gettone iniziativa a una carta avversaria.','Se viene eliminato, anche prima di attivarsi, −1 Dominio a un’altra carta a tua scelta.'),
 D('dali','Salvador Dalí',1,'Artisti',2,2,'Scambia i valori attuali di Dominio di due carte scoperte.',null,null),
 D('diocleziano','Diocleziano',1,'Persecutori',3,1,'Elimina una carta avversaria coperta.',null,null),
 D('nerone','Nerone',1,'Persecutori',3,3,'Se hai un Demone o Eretico già attivato, copia l’effetto principale di un altro Corrotto già attivato e ancora in gioco.',null,null),
-D('giuliano','Giuliano l’Apostata',1,'Persecutori',2,2,'Se hai un Artista scoperto, −2 Dominio a una carta avversaria.','Annulla il prossimo effetto da schieramento scoperto dell’avversario.',null),
+D('giuliano','Giuliano l’Apostata',1,'Persecutori',2,2,'Se hai un Artista scoperto, −2 Dominio a una carta avversaria.','Annulla il prossimo effetto «Inoltre» dell’avversario.',null),
 D('lutero','Martin Lutero',1,'Persecutori',2,2,'Scegli una tua carta che non si è ancora attivata. Il suo effetto secondario è annullato.',null,null),
 D('lucifero','Lucifero',1,'Demoni ed Eretici',3,3,'Elimina una carta avversaria scoperta. Se hai un Persecutore già attivato, −1 Dominio a un’altra carta avversaria.',null,'L’avversario pesca 2 carte dal proprio mazzo e applica subito l’effetto principale di quella meno costosa.','demone'),
 D('belzebu','Belzebù',1,'Demoni ed Eretici',3,2,'Elimina un Martire avversario, scoperto o coperto.',null,null,'demone'),
@@ -428,16 +428,16 @@ function pic(d){
 const RULES=[
  'Sulle carte: a sinistra l’iniziativa, a destra il Dominio. Un numero colorato indica un valore cambiato durante il round. In mano il numero a sinistra è il costo.',
  'Ogni carta entra in campo con tanti gettoni iniziativa quanto il suo costo. Togliere un gettone iniziativa abbassa l’iniziativa di 1, aggiungerlo la alza di 1. Si può togliere un gettone iniziativa da qualsiasi carta con iniziativa sopra zero.',
- 'Ogni carta giocata scoperta permette di togliere un gettone iniziativa da una propria carta a scelta, anche diversa da quella giocata.',
  'Scambiare i gettoni iniziativa di due carte significa scambiarne l’iniziativa.',
  '“A sinistra” indica la carta nello slot precedente della stessa riga.',
  'Lucifero (secondario): i bersagli dell’effetto pescato li sceglie l’avversario, che a pari costo decide anche quale carta usare. Poi la carta usata va negli scarti e l’altra torna in fondo al mazzo. Gli effetti secondari non si applicano.',
  'San Pietro (secondario): raddoppia solo l’effetto principale all’attivazione, non i passivi. Fra le carte coperte si sceglie alla cieca; fra le scoperte, una che abbia un effetto principale.',
- 'Una carta coperta che si attiva viene girata e da quel momento conta come scoperta.',
- 'All’inizio di ogni turno di schieramento si pesca fino a 4 carte (serve dopo Santa Barbara).',
+ 'Le carte si schierano sempre coperte e si scoprono quando si attivano: “scoperta” significa quindi già attivata. L’avversario vede solo la posizione e l’iniziativa di una carta coperta.',
+ 'Ogni carta può avere un effetto «Inoltre»: si applica all’attivazione, subito dopo l’effetto principale.',
+ 'All’inizio di ogni turno di schieramento si pesca fino a 4 carte.',
  'San Giorgio: “ultima carta ad attivarsi” significa l’ultima fra le tue.',
  'San Pantaleone può colpire solo carte che conosci (scoperte o già guardate). Gli Eretici sono Giordano Bruno e Galileo.',
- 'Giuliano l’Apostata (scoperta): annulla il prossimo effetto da schieramento scoperto dell’avversario.',
+ 'Giuliano l’Apostata (inoltre): annulla il prossimo effetto «Inoltre» dell’avversario.',
  'Stalin: serve sia un bersaglio sia un Comunista da sacrificare, altrimenti non succede nulla.',
  'San Rocco: dopo essersi attivato protegge le altre tue carte, anche coperte, fino a fine round. Interviene da solo, la prima volta che una tua carta sta per essere eliminata, e solo se è ancora in gioco con Dominio superiore a 1.',
  'Engels: le due carte possono essere anche avversarie; servono almeno due carte in gioco.',
@@ -603,10 +603,7 @@ async function actRecap(c,mark,ini){
   if(FAST)return;
   const n=S.log.length-mark;
   let lines=S.log.slice(0,Math.max(0,n)).reverse().map(l=>l.t).filter(t=>!t.startsWith('▸')&&!t.startsWith('Si rivela'));
-  if(!lines.length)lines=[MAIN[c.id]||SEC[c.id]?'Non succede nulla: nessun bersaglio valido o condizione non soddisfatta.'
-    :c.def.s?(c.depUp?`${c.def.name} ha solo un effetto da schieramento scoperto, già applicato quando è stata giocata. All’attivazione non fa altro.`
-      :`${c.def.name} ha solo un effetto da schieramento scoperto, che vale soltanto quando la carta viene giocata scoperta. È stata giocata coperta, quindi non succede nulla.`)
-    :'Questa carta non ha effetti da applicare all’attivazione.'];
+  if(!lines.length)lines=[MAIN[c.id]||SEC[c.id]||SCOP[c.id]?'Non succede nulla: nessun bersaglio valido o condizione non soddisfatta.':'Questa carta non ha effetti da applicare all’attivazione.'];
   if(S.mode==='hot')await ensureViewer(null);
   render();
   await ask(S.mode==='cpu'?S.human:null,{pop:true,inst:c,who:`Attivazione · ${FAC[c.owner]} · iniziativa ${ini}`,title:`Si attiva ${c.def.name}`,lines,opts:[{label:'Ok',v:1,main:true}]});
@@ -678,13 +675,8 @@ async function swapTokens(p,title,cands,must){
   log(`Scambiati i gettoni iniziativa di ${pn(a)} e ${pn(b)}: iniziativa ${ia} ↔ ${ib}.`);
 }
 
-/* ---------- effetti da schieramento scoperto ---------- */
+/* ---------- effetti «Inoltre»: si applicano all'attivazione, dopo l'effetto principale ---------- */
 const SCOP={
-  async barbara(c){const o=1-c.owner,Q=S.players[o],t=Q.last;
-    if(!t||t.eliminated||!Q.hand.length)return;
-    const h=await ask(o,{title:`Santa Barbara: sostituisci la tua ultima carta schierata (${t.faceUp?t.def.name:'coperta, pos. '+(t.slot+1)}) con una carta della tua mano`,priv:true,opts:Q.hand.map(x=>({label:`${DEF[x.id].name} · Dom ${DEF[x.id].dom}`,v:x,ai:DEF[x.id].dom}))});
-    if(!h)return;const n=replaceCard(t,h,o);
-    log(`Santa Barbara: i ${FAC[o]} sostituiscono ${t.faceUp?t.def.name:'una carta coperta'} con ${n.faceUp?n.def.name:'un’altra carta coperta'}.`);},
   async lorenzo(c){const x=await pick(c.owner,'San Lorenzo: togli un gettone iniziativa da una tua carta',live(c.owner).filter(canLower),{optional:true,ai:x=>remAi(x,c.owner)});
     if(x)log(`San Lorenzo toglie un gettone iniziativa da ${pn(x)}: iniziativa ${removeTok(x)}.`)},
   async rocco(c){const x=await pick(c.owner,'San Rocco: aggiungi un gettone iniziativa a una carta avversaria',live(1-c.owner).filter(tokOk));
@@ -694,13 +686,11 @@ const SCOP={
     if(h){P.discard=P.discard.filter(x=>x!==h);P.hand.push(h);log(`I ${FAC[c.owner]} riprendono ${DEF[h.id].name} dagli scarti.`)}},
   async lucia(c){await peek(c)}, async galileo(c){await peek(c)},
   async paolo(c){await moveToken(c.owner,'San Paolo: sposta un gettone iniziativa',both(),live(1-c.owner),false)},
-  async marx(c){S.players[c.owner].comDiscount=1;log('Karl Marx: il prossimo Comunista costa 1 in meno.')},
   async stalin(c){const x=await pick(c.owner,'Stalin: togli un gettone iniziativa da un tuo Corrotto',live(c.owner).filter(canLower),{optional:true,ai:x=>remAi(x,c.owner)});
     if(x)log(`Stalin toglie un gettone iniziativa da ${pn(x)}: iniziativa ${removeTok(x)}.`)},
-  async ozzy(c){addDom(c,1);log('Ozzy ottiene +1 Dominio.')},
   async baudelaire(c){const x=await pick(c.owner,'Baudelaire: aggiungi un gettone iniziativa a una carta avversaria',live(1-c.owner).filter(tokOk));
     if(x){const b=init(x);x.tokens++;log(`${pn(x)} riceve un gettone iniziativa: ${b} → ${init(x)}.`)}},
-  async giuliano(c){S.players[1-c.owner].blockScop=true;log('Giuliano l’Apostata: il prossimo effetto da schieramento scoperto avversario sarà annullato.')},
+  async giuliano(c){S.players[1-c.owner].blockScop=true;log('Giuliano l’Apostata: il prossimo effetto «Inoltre» avversario sarà annullato.')},
   async bruno(c){const x=await pick(c.owner,'Giordano Bruno: puoi eliminare un tuo Comunista per ottenere +3 Dominio',live(c.owner).filter(x=>!x.fixed&&x.def.cat==='Comunisti'),{optional:true,ai:x=>3-x.dom});
     if(x&&await eliminate(x,c)){addDom(c,3);log('Giordano Bruno ottiene +3 Dominio.')}},
 };
@@ -926,11 +916,8 @@ function mainValue(id,p){
 function scopValue(id,p){
   const o=1-p,P=S.players[p];
   switch(id){
-    case 'barbara':return S.players[o].last&&!S.players[o].last.eliminated&&S.players[o].hand.length?0.8:0;
     case 'benedetto':return P.discard.length?1:0;
     case 'lucia':case 'galileo':return live(o).some(x=>!x.faceUp)?0.4:0;
-    case 'marx':return P.hand.some(h=>DEF[h.id].cat==='Comunisti')?0.8:0;
-    case 'ozzy':return 1;
     case 'bruno':{const c=live(p).filter(x=>x.def.cat==='Comunisti');return c.length?3-Math.min(...c.map(x=>x.dom)):0}
     case 'rocco':case 'baudelaire':case 'paolo':case 'giuliano':return 0.5;
     case 'lorenzo':case 'stalin':return 0.3;
@@ -945,13 +932,10 @@ function cpuDeploy(p){
   for(const h of pl){const d=DEF[h.id],cost=costOf(p,h);
     const tUp=Math.min(1.6,threat(p,true,d)),tDown=Math.min(1.6,threat(p,false,d));
     const base=d.dom+mainValue(d.id,p)*0.8-(S.noRe?cost*0.6:cost*0.15);
-    for(const up of [true,false]){
-      let sc=base-d.dom*(up?tUp:tDown)*0.5;
-      if(up)sc+=scopValue(d.id,p)+0.3;
-      else sc+=0.05+mainValue(d.id,p)*0.1; /* l'avversario non sa cosa arriva */
-      if(!up&&d.id==='lorenzo')sc+=0.6;
+    {let sc=base-d.dom*tDown*0.5+scopValue(d.id,p)*0.6+0.05+mainValue(d.id,p)*0.1;
+      if(d.id==='lorenzo')sc+=0.6;
       sc+=Math.random()*0.35;
-      if(sc>bs){bs=sc;best={card:h,up}}}}
+      if(sc>bs){bs=sc;best={card:h,up:false}}}}
   const others=P.hand.filter(h=>h!==best.card).sort((a,b)=>keepValue(a,p)-keepValue(b,p));
   return{card:best.card,up:best.up,disc:others.slice(0,costOf(p,best.card))};
 }
@@ -961,14 +945,14 @@ async function humanDeploy(p){
     S.status=`Tocca ai ${FAC[p]}: tocca una carta della mano per schierarla. Tieni premuta una carta per leggerne i poteri.`;
     const card=await new Promise(res=>{S.handWait=res;render()});S.handWait=null;
     const d=DEF[card.id],cost=costOf(p,card),ok=cost<=P.hand.length-1;
-    const r=await ask(p,{title:d.name,card:d,text:ok?`Costo ${cost}: scarti ${cost} ${cost===1?'carta':'carte'} dalla mano. Dopo lo schieramento potrai scartarne altre per spostare l’iniziativa.${d.s?' Attenzione: l’effetto da schieramento scoperto si applica solo se la giochi scoperta.':''}`:`Costo ${cost}: non hai abbastanza carte in mano.`,
-      opts:[...(ok?[{label:'Schiera scoperta',v:'up',main:true},{label:'Schiera coperta',v:'down',main:true}]:[]),{label:'Scegli un’altra carta',v:'back'}]});
+    const r=await ask(p,{title:d.name,card:d,text:ok?`Costo ${cost}: scarti ${cost} ${cost===1?'carta':'carte'} dalla mano. Dopo lo schieramento potrai scartarne altre per spostare l’iniziativa. La carta resta coperta finché non si attiva.`:`Costo ${cost}: non hai abbastanza carte in mano.`,
+      opts:[...(ok?[{label:'Schiera',v:'down',main:true}]:[]),{label:'Scegli un’altra carta',v:'back'}]});
     if(r==='back')continue;
     const others=P.hand.filter(h=>h!==card);let disc=[];
     if(cost===others.length)disc=others;
     else if(cost>0){const sel=await ask(p,{title:`Scegli ${cost} ${cost===1?'carta':'carte'} da scartare`,multi:cost,optional:true,playing:card.uid,opts:others.map(h=>({label:`${DEF[h.id].name} · Dom ${DEF[h.id].dom}`,v:h,hand:h.uid}))});
       if(!sel)continue;disc=sel}
-    return{card,up:r==='up',disc};
+    return{card,up:false,disc};
   }
 }
 async function deployTurn(p){
@@ -981,27 +965,15 @@ async function deployTurn(p){
     await info(p,'Non puoi pagare nessuna carta','Il mazzo è finito e non hai abbastanza carte in mano: salti questo turno.');
     return}
   let ch;if(isCpu(p)){await sleep(700);ch=cpuDeploy(p)}else ch=await humanDeploy(p);
-  const{card,up,disc}=ch,cost=costOf(p,card),mark=S.log.length;S.lastPaid=cost;S.cpuActed=false;const tok0=card.cost;
+  const{card,disc}=ch,up=false,cost=costOf(p,card),mark=S.log.length;S.lastPaid=cost;S.cpuActed=false;const tok0=card.cost;
   if(DEF[card.id].cat==='Comunisti')P.comDiscount=0;
   P.hand=P.hand.filter(h=>h!==card&&!disc.includes(h));P.discard.push(...disc);
   const c=inst(card,p);c.slot=P.board.indexOf(null);P.board[c.slot]=c;c.faceUp=up;c.depUp=up;c.known[p]=true;
-  P.paid+=cost;if(up)P.fuCount++;P.last=c;if(S.round===2)S.costSum[p]+=c.def.cost;
-  log(up?`${FAC[p]}: schierano ${c.def.name} scoperta (pagano ${cost}).`:`${FAC[p]}: schierano una carta coperta in pos. ${c.slot+1} (iniziativa ${init(c)}, pagano ${cost}).`);
-  if(!up&&SCOP[c.id]&&!isCpu(p))log(`${c.def.name} è coperta: il suo effetto da schieramento scoperto non si applica.`);
-  if(up){
-    if(SCOP[c.id]){
-      if(P.blockScop){P.blockScop=false;log(`Giuliano l’Apostata annulla l’effetto da schieramento di ${c.def.name}.`)}
-      else await SCOP[c.id](c);
-    }
-    const own=live(p).filter(canLower);
-    if(!own.length)log(`Carta scoperta: nessuna carta dei ${FAC[p]} può scendere sotto iniziativa 0.`);
-    else{const t=await pick(p,'Carta scoperta: togli un gettone iniziativa da una tua carta',own,{optional:true,ai:x=>x===c?1.1:1+Math.random()*0.2});
-      log(t?`Carta scoperta: i ${FAC[p]} tolgono un gettone iniziativa da ${pn(t)}, iniziativa ${removeTok(t)}.`:`Carta scoperta: i ${FAC[p]} non tolgono gettoni iniziativa.`)}
-  }
+  P.paid+=cost;P.last=c;if(S.round===2)S.costSum[p]+=c.def.cost;
+  log(`${FAC[p]}: schierano una carta coperta in pos. ${c.slot+1} (iniziativa ${init(c)}, pagano ${cost}).`);
   refreshOzzy();
   await extraPhase(p,c);refreshOzzy();
   if(S.demo)await demoDeploy(p,c,up,cost,disc,mark);
-  else if(up)await recap(p,c,`${FAC[p]}: ${c.def.name} scoperta`,mark);
   refill(p);render();
 }
 /* carte pagate in più: ogni carta scartata (dalla mano, oppure 1 sola dalla cima del mazzo) sposta di 1 l'iniziativa di una propria carta */
@@ -1053,20 +1025,18 @@ async function demoDeploy(p,c,up,cost,disc,mark){
   const xs=S.log.slice(0,Math.max(0,n)).reverse().map(l=>l.t).filter(t=>/ in più: /.test(t));
   const lines=[`Pagano ${cost===0?'0: non scartano nulla':cost+' scartando '+disc.map(h=>h.name||DEF[h.id].name).join(', ')}.`,
     `${d.name} è ${d.cat==='Demoni ed Eretici'?'un Demone/Eretico':'della categoria '+d.cat}, ha Dominio ${d.dom} e va in posizione ${c.slot+1}, con iniziativa ${init(c)}: più è bassa, prima si attiva.`];
-  if(up){lines.push(`Perché scoperta: l’effetto da schieramento si applica subito e si toglie un gettone iniziativa a una propria carta. In cambio i ${o} sanno chi è e possono colpirla.`);
-    lines.push(...fx)}
-  else{lines.push(`Perché coperta: i ${o} vedono solo l’iniziativa e non sanno chi è, quindi gli effetti che colpiscono solo carte scoperte non la possono toccare.${SCOP[c.id]?' In cambio rinuncia al suo effetto da schieramento.':''}`);
-    lines.push(`Lo spettatore la vede, i ${o} no.`)}
+  lines.push(`Ogni carta si schiera coperta: i ${o} vedono solo la posizione e l’iniziativa, non sanno chi è, e gli effetti che colpiscono solo carte scoperte non la possono toccare. Si scoprirà quando si attiverà. Lo spettatore la vede, i ${o} no.`);
   if(xs.length)lines.push('Carte pagate in più: ogni carta scartata oltre al costo sposta di 1 l’iniziativa di una propria carta.',...xs);
   if(d.m)lines.push(`Quando si attiverà: ${d.m}`);
+  if(d.s)lines.push(`Inoltre: ${d.s}`);
   if(d.c)lines.push(`Poi: ${d.c}`);
-  await ask(S.human,{pop:true,who:`Schieramento dei ${FAC[p]}`,title:`I ${FAC[p]} schierano ${d.name} ${up?'scoperta':'coperta'}`,inst:Object.assign(Object.create(Object.getPrototypeOf(c)),c,{faceUp:true}),lines,opts:[{label:'Avanti',v:1,main:true}]});
+  await ask(S.human,{pop:true,who:`Schieramento dei ${FAC[p]}`,title:`I ${FAC[p]} schierano ${d.name}, coperta`,inst:Object.assign(Object.create(Object.getPrototypeOf(c)),c,{faceUp:true}),lines,opts:[{label:'Avanti',v:1,main:true}]});
 }
 async function activationPhase(resumed){
   S.phase='activate';
-  const fu=[0,1].map(p=>S.players[p].fuCount),paid=[0,1].map(p=>S.players[p].paid);
-  const prec=fu[0]!==fu[1]?(fu[0]>fu[1]?0:1):paid[0]!==paid[1]?(paid[0]<paid[1]?0:1):S.starter;
-  const why=fu[0]!==fu[1]?'più carte scoperte':paid[0]!==paid[1]?'ha pagato meno':'ha iniziato il round';
+  const paid=[0,1].map(p=>S.players[p].paid);
+  const prec=paid[0]!==paid[1]?(paid[0]<paid[1]?0:1):S.starter;
+  const why=paid[0]!==paid[1]?'ha pagato meno':'ha iniziato il round';
   if(!resumed)log(`Attivazioni. Nei pareggi d’iniziativa hanno la precedenza i ${FAC[prec]} (${why}).`,true);
   if(!FAST&&!resumed){
     const ord=both().slice().sort((x,y)=>init(x)-init(y)||(x.owner===prec?-1:1));
@@ -1107,6 +1077,10 @@ async function activate(c){
     if(MAIN[c.id]){
       if(cancel)log(`L’effetto principale di ${c.def.name} è annullato.`);
       else{await MAIN[c.id](c);if(c.dbl&&!c.eliminated){log(`Seconda applicazione (San Pietro).`);await MAIN[c.id](c)}}
+    }
+    if(SCOP[c.id]&&!c.eliminated){
+      if(S.players[p].blockScop){S.players[p].blockScop=false;log(`Giuliano l’Apostata annulla l’effetto «Inoltre» di ${c.def.name}.`)}
+      else await SCOP[c.id](c);
     }
     if(SEC[c.id]&&!c.eliminated){
       if(c.secX)log(`L’effetto secondario di ${c.def.name} è annullato.`);
@@ -1191,9 +1165,9 @@ const HELP_BRIEF=`
 <h3>Ogni round</h3>
 <ol class="lst">
 <li><b>Schieramento.</b> A turno giocate una carta dalla mano, pagandone il costo con altre carte scartate, finché ne avete quattro in campo.</li>
-<li><b>Scoperta o coperta.</b> Scoperta: applichi subito il suo effetto di schieramento e togli un gettone iniziativa da una tua carta a scelta, che così si attiverà prima. Coperta: l’avversario non sa cos’è, ma vede la sua iniziativa.</li>
+<li><b>Carte coperte.</b> Ogni carta si schiera coperta: l’avversario vede la sua posizione e la sua iniziativa, ma non sa cos’è. Si scopre solo quando si attiva.</li>
 <li><b>Carte in più.</b> Dopo aver schierato puoi scartare carte oltre al costo, fino a 4 in tutto (al massimo una può essere la cima del mazzo, alla cieca). Ogni carta in più sposta di 1 l’iniziativa di una tua carta, in su o in giù: serve a farla agire prima o dopo.</li>
-<li><b>Attivazione.</b> Le carte si attivano dalla iniziativa più bassa alla più alta. Ogni carta risolve il suo effetto principale e poi il secondario.</li>
+<li><b>Attivazione.</b> Le carte si attivano dalla iniziativa più bassa alla più alta. Ogni carta risolve il suo effetto principale, poi l’eventuale «Inoltre», poi il secondario.</li>
 <li><b>Punteggio.</b> Sommate il Dominio delle carte sopravvissute. Chi ha meno gettoni iniziativa sulle proprie carte in gioco prende 1 punto in più; a parità, nessuno.</li>
 </ol>
 <h3>Fra il primo e il secondo round</h3>
@@ -1208,8 +1182,7 @@ const HELP_BRIEF=`
 <li>Mano: 4 carte. Si pesca prima e dopo ogni schieramento, finché il mazzo dura.</li>
 <li>Nel primo round gli scarti non tornano nel mazzo. Nel secondo si rimescolano una sola volta. Se non puoi pagare nessuna carta, salti il turno.</li>
 <li>Ogni carta entra in campo con tanti gettoni iniziativa quanto il suo costo: i gettoni iniziativa sono la sua iniziativa, mai sotto zero.</li>
-<li>Ogni carta giocata scoperta ti fa togliere un gettone iniziativa da una tua carta a scelta.</li>
-<li>Parità d’iniziativa: prima chi ha più carte scoperte, poi chi ha pagato meno, poi chi ha iniziato il round.</li>
+<li>Parità d’iniziativa: prima chi ha pagato meno, poi chi ha iniziato il round.</li>
 <li>Chi inizia il primo round si sorteggia. Il secondo round lo inizia l’altro giocatore.</li>
 <li>Vince chi ha più Dominio sommando i due round.</li>
 </ul>
@@ -1230,12 +1203,12 @@ const TUT=[
 {t:'Pagare il costo',x:()=>exHand(['lucia','rocco','ferretti','adinolfi'],{lucia:'sel',rocco:'sel',ferretti:'play',adinolfi:'sel'}),
  p:'Per giocare Giovanni Lindo Ferretti, che costa 3, devi scartare le altre tre carte. Dopo lo schieramento peschi fino a tornare a 4.',
  n:'Le carte scartate sono perse per tutto il round: il mazzo non si ricostituisce. Spendere troppo all’inizio vuol dire restare a corto di carte alla fine.'},
-{t:'Scoperta o coperta',x:()=>exRow(1,[exCard('lenin',{back:1,tok:1,ini:4,tag:'gettone iniziativa di San Rocco'}),exCard('belzebu',{back:1})],'Corrotti')+exRow(0,[exCard('rocco',{tok:-1,ini:1,tag:'scoperta'})],'Santi'),
- p:'I Santi giocano San Rocco scoperto. Il suo effetto di schieramento aggiunge un gettone iniziativa a una carta coperta dei Corrotti, che si attiverà a 4 invece che a 3. Poi, come per ogni carta scoperta, i Santi tolgono un gettone iniziativa da una loro carta: scelgono Rocco stesso, che passa da 2 a 1.',
- n:'Il gettone iniziativa tolto può venire da qualsiasi tua carta già in campo, anche coperta. Le carte coperte nascondono identità ed effetto, ma sono il bersaglio di San Giorgio e Diocleziano.'},
+{t:'Carte coperte',x:()=>exRow(1,[exCard('lenin',{back:1,tok:1,ini:4,tag:'gettone iniziativa di San Rocco'}),exCard('belzebu',{back:1})],'Corrotti')+exRow(0,[exCard('rocco',{back:1,ini:2})],'Santi'),
+ p:'Tutte le carte si schierano coperte. Gli avversari vedono la posizione e l’iniziativa, ma non sanno chi è. Una carta si scopre solo quando si attiva.',
+ n:'L’iniziativa è l’unico indizio: una carta con tanti gettoni di solito costa molto. San Giorgio e Diocleziano possono colpire carte ancora coperte; Lucifero e Lenin solo carte già attivate.'},
 {t:'L’ordine di attivazione',x:()=>exRow(1,[exCard('galileo',{back:1}),exCard('stalin',{tok:-1,ini:1}),exCard('lenin',{tok:-1,ini:2})],'Corrotti')+exRow(0,[exCard('lucia',{tok:-1,ini:0}),exCard('rocco',{tok:-1,ini:1}),exCard('giorgio',{back:1})],'Santi')+
  `<div class="order"><span>Lucia 0</span><b>→</b><span>Rocco 1</span><b>→</b><span>Galileo 1</span><b>→</b><span>Stalin 1</span><b>→</b><span>Lenin 2</span><b>→</b><span>Giorgio 3</span></div>`,
- p:'Finito lo schieramento, le carte si attivano dall’iniziativa più bassa. Con iniziativa pari si alternano i giocatori. Qui a parità partono i Santi: per esempio perché hanno schierato più carte scoperte, o hanno pagato meno.',
+ p:'Finito lo schieramento, le carte si attivano dall’iniziativa più bassa. Con iniziativa pari si alternano i giocatori. Qui a parità partono i Santi: per esempio perché hanno pagato meno.',
  n:'Un gettone iniziativa può far attivare una carta dopo che i suoi bersagli sono già stati eliminati, o dopo che l’avversario l’ha eliminata.'},
 {t:'Un’eliminazione',x:()=>exRow(1,[exCard('lucifero',{tag:'si attiva'})],'Corrotti')+exRow(0,[exCard('adinolfi',{dead:1,tag:'eliminata'}),exCard('lorenzo',{back:1})],'Santi'),
  p:'Lucifero si attiva ed elimina una carta avversaria scoperta: sceglie Mario Adinolfi, che esce dal campo e non conterà nel punteggio. La carta coperta di San Lorenzo, invece, Lucifero non può colpirla.',
@@ -1245,7 +1218,7 @@ const TUT=[
  n:'Conviene imporre una carta che, attivandosi per prima, non serve a nulla: Santa Rita e Nerone non hanno niente da copiare, San Pietro nessuna carta da recuperare, Siffredi non può essere l’ultimo. Nel secondo round si tiene la mano e si schierano solo 3 carte.'},
 {t:'Qualche consiglio',x:()=>'',
  p:'Prima di giocare, guarda l’iniziativa delle carte avversarie: ti dice quando colpiranno e cosa puoi ancora fare prima.',
- l:['Gestisci il mazzo: ogni carta scartata per pagare un costo è persa fino al round successivo.','Coperta contro Lucifero e Lenin, che colpiscono solo carte scoperte. Belzebù colpisce i Martiri, anche coperti se li ha già visti.','Scoperta contro San Giorgio e Diocleziano, che colpiscono carte coperte. San Giorgio, però, colpisce entrambe.','Una carta da 1 giocata presto ti lascia la mano piena per le carte più forti.','Giocare scoperto fa attivare prima: utile per colpire prima che l’avversario colpisca te.','Tieni d’occhio i gettoni iniziativa: spostare l’iniziativa di una carta di un solo punto può cambiare tutto il round.']},
+ l:['Gestisci il mazzo: ogni carta scartata per pagare un costo è persa fino al round successivo.','Lucifero e Lenin colpiscono solo carte già attivate: una carta ancora coperta è al sicuro finché non si attiva. San Giorgio e Diocleziano, invece, la possono colpire anche coperta.','Una carta da 1 giocata presto ti lascia la mano piena per le carte più forti.','Una carta con poca iniziativa si attiva presto: utile per colpire prima che l’avversario colpisca te.','Tieni d’occhio i gettoni iniziativa: spostare l’iniziativa di una carta di un solo punto può cambiare tutto il round.']},
 ];
 function helpHtml(){
   const tab=S.helpTab||'breve';
@@ -1309,11 +1282,11 @@ const CATWORD=[[/\b(Martir[ei])\b/g,'Martiri'],[/\b(Miracol[io])\b/g,'Miracoli']
 function catTint(h){for(const [re,k] of CATWORD)h=h.replace(re,`<b class="kw" style="--cc:${CATCOL[k]}">$1</b>`);return h}
 function fxHtml(d){
   const part=(lab,t)=>{if(!t)return'';const pas=t.startsWith('Passivo: ');return`<span><b>${lab}${pas?', passivo':''}.</b> ${catTint(esc(pas?t.slice(9,10).toUpperCase()+t.slice(10):t))}</span>`};
-  return`<div class="fx">${part('Principale',d.m)}${part('Scoperta',d.s)}${part('Secondario',d.c)}</div>`;
+  return`<div class="fx">${part('Principale',d.m)}${part('Inoltre',d.s)}${part('Secondario',d.c)}</div>`;
 }
 function precOwner(){
-  const fu=[0,1].map(p=>S.players[p].fuCount),paid=[0,1].map(p=>S.players[p].paid);
-  return fu[0]!==fu[1]?(fu[0]>fu[1]?0:1):paid[0]!==paid[1]?(paid[0]<paid[1]?0:1):S.starter;
+  const paid=[0,1].map(p=>S.players[p].paid);
+  return paid[0]!==paid[1]?(paid[0]<paid[1]?0:1):S.starter;
 }
 function predictedOrder(){
   const pend=both().filter(c=>!c.activated),prec=precOwner(),out=[];
