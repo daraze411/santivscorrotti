@@ -259,7 +259,7 @@ div.hcard{cursor:default}
 .hcard.sel .hst{color:var(--bad)} .hcard.play .hst{color:var(--good)}
 .hcard.play .himg{outline:3px solid var(--good);outline-offset:2px}
 @media (prefers-reduced-motion:no-preference){.hcard .himg{transition:transform .15s}.hcard.sel .himg{transform:translateY(-5px)}}
-.hand.bighand{display:flex;overflow-x:auto;gap:10px;scroll-snap-type:x mandatory;padding:2px 2px 6px;scrollbar-width:thin}
+.hand.bighand{display:flex;overflow-x:auto;gap:12px;scroll-snap-type:x mandatory;padding:16px 12px 10px;margin:-8px -8px 0;scroll-padding-inline:12px;scrollbar-width:thin}
 .hand.bighand .hcard{flex:0 0 46%;scroll-snap-align:start}
 .hand.bighand .hnm{font-size:16px}
 .hand.bighand .nk,.hand.bighand .nk.sm{font-size:10.5px}
@@ -269,7 +269,7 @@ div.hcard{cursor:default}
 .swipe{display:inline}
 .lay{background:none;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:11px;cursor:pointer;margin-left:6px;color:var(--fg);text-transform:none;letter-spacing:0}
 /* file in campo grandi */
-.bigrow .row{display:flex;overflow-x:auto;gap:8px;scroll-snap-type:x mandatory;padding-bottom:4px;scrollbar-width:thin}
+.bigrow .row{display:flex;overflow-x:auto;gap:12px;scroll-snap-type:x mandatory;padding:12px 12px 8px;margin:-8px -8px 0;scroll-padding-inline:12px;scrollbar-width:thin}
 .bigrow .row>*{flex:0 0 46%;scroll-snap-align:start}
 .bigrow .row>.slot{flex-basis:22%;aspect-ratio:auto;min-height:64px;border-radius:8px}
 .bigrow .card .nm{font-size:15px}.bigrow .card .nm.lg{font-size:13px}
@@ -961,7 +961,7 @@ async function humanDeploy(p){
     S.status=`Tocca ai ${FAC[p]}: tocca una carta della mano per schierarla. Tieni premuta una carta per leggerne i poteri.`;
     const card=await new Promise(res=>{S.handWait=res;render()});S.handWait=null;
     const d=DEF[card.id],cost=costOf(p,card),ok=cost<=P.hand.length-1;
-    const r=await ask(p,{title:d.name,card:d,text:ok?`Costo ${cost}: scarti ${cost} ${cost===1?'carta':'carte'} dalla mano.${d.s?' Attenzione: l’effetto da schieramento scoperto si applica solo se la giochi scoperta.':''}`:`Costo ${cost}: non hai abbastanza carte in mano.`,
+    const r=await ask(p,{title:d.name,card:d,text:ok?`Costo ${cost}: scarti ${cost} ${cost===1?'carta':'carte'} dalla mano. Dopo lo schieramento potrai scartarne altre per spostare l’iniziativa.${d.s?' Attenzione: l’effetto da schieramento scoperto si applica solo se la giochi scoperta.':''}`:`Costo ${cost}: non hai abbastanza carte in mano.`,
       opts:[...(ok?[{label:'Schiera scoperta',v:'up',main:true},{label:'Schiera coperta',v:'down',main:true}]:[]),{label:'Scegli un’altra carta',v:'back'}]});
     if(r==='back')continue;
     const others=P.hand.filter(h=>h!==card);let disc=[];
@@ -981,7 +981,7 @@ async function deployTurn(p){
     await info(p,'Non puoi pagare nessuna carta','Il mazzo è finito e non hai abbastanza carte in mano: salti questo turno.');
     return}
   let ch;if(isCpu(p)){await sleep(700);ch=cpuDeploy(p)}else ch=await humanDeploy(p);
-  const{card,up,disc}=ch,cost=costOf(p,card),mark=S.log.length;S.cpuActed=false;const tok0=card.cost;
+  const{card,up,disc}=ch,cost=costOf(p,card),mark=S.log.length;S.lastPaid=cost;S.cpuActed=false;const tok0=card.cost;
   if(DEF[card.id].cat==='Comunisti')P.comDiscount=0;
   P.hand=P.hand.filter(h=>h!==card&&!disc.includes(h));P.discard.push(...disc);
   const c=inst(card,p);c.slot=P.board.indexOf(null);P.board[c.slot]=c;c.faceUp=up;c.depUp=up;c.known[p]=true;
@@ -999,19 +999,65 @@ async function deployTurn(p){
       log(t?`Carta scoperta: i ${FAC[p]} tolgono un gettone iniziativa da ${pn(t)}, iniziativa ${removeTok(t)}.`:`Carta scoperta: i ${FAC[p]} non tolgono gettoni iniziativa.`)}
   }
   refreshOzzy();
+  await extraPhase(p,c);refreshOzzy();
   if(S.demo)await demoDeploy(p,c,up,cost,disc,mark);
   else if(up)await recap(p,c,`${FAC[p]}: ${c.def.name} scoperta`,mark);
   refill(p);render();
 }
+/* carte pagate in più: ogni carta scartata (dalla mano, oppure 1 sola dalla cima del mazzo) sposta di 1 l'iniziativa di una propria carta */
+const XLATE=['siffredi','lenin','nerone','rita','adinolfi','giuliano','lucifero','pietro','giorgio','koll','engels'],XEARLY=['sebastiano','benedetto','rocco','paolo','lorenzo','diocleziano','barbara'];
+function applyExtra(p,src,x,t,dir){
+  const P=S.players[p];let g;
+  if(src==='deck')g=P.deck.pop();else{g=x;P.hand=P.hand.filter(h=>h!==x)}
+  if(!g)return false;P.discard.push(g);
+  const b=init(t);if(dir>0)t.tokens++;else t.tokens--;
+  log(`${FAC[p]}: scartano ${src==='deck'?'la cima del mazzo ('+DEF[g.id].name+')':DEF[g.id].name} in più: ${pn(t)} passa da iniziativa ${b} a ${init(t)}.`);
+  return true}
+async function extraPhase(p,c){
+  const P=S.players[p];
+  const paid=S.lastPaid||0;let left=Math.max(0,4-paid),deckUsed=false;
+  for(;left>0;){
+    const handN=P.hand.length,canDeck=!deckUsed&&P.deck.length>0;
+    if(!handN&&!canDeck)break;
+    if(isCpu(p)){
+      const dir=XLATE.includes(c.id)?1:XEARLY.includes(c.id)?-1:0;
+      if(!dir||c.eliminated)break;
+      if(dir<0&&!canLower(c))break;
+      if((dir>0?2:1)<=(S.cpuXd||0))break;
+      const low=[...P.hand].sort((a,b)=>keepValue(a,p)-keepValue(b,p))[0];
+      if(low){applyExtra(p,'hand',low,c,dir);S.cpuXd=(S.cpuXd||0)+1;left--}
+      else if(canDeck&&P.deck.length>=3&&(P.xr!==S.round)){P.xr=S.round;deckUsed=true;applyExtra(p,'deck',null,c,dir);S.cpuXd=(S.cpuXd||0)+1;left--}
+      else break;
+      continue}
+    const opts=[];
+    if(handN)opts.push({label:'Scarta una carta dalla mano',v:'hand'});
+    if(canDeck)opts.push({label:'Scarta la cima del mazzo (alla cieca)',v:'deck'});
+    opts.push({label:'Basta così',v:'no',main:true});
+    const r=await ask(p,{title:'Una carta in più per spostare l’iniziativa?',text:`Ogni carta scartata in più sposta di 1 l’iniziativa di una tua carta. Puoi ancora scartarne ${left}${deckUsed?' (la cima del mazzo l’hai già usata)':''}.`,opts});
+    if(r==='no')break;
+    let x=null;
+    if(r==='hand'){
+      const sel=await ask(p,{title:'Quale carta scarti in più?',multi:1,optional:true,opts:P.hand.map(h=>({label:`${DEF[h.id].name} · Dom ${DEF[h.id].dom}`,v:h,hand:h.uid}))});
+      if(!sel||!sel.length)continue;x=sel[0]}
+    const t=await pick(p,'Di quale tua carta sposti l’iniziativa?',live(p),{optional:true,ai:q=>q===c?2:1});
+    if(!t)continue;
+    const opts2=[{label:`+1: agisce dopo (ora ${init(t)}, poi ${init(t)+1})`,v:1}];
+    if(canLower(t))opts2.push({label:`−1: agisce prima (ora ${init(t)}, poi ${init(t)-1})`,v:-1});
+    const d=await ask(p,{title:`${DEF[t.id].name}: in che direzione?`,optional:true,opts:opts2});
+    if(!d)continue;
+    applyExtra(p,r,x,t,d);if(r==='deck')deckUsed=true;left--}
+  S.cpuXd=0}
 async function demoDeploy(p,c,up,cost,disc,mark){
   const d=c.def,o=FAC[1-p],n=S.log.length-mark;
-  const fx=S.log.slice(0,Math.max(0,n)).reverse().map(l=>l.t).filter(t=>!t.startsWith('▸')&&!/: schierano /.test(t));
+  const fx=S.log.slice(0,Math.max(0,n)).reverse().map(l=>l.t).filter(t=>!t.startsWith('▸')&&!/: schierano /.test(t)&&!/ in più: /.test(t));
+  const xs=S.log.slice(0,Math.max(0,n)).reverse().map(l=>l.t).filter(t=>/ in più: /.test(t));
   const lines=[`Pagano ${cost===0?'0: non scartano nulla':cost+' scartando '+disc.map(h=>h.name||DEF[h.id].name).join(', ')}.`,
     `${d.name} è ${d.cat==='Demoni ed Eretici'?'un Demone/Eretico':'della categoria '+d.cat}, ha Dominio ${d.dom} e va in posizione ${c.slot+1}, con iniziativa ${init(c)}: più è bassa, prima si attiva.`];
   if(up){lines.push(`Perché scoperta: l’effetto da schieramento si applica subito e si toglie un gettone iniziativa a una propria carta. In cambio i ${o} sanno chi è e possono colpirla.`);
     lines.push(...fx)}
   else{lines.push(`Perché coperta: i ${o} vedono solo l’iniziativa e non sanno chi è, quindi gli effetti che colpiscono solo carte scoperte non la possono toccare.${SCOP[c.id]?' In cambio rinuncia al suo effetto da schieramento.':''}`);
     lines.push(`Lo spettatore la vede, i ${o} no.`)}
+  if(xs.length)lines.push('Carte pagate in più: ogni carta scartata oltre al costo sposta di 1 l’iniziativa di una propria carta.',...xs);
   if(d.m)lines.push(`Quando si attiverà: ${d.m}`);
   if(d.c)lines.push(`Poi: ${d.c}`);
   await ask(S.human,{pop:true,who:`Schieramento dei ${FAC[p]}`,title:`I ${FAC[p]} schierano ${d.name} ${up?'scoperta':'coperta'}`,inst:Object.assign(Object.create(Object.getPrototypeOf(c)),c,{faceUp:true}),lines,opts:[{label:'Avanti',v:1,main:true}]});
@@ -1146,6 +1192,7 @@ const HELP_BRIEF=`
 <ol class="lst">
 <li><b>Schieramento.</b> A turno giocate una carta dalla mano, pagandone il costo con altre carte scartate, finché ne avete quattro in campo.</li>
 <li><b>Scoperta o coperta.</b> Scoperta: applichi subito il suo effetto di schieramento e togli un gettone iniziativa da una tua carta a scelta, che così si attiverà prima. Coperta: l’avversario non sa cos’è, ma vede la sua iniziativa.</li>
+<li><b>Carte in più.</b> Dopo aver schierato puoi scartare carte oltre al costo, fino a 4 in tutto (al massimo una può essere la cima del mazzo, alla cieca). Ogni carta in più sposta di 1 l’iniziativa di una tua carta, in su o in giù: serve a farla agire prima o dopo.</li>
 <li><b>Attivazione.</b> Le carte si attivano dalla iniziativa più bassa alla più alta. Ogni carta risolve il suo effetto principale e poi il secondario.</li>
 <li><b>Punteggio.</b> Sommate il Dominio delle carte sopravvissute. Chi ha meno gettoni iniziativa sulle proprie carte in gioco prende 1 punto in più; a parità, nessuno.</li>
 </ol>
