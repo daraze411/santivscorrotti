@@ -236,6 +236,9 @@ details.log li.r{color:var(--fg);font-weight:700}
 .legend{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:14px}
 
 .lay{background:none;border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:11px;cursor:pointer;margin-left:6px;color:var(--fg);text-transform:none;letter-spacing:0}
+@media (min-width:900px){body{zoom:1.3}.wrap{max-width:760px}.hand.bighand .hcard{flex:0 0 23.5%}.hand.bighand .hnm{font-size:13px}.hand.bighand .hsym{font-size:12px}}
+@media (min-width:900px) and (min-height:1000px){body{zoom:1.5}}
+@media (min-width:1500px) and (min-height:1300px){body{zoom:1.9}}
 @media (max-width:600px){
   .wrap{gap:6px;padding-block:6px 24px}
   .top h1{font-size:17px}
@@ -393,19 +396,19 @@ D('lenin','Vladimir Lenin',1,'Comunisti',3,2,'Se hai un altro Comunista scoperto
 D('stalin','Joseph Stalin',1,'Comunisti',2,3,'Elimina una carta avversaria scoperta. Una tua altra carta perde 1 Dominio.',null,null),
 D('engels','Friedrich Engels',1,'Comunisti',1,2,'Due carte differenti ottengono +1 Dominio ciascuna. Engels può essere una delle due.',null,null),
 D('ozzy','Ozzy Osbourne',1,'Artisti',2,2,'Scegli una categoria avversaria: −1 Dominio a tutte le sue carte scoperte, anche a quelle che verranno scoperte dopo.',null,null),
-D('siffredi','Rocco Siffredi',1,'Artisti',2,2,'Se è l’ultima carta dei Corrotti ad attivarsi, ottiene +2 Dominio.',null,null),
+D('siffredi','Rocco Siffredi',1,'Artisti',2,2,'Se è l’ultima carta dei Corrotti ad attivarsi, ottiene +3 Dominio.',null,null),
 D('baudelaire','Charles Baudelaire',1,'Artisti',3,3,'Aggiungi un gettone iniziativa a una carta avversaria.',null,null),
 D('dali','Salvador Dalí',1,'Artisti',2,2,'Scambia i valori attuali di Dominio di due carte scoperte.',null,null),
-D('diocleziano','Diocleziano',1,'Persecutori',3,1,'Elimina una carta avversaria coperta.',null,null),
+D('diocleziano','Diocleziano',1,'Persecutori',3,2,'Elimina una carta avversaria coperta.',null,null),
 D('nerone','Nerone',1,'Persecutori',3,3,'Tutte le carte avversarie scoperte perdono 1 Dominio.',null,null),
 D('giuliano','Giuliano l’Apostata',1,'Persecutori',2,2,'Se hai un Artista scoperto, −2 Dominio a una carta avversaria.',null,null),
 D('lutero','Martin Lutero',1,'Persecutori',2,2,'Se è la prima carta dei Corrotti ad attivarsi, ottiene +3 Dominio.',null,null),
-D('lucifero','Lucifero',1,'Demoni ed Eretici',3,3,'Elimina una carta avversaria scoperta.',null,null,'demone'),
+D('lucifero','Lucifero',1,'Demoni ed Eretici',3,2,'Elimina una carta avversaria scoperta.',null,null,'demone'),
 D('belzebu','Belzebù',1,'Demoni ed Eretici',3,3,'Elimina un Martire avversario, scoperto o coperto.',null,null,'demone'),
 D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,'Puoi eliminare un tuo Comunista già schierato, anche coperto: se lo fai, Giordano Bruno ottiene +3 Dominio.',null,null,'eretico'),
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.',null,null,'eretico'),
 ];
-const SYM={'giorgio': '☠ avv.', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ scoperta · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta', 'pantaleone': '☠ Comunista/Eretico', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima avv.', 'lucia': '👁 coperta', 'paolo': '▼2 avv.', 'ferretti': '☠ Comunista/Artista ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti', 'lenin': '☠ scoperta · se Comunista', 'stalin': '☠ scoperta · ▼1 mia', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria avv.', 'siffredi': '▲2 se è l’ultima', 'baudelaire': '◐+ avv.', 'dali': '⇄ Dominio di due carte', 'diocleziano': '☠ coperta', 'nerone': '▼1 tutte avv. scoperte', 'giuliano': '▼2 avv. · se Artista', 'lutero': '▲3 se è la prima', 'lucifero': '☠ scoperta', 'belzebu': '☠ Martire', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ due carte coperte'};
+const SYM={'giorgio': '☠ avv.', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta', 'pantaleone': '☠ Comunista/Eretico', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima avv.', 'lucia': '🔍 coperta', 'paolo': '▼2 avv.', 'ferretti': '☠ 👁 Comunista/Artista ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se Comunista', 'stalin': '☠ 👁 · ▼1 mia', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria avv. 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ avv.', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ coperta', 'nerone': '▼1 tutte avv. 👁', 'giuliano': '▼2 avv. · se Artista', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ due coperte'};
 const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));
 const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
   marx:'Plusvalore',lenin:'Obladi oblada',stalin:'Grande purga',ozzy:'Pipistrello',siffredi:'Gran finale',baudelaire:'Fiori malvagi',dali:'Baffi onirici',diocleziano:'Editto letale',nerone:'Fuoco nel fuoco',lutero:'Lutero è mio e lo gestisco io',galileo:'Dito medio',bruno:'Mente ardente',engels:'Fedeltà totale',giuliano:'Nostalgia canaglia',lucifero:'Amore disperato',belzebu:'Fame insaziabile'};
@@ -434,6 +437,7 @@ function pic(d){
 const RULES=[
  'Sulle carte: a sinistra l’iniziativa, a destra il Dominio. Un numero colorato indica un valore cambiato durante il round. In mano il numero a sinistra è il costo.',
  'Ogni carta entra in campo con tanti gettoni iniziativa quanto il suo costo. Togliere un gettone iniziativa abbassa l’iniziativa di 1, aggiungerlo la alza di 1. Si può togliere un gettone iniziativa da qualsiasi carta con iniziativa sopra zero.',
+ 'Simboli: ☠ elimina · ▲ più Dominio · ▼ meno Dominio · ◐ gettoni iniziativa · ⛨ proteggi o annulla · ↺ sostituisci o rimetti in gioco · 🔍 guarda una carta coperta · 👁 carta scoperta, cioè già attivata.',
  'Scambiare i gettoni iniziativa di due carte significa scambiarne l’iniziativa.',
  '“A sinistra” indica la carta nello slot precedente della stessa riga.',
  'Le carte si schierano sempre coperte e si scoprono quando si attivano: “scoperta” significa quindi già attivata. L’avversario vede solo la posizione e l’iniziativa di una carta coperta.',
@@ -723,7 +727,7 @@ const MAIN={
   async ozzy(c){const p=c.owner,cats=CATS[1-p];
     const cat=await ask(p,{title:'Ozzy: scegli una categoria avversaria',opts:cats.map(k=>({label:k,v:k,ai:live(1-p).filter(x=>x.faceUp&&x.def.cat===k).length+Math.random()*.5}))});
     S.auras.push({owner:p,cat,key:UID++});log(`Ozzy colpisce la categoria ${cat}.`);refreshOzzy()},
-  async siffredi(c){if(!live(c.owner).some(x=>x!==c&&!x.activated)){addDom(c,2);log('Rocco Siffredi chiude il round: +2 Dominio.')}else log('Rocco Siffredi non è l’ultima carta dei Corrotti.')},
+  async siffredi(c){if(!live(c.owner).some(x=>x!==c&&!x.activated)){addDom(c,3);log('Rocco Siffredi chiude il round: +3 Dominio.')}else log('Rocco Siffredi non è l’ultima carta dei Corrotti.')},
   async dali(c){const p=c.owner,cands=both().filter(x=>x.faceUp);if(c.virtual)cands.push(c);if(cands.length<2)return;
     const a=await pick(p,'Dalí: prima carta dello scambio',cands,{ai:x=>x.owner!==p?(canShow(x,p)?x.dom:2.5):-1});
     const b=await pick(p,'Dalí: seconda carta dello scambio',cands.filter(x=>x!==a),{ai:x=>x.owner===p?-(canShow(x,p)?x.dom:2.5):-9});
