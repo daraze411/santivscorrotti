@@ -1325,7 +1325,7 @@ function render(){
         <div class="optrow"><span>La tua mano</span>${seg('hand',[['big','Grande'],['compact','Compatta']])}</div>
         <div class="optrow"><span>Le tue carte in campo</span>${seg('mine',[['big','Grandi'],['compact','Compatte']])}</div>
         <div class="optrow"><span>Carte avversarie in campo</span>${seg('opp',[['big','Grandi'],['compact','Compatte']])}</div>
-        <div class="optrow"><span>Suoni</span>${seg('sound',[['on','Attivi'],['off','Spenti']])}<small class="meta">Un breve motivo a fine partita, per vittoria o sconfitta.</small></div>
+        <div class="optrow"><span>Suoni</span>${seg('sound',[['on','Attivi'],['off','Spenti']])}<small class="meta">Un breve motivo a fine partita, per vittoria o sconfitta.</small><div class="seg"><button class="opt" data-sfx="win">Prova vittoria</button><button class="opt" data-sfx="lose">Prova sconfitta</button><button class="opt" data-sfx="draw">Prova pareggio</button></div></div>
         <div class="optrow"><span>Tema</span>${seg('theme',[['auto','Automatico'],['light','Santi · chiaro'],['dark','Corrotti · scuro']])}<small class="meta">Automatico segue l’impostazione del telefono.</small></div>
       </div>
       <div class="btns"><button class="opt back" data-menu="options">Indietro</button></div>`;
@@ -1461,6 +1461,7 @@ if(typeof document!=='undefined'){
     if(t.dataset.menu!==undefined||t.dataset.credits!==undefined){if(S)S.codeMsg=null}
     if(t.dataset.endfx!==undefined){S.endFx=false;render();return}
     if(t.dataset.menu!==undefined){const at=S&&S.albTab;S={screen:'start',menu:t.dataset.menu,albTab:at};render();window.scrollTo(0,0);return}
+    if(t.dataset.sfx!==undefined){const k=OPT.sound;OPT.sound='on';sfx(t.dataset.sfx);OPT.sound=k;return}
     if(t.dataset.setopt!==undefined){setOpt(t.dataset.setopt,t.dataset.v);return}
     if(t.dataset.resetstats!==undefined){const v=t.dataset.resetstats;if(v==='yes')saveStats([{w:0,l:0,d:0},{w:0,l:0,d:0}]);S.confirmReset=v==='ask';render();return}
     if(t.dataset.popok!==undefined){if(S.prompt)resolvePrompt(S.prompt.opts[0].v);return}
