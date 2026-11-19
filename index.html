@@ -1441,7 +1441,7 @@ if(typeof document!=='undefined'){
   document.addEventListener('click',e=>{if(lpFired){lpFired=false;e.stopPropagation();e.preventDefault()}},true);
   document.documentElement.addEventListener('pointerleave',()=>{tip.hidden=true});
   document.addEventListener('click',e=>{
-    const t=e.target.closest('[data-ib],[data-album],[data-albtab],[data-resume],[data-code],[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
+    const t=e.target.closest('[data-sfx],[data-ib],[data-album],[data-albtab],[data-resume],[data-code],[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
     if(!t)return;
     if(t.dataset.start==='demo'){newGame('cpu',0,false,true);return}
     if(t.dataset.start!==undefined){newGame(t.dataset.start,t.dataset.start==='cpu'?+t.dataset.h:null,t.dataset.x==='1');return}
