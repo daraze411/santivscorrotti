@@ -93,6 +93,14 @@ h1{font-family:var(--f-display);font-weight:400;margin:0;line-height:1;text-wrap
 .card.art .mid{flex:none;justify-content:flex-start;gap:1px}
 .card.art .nm{font-size:11.5px}
 .card.art .nm.lg{font-size:10px}
+.pic .ovn{position:absolute;left:0;right:0;bottom:0;padding:12px 3px 2px;background:linear-gradient(transparent,rgb(10 6 14/.82) 55%);color:#fff;font-family:var(--f-display);font-size:11px;line-height:1.05;text-align:center;text-wrap:balance;border-radius:0 0 2px 2px}
+.pic .ovn.lg{font-size:9.5px}
+.card.ov .pic{flex:1 0 56%}
+.card.ov.san .cb{bottom:auto;top:auto;bottom:22px}
+.card.ov .mid{flex:none}
+.card.ov .csym{-webkit-line-clamp:2;font-size:10px}
+.card.ov .tags{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-size:8.5px;opacity:.9}
+.bigrow .card .ovn{font-size:14px}.bigrow .card .ovn.lg{font-size:12px}
 .card.art .ct{display:none}
 .nk{display:block;font-size:8.5px;line-height:1.1;font-weight:700;letter-spacing:.02em;text-transform:uppercase;color:var(--muted);text-wrap:balance;max-width:100%}
 .card.san .nk{color:var(--santi)}.card.cor .nk{color:var(--corr)}
@@ -430,10 +438,10 @@ const IC={
 IC.back1=IC['Demoni ed Eretici'];
 const ico=k=>`<svg viewBox="0 0 24 24" aria-hidden="true">${IC[k]}</svg>`;
 const CATCOL={Martiri:'#b42a22',Miracoli:'#c8960f',Mistici:'#2c52bf',Devoti:'#6c3aa3',Comunisti:'#c4231c',Artisti:'#2f6fc4',Persecutori:'#2e7d3a','Demoni ed Eretici':'#cf970f'};
-function pic(d){
+function pic(d,ov){
   const b=`<span class="cb" style="--cc:${CATCOL[d.cat]}">${ico(d.cat)}</span>`;
-  return ART[d.id]?`<span class="pic" style="background-image:url(${ART[d.id]})">${b}</span>`
-    :`<span class="pic ph" style="background-color:${CATCOL[d.cat]}"><span class="phi">${ico(d.cat)}</span>${b}</span>`;
+  return ART[d.id]?`<span class="pic" style="background-image:url(${ART[d.id]})">${b}${ov||''}</span>`
+    :`<span class="pic ph" style="background-color:${CATCOL[d.cat]}"><span class="phi">${ico(d.cat)}</span>${b}${ov||''}</span>`;
 }
 
 const RULES=[
@@ -461,10 +469,10 @@ const RULES=[
 ];
 
 let S=null, UID=1, FAST=false, GID=0;
-const OPT={noRe:true,hand:'big',mine:'compact',opp:'compact',theme:'auto'};
+const OPT={noRe:true,hand:'big',mine:'compact',opp:'compact',theme:'auto',sound:'on'};
 try{const v=localStorage.getItem('svc-layout');if(v)OPT.hand=v==='compact'?'compact':'big'}catch(e){}
 try{Object.assign(OPT,JSON.parse(localStorage.getItem('svc-opt')||'{}'));OPT.noRe=true}catch(e){}
-function saveOpt(){try{localStorage.setItem('svc-opt',JSON.stringify({hand:OPT.hand,mine:OPT.mine,opp:OPT.opp,theme:OPT.theme}))}catch(e){}}
+function saveOpt(){try{localStorage.setItem('svc-opt',JSON.stringify({hand:OPT.hand,mine:OPT.mine,opp:OPT.opp,theme:OPT.theme,sound:OPT.sound}))}catch(e){}}
 function applyTheme(){if(typeof document==='undefined')return;const r=document.documentElement;if(OPT.theme==='auto')r.removeAttribute('data-theme');else r.setAttribute('data-theme',OPT.theme)}
 function loadStats(){try{const v=JSON.parse(localStorage.getItem('svc-stats')||'null');if(v&&v[0]&&v[1])return v}catch(e){}return[{w:0,l:0,d:0},{w:0,l:0,d:0}]}
 function saveStats(st){try{localStorage.setItem('svc-stats',JSON.stringify(st))}catch(e){}}
@@ -482,6 +490,22 @@ function importCode(txt){
     return true}catch(e){return false}
 }
 function expertUnlocked(){const st=loadStats();return st[0].w>0&&st[1].w>0}
+let _ac=null;
+function sfx(kind){
+  if(OPT.sound==='off')return;
+  try{
+    _ac=_ac||new (window.AudioContext||window.webkitAudioContext)();
+    const ac=_ac;if(ac.state==='suspended')ac.resume();
+    const seq={win:[[523,.14],[659,.14],[784,.14],[1047,.5]],lose:[[392,.22],[330,.22],[262,.22],[196,.7]],draw:[[440,.2],[440,.2],[392,.4]]}[kind]||[];
+    let t=ac.currentTime+.05;
+    for(const[f,d]of seq){
+      const o=ac.createOscillator(),g=ac.createGain();
+      o.type=kind==='lose'?'triangle':'sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d+.15);
+      o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d+.2);t+=d;
+    }
+  }catch(e){}
+}
 function recordResult(){
   if(FAST||S.demo||S.mode!=='cpu'||!(S.human===0||S.human===1)||S.recorded)return;
   S.recorded=true;const was=expertUnlocked(),st=loadStats(),me=st[S.human];
@@ -1068,7 +1092,7 @@ function gameOver(){
   if(a!==b)w=a>b?0:1;
   else if(S.costSum[0]!==S.costSum[1]){w=S.costSum[0]<S.costSum[1]?0:1;why=' Parità di Dominio: vince chi ha schierato carte con costo stampato totale più basso nel round 2.'}
   else w=null;
-  S.phase='over';S.final={w,why};S.endFx=true;S.status=w===null?'Pareggio.':`Vincono i ${FAC[w]}.`;recordResult();clearSaved();render();
+  S.phase='over';S.final={w,why};S.endFx=true;S.status=w===null?'Pareggio.':`Vincono i ${FAC[w]}.`;if(!S.demo)sfx(w===null?'draw':(S.mode==='cpu'&&w!==S.human?'lose':'win'));recordResult();clearSaved();render();
 }
 
 
@@ -1077,7 +1101,7 @@ function exCard(id,o={}){
   const d=DEF[id],side=d.f?'cor':'san';
   if(o.back)return`<div class="card ${side} back down"><span class="mid"><span class="ico">${ico('back'+d.f)}</span><span class="nm q">${FAC[d.f]}</span>${o.tag?`<span class="tags">${o.tag}</span>`:''}</span><span class="foot"><span class="ini ${o.tok<0?'lo':o.tok>0?'hi':''}">${o.ini??d.cost}</span></span></div>`;
   const dom=o.dom??d.dom,dc=dom>d.dom?'up':dom<d.dom?'dn':'';
-  return`<div class="card art ${side} ${o.dead?'dead':''} ${o.st||''}">${pic(d)}<span class="mid"><span class="nm ${d.name.length>15?'lg':''}">${esc(d.name)}</span>${nick(d)}${o.cat?`<span class="ct">${d.cat}</span>`:''}${o.tag?`<span class="tags">${o.tag}</span>`:''}</span><span class="foot"><span class="ini ${o.tok<0?'lo':o.tok>0?'hi':''}">${o.ini??d.cost}</span><span class="dom ${dc}">${dom}</span></span></div>`;
+  return`<div class="card art ov ${side} ${o.dead?'dead':''} ${o.st||''}">${pic(d,`<span class="ovn ${d.name.length>15?'lg':''}">${esc(d.name)}</span>`)}<span class="mid"><span class="csym">${symHtml(d.id)}</span>${o.cat?`<span class="ct">${d.cat}</span>`:''}${o.tag?`<span class="tags">${o.tag}</span>`:''}</span><span class="foot"><span class="ini ${o.tok<0?'lo':o.tok>0?'hi':''}">${o.ini??d.cost}</span><span class="dom ${dc}">${dom}</span></span></div>`;
 }
 const exHand=(ids,st)=>`<section class="side san"><div class="hand">${ids.map(id=>hcardHtml(DEF[id],DEF[id].cost,st[id]||'')).join('')}</div></section>`;
 const exRow=(f,cards,label)=>`<section class="side ${f?'cor':'san'}">${label?`<div class="rowhead"><b class="${f?'cor':'san'}">${label}</b></div>`:''}<div class="ex ${cards.hand?'hand':''}">${cards.join('')}</div></section>`;
@@ -1185,8 +1209,8 @@ function cardEl(c,i){
   const dc=c.dom>c.def.dom?'up':c.dom<c.def.dom?'dn':'';
   if(chosen)tags.unshift('✓ scelta');
   const tg=tags.length?`<span class="tags">${tags.join(' · ')}</span>`:'';
-  return`<button class="card ${c.owner?'cor':'san'} ${show?'art':'back'} ${c.faceUp?'':'down'} ${c.eliminated?'dead':''} ${chosen?'chosen':tgt?'tgt':''}" data-card="${c.uid}" aria-label="${esc(show?c.def.name:'Carta coperta')}">
-    ${show?`${pic(c.def)}<span class="mid"><span class="nm ${c.def.name.length>15?'lg':''}">${esc(c.def.name)}</span><span class="csym">${symHtml(c.def.id)}</span>${tg}</span>`
+  return`<button class="card ${c.owner?'cor':'san'} ${show?'art ov':'back'} ${c.faceUp?'':'down'} ${c.eliminated?'dead':''} ${chosen?'chosen':tgt?'tgt':''}" data-card="${c.uid}" aria-label="${esc(show?c.def.name:'Carta coperta')}">
+    ${show?`${pic(c.def,`<span class="ovn ${c.def.name.length>15?'lg':''}">${esc(c.def.name)}</span>`)}<span class="mid"><span class="csym">${symHtml(c.def.id)}</span>${tg}</span>`
           :`<span class="mid"><span class="ico">${ico('back'+c.owner)}</span><span class="nm q">${FAC[c.owner]}</span>${tg}</span>`}
     <span class="foot"><span class="ini ${iniCls(c)}" title="Iniziativa">${iniTxt(c)}</span>${show?`<span class="dom ${dc}" title="Dominio">${c.dom}</span>`:''}</span></button>`;
 }
@@ -1301,6 +1325,7 @@ function render(){
         <div class="optrow"><span>La tua mano</span>${seg('hand',[['big','Grande'],['compact','Compatta']])}</div>
         <div class="optrow"><span>Le tue carte in campo</span>${seg('mine',[['big','Grandi'],['compact','Compatte']])}</div>
         <div class="optrow"><span>Carte avversarie in campo</span>${seg('opp',[['big','Grandi'],['compact','Compatte']])}</div>
+        <div class="optrow"><span>Suoni</span>${seg('sound',[['on','Attivi'],['off','Spenti']])}<small class="meta">Un breve motivo a fine partita, per vittoria o sconfitta.</small></div>
         <div class="optrow"><span>Tema</span>${seg('theme',[['auto','Automatico'],['light','Santi · chiaro'],['dark','Corrotti · scuro']])}<small class="meta">Automatico segue l’impostazione del telefono.</small></div>
       </div>
       <div class="btns"><button class="opt back" data-menu="options">Indietro</button></div>`;
