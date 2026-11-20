@@ -95,10 +95,10 @@ h1{font-family:var(--f-display);font-weight:400;margin:0;line-height:1;text-wrap
 .card.art .nm.lg{font-size:10px}
 .pic .ovn{position:absolute;left:0;right:0;bottom:0;padding:12px 3px 2px;background:linear-gradient(transparent,rgb(10 6 14/.82) 55%);color:#fff;font-family:var(--f-display);font-size:11px;line-height:1.05;text-align:center;text-wrap:balance;border-radius:0 0 2px 2px}
 .pic .ovn.lg{font-size:9.5px}
-.card.ov .pic{flex:1 0 56%}
+.card.ov .pic{flex:1 1 40%;min-height:0}
 .card.ov.san .cb{bottom:auto;top:auto;bottom:22px}
-.card.ov .mid{flex:none}
-.card.ov .csym{-webkit-line-clamp:2;font-size:10px}
+.card.ov .mid{flex:0 1 auto;min-height:0;overflow:hidden}
+.card.ov .csym{-webkit-line-clamp:2;font-size:9px;line-height:1.15}
 .card.ov .tags{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-size:8.5px;opacity:.9}
 .bigrow .card .ovn{font-size:14px}.bigrow .card .ovn.lg{font-size:12px}
 .card.art .ct{display:none}
@@ -148,7 +148,7 @@ h1{font-family:var(--f-display);font-weight:400;margin:0;line-height:1;text-wrap
 .hsym,.csym{font-weight:700;color:var(--fg);line-height:1.15;text-wrap:balance;overflow-wrap:anywhere}
 .hsym{font-size:13px}.hand.bighand .hsym{font-size:15px}
 .csym{font-size:10.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
-.bigrow .card .csym{font-size:13px}
+.bigrow .card .csym{font-size:9.5px;line-height:1.15}
 .opts{display:flex;flex-wrap:wrap;gap:6px}
 .opt{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 11px;cursor:pointer;text-align:left;font-size:14px;min-width:0}
 .opt.on{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
@@ -417,8 +417,8 @@ D('belzebu','Belzebù',1,'Demoni ed Eretici',3,3,'Elimina un Martire avversario 
 D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,'Puoi eliminare un tuo Comunista già schierato, anche coperto: se lo fai, Giordano Bruno ottiene +3 Dominio.',null,null,'eretico'),
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.',null,null,'eretico'),
 ];
-const SYM={'giorgio': '☠ ↑ 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta (anche sé)', 'pantaleone': '☠ Comunista/Eretico 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ prossima ↑', 'lucia': '🔍 {c}', 'paolo': '▼2 ↑', 'ferretti': '☠ 👁 Comunista/Artista ≤ 2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 ↓', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria ↑ 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ ↑', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ ↑', 'nerone': '▼1 tutte ↑ 👁', 'giuliano': '▼2 ↑ · se Artista 👁', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁 · o ⛨ {c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}'};
-const symHtml=id=>esc(SYM[id]||'').replace(/\{c\}/g,'<i class="eyec">👁</i>');
+const SYM={'giorgio': '☠ ↑ 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta (anche sé)', 'pantaleone': '☠ Com./Er. 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⛨ ↑ prossima', 'lucia': '🔍 {c}', 'paolo': '▼2 ↑', 'ferretti': '☠ 👁 Com./Art. ≤2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 ↓', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria ↑ 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ ↑', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ ↑', 'nerone': '▼1 tutte ↑ 👁', 'giuliano': '▼2 ↑ · se Artista 👁', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁 · o ⛨ {c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}'};
+const symHtml=id=>esc(SYM[id]||'').replace(/\//g,'/\u200b').replace(/\{c\}/g,'<i class="eyec">👁</i>');
 const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));
 const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
   marx:'Plusvalore',lenin:'Obladi oblada',stalin:'Grande purga',ozzy:'Pipistrello',siffredi:'Gran finale',baudelaire:'Fiori malvagi',dali:'Baffi onirici',diocleziano:'Editto letale',nerone:'Fuoco nel fuoco',lutero:'Lutero è mio e lo gestisco io',galileo:'Dito medio',bruno:'Mente ardente',engels:'Fedeltà totale',giuliano:'Nostalgia canaglia',lucifero:'Amore disperato',belzebu:'Fame insaziabile'};
