@@ -371,6 +371,7 @@ div.hcard{cursor:default}
 @keyframes quake{0%{transform:translate(0,0)}25%{transform:translate(-6px,3px) rotate(-.6deg)}50%{transform:translate(5px,-4px) rotate(.5deg)}75%{transform:translate(-4px,-2px)}100%{transform:translate(0,0)}}
 @keyframes glitch{0%,86%,100%{text-shadow:2px 0 #ff2e7e,-2px 0 #3d0063,0 0 22px rgb(150 60 255 / .6);transform:none}88%{text-shadow:-6px 0 #ff2e7e,6px 0 #3d0063;transform:skewX(-8deg)}92%{text-shadow:5px 2px #ff2e7e,-5px -2px #000;transform:skewX(6deg) translateX(3px)}}
 @keyframes flicker{0%,94%,100%{filter:none}95%{filter:brightness(.55)}97%{filter:brightness(1.25)}}
+.endfx .sumt{color:#f4ecd8}.sumt{border-collapse:collapse;margin:12px auto 4px;font-size:13px;min-width:240px}.sumt th{font-weight:600;opacity:.7;font-size:11px;padding:2px 8px}.sumt td{padding:3px 8px;text-align:center;border-top:1px solid rgba(255,255,255,.18)}.sumt td:first-child{text-align:left}.sumt tr.tot td{font-weight:800;border-top:2px solid currentColor}.sheet .sumt td{border-top-color:rgba(0,0,0,.15)}.efw{font-size:12px;opacity:.8;margin-top:6px;max-width:300px}
 </style>
 
 </head>
@@ -1038,15 +1039,15 @@ async function activate(c){
 }
 async function endRound(){
   S.phase='end';
-  const sc=[0,1].map(p=>live(p).reduce((a,c)=>a+c.dom,0)),bonus=[];
+  const sc=[0,1].map(p=>live(p).reduce((a,c)=>a+c.dom,0)),bonus=[];const rw={dom:sc.slice(),ini:[0,0],exp:[0,0]};(S.rows=S.rows||[])[S.round-1]=rw;
   /* gioco base: 1 punto a chi ha meno gettoni iniziativa sulle carte in gioco */
   const tk=[0,1].map(p=>live(p).reduce((a,c)=>a+Math.max(0,init(c)),0));
-  if(tk[0]!==tk[1]){const b=tk[0]<tk[1]?0:1;sc[b]+=1;bonus.push(`Meno gettoni iniziativa in gioco (${tk[b]} contro ${tk[1-b]}): +1 punto ai ${FAC[b]}`)}
+  if(tk[0]!==tk[1]){const b=tk[0]<tk[1]?0:1;sc[b]+=1;rw.ini[b]=1;bonus.push(`Meno gettoni iniziativa in gioco (${tk[b]} contro ${tk[1-b]}): +1 punto ai ${FAC[b]}`)}
   else bonus.push(`Stessi gettoni iniziativa in gioco (${tk[0]}): nessun punto extra`);
   /* variante esperti: tris e poker di categoria */
   if(S.expert)for(const p of [0,1]){const cnt={};live(p).forEach(c=>cnt[c.def.cat]=(cnt[c.def.cat]||0)+1);
     const [cat,n]=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]||[null,0];
-    if(n>=4){sc[p]+=5;bonus.push(`Poker di ${cat}: +5 punti ai ${FAC[p]}`)}else if(n===3){sc[p]+=3;bonus.push(`Tris di ${cat}: +3 punti ai ${FAC[p]}`)}}
+    if(n>=4){sc[p]+=5;rw.exp[p]=5;bonus.push(`Poker di ${cat}: +5 punti ai ${FAC[p]}`)}else if(n===3){sc[p]+=3;rw.exp[p]=3;bonus.push(`Tris di ${cat}: +3 punti ai ${FAC[p]}`)}}
   S.totals[0]+=sc[0];S.totals[1]+=sc[1];S.history.push(sc);S.lastBonus=bonus;
   bonus.forEach(b=>log(b+'.'));
   S.status=`Fine round ${S.round}: Santi ${sc[0]}, Corrotti ${sc[1]}.`;
@@ -1362,7 +1363,7 @@ function render(){
   let fin='';
   if(S.final){const[a,b]=S.totals;
     fin=`<div class="sheet final"><h2>${S.final.w===null?'Pareggio':`Vincono i ${FAC[S.final.w]}`}</h2><p class="epic">La partita si è conclusa ${a} a ${b}. ${esc(S.epic||'')}</p>
-    <div>Santi ${a} · Corrotti ${b}<br><span class="meta">Round 1: ${S.history[0][0]}–${S.history[0][1]} · Round 2: ${S.history[1][0]}–${S.history[1][1]}</span></div>
+    <div>Santi ${a} · Corrotti ${b}<br></div>${sumHtml()}
     ${S.final.why?`<div class="meta">${S.final.why}</div>`:''}
     <div class="opts"><button class="opt main" data-restart>Nuova partita</button></div></div>`}
   app.innerHTML=`<div class="wrap">
@@ -1381,6 +1382,15 @@ function render(){
   ${S.overlay?`<div class="veil" data-veil><div><h2>${esc(S.overlay.title)}</h2><p>${esc(S.overlay.text)}</p><button class="big" data-veil>${esc(S.overlay.btn)}</button></div></div>`:''}
   ${modalHtml()}`;
 }
+function sumHtml(){
+  const R=S.rows||[];if(!R.length)return'';
+  const row=(l,x,y,cls='')=>`<tr class="${cls}"><td>${l}</td><td>${x}</td><td>${y}</td></tr>`;
+  let h='';R.forEach((r,i)=>{if(!r)return;h+=row(`Round ${i+1} · Dominio`,r.dom[0],r.dom[1]);
+    h+=row('Meno gettoni iniziativa',r.ini[0]?'+1':'–',r.ini[1]?'+1':'–');
+    if(S.expert)h+=row('Tris/Poker',r.exp[0]?'+'+r.exp[0]:'–',r.exp[1]?'+'+r.exp[1]:'–')});
+  h+=row('Totale',S.totals[0],S.totals[1],'tot');
+  return`<table class="sumt"><tr><th></th><th>Santi</th><th>Corrotti</th></tr>${h}</table>`;
+}
 function endFxHtml(){
   const[a,b]=S.totals,w=S.final.w;let title,fac;
   if(S.mode==='cpu'&&!S.demo&&(S.human===0||S.human===1)){fac=S.human;title=w===null?'PAREGGIO':w===S.human?'HAI VINTO':'HAI PERSO'}
@@ -1390,7 +1400,7 @@ function endFxHtml(){
   return`<div class="endfx ${fac?'cor':'san'} ${win?'win':'lose'}" data-endfx role="dialog" aria-label="${title}">
     <div class="efp">${parts}</div>
     <div class="efc"><div class="efe">${ico(fac?'back1':'back0')}</div><h2 class="eft">${title}</h2>
-    <div class="efs">Santi ${a} · Corrotti ${b}</div>${S.unlocked?'<div class="efu">Hai sbloccato la variante esperti!</div>':''}<p class="efm">${esc(S.epic||'')}</p><div class="tap">Tocca ovunque per continuare</div></div></div>`;
+    <div class="efs">Santi ${a} · Corrotti ${b}</div>${S.unlocked?'<div class="efu">Hai sbloccato la variante esperti!</div>':''}<p class="efm">${esc(S.epic||'')}</p>${sumHtml()}${S.final.why?`<div class="efw">${esc(S.final.why)}</div>`:''}<div class="tap">Tocca ovunque per continuare</div></div></div>`;
 }
 function modalHtml(){
   if(!S||!S.detail)return'';
