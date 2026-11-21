@@ -1326,6 +1326,7 @@ function render(){
         <div class="optrow"><span>La tua mano</span>${seg('hand',[['big','Grande'],['compact','Compatta']])}</div>
         <div class="optrow"><span>Le tue carte in campo</span>${seg('mine',[['big','Grandi'],['compact','Compatte']])}</div>
         <div class="optrow"><span>Carte avversarie in campo</span>${seg('opp',[['big','Grandi'],['compact','Compatte']])}</div>
+        <div class="optrow"><span>Schermo intero</span><div class="seg"><button class="opt" data-fs>${FSE()?'Esci da schermo intero':'Gioca a schermo intero'}</button></div>${FSOK()?'':'<small class="meta">Su questo dispositivo il browser non lo consente: su iPhone usa “Aggiungi a Home” dal menu Condividi.</small>'}</div>
         <div class="optrow"><span>Suoni</span>${seg('sound',[['on','Attivi'],['off','Spenti']])}<small class="meta">Un breve motivo a fine partita, per vittoria o sconfitta.</small><div class="seg"><button class="opt" data-sfx="win">Prova vittoria</button><button class="opt" data-sfx="lose">Prova sconfitta</button><button class="opt" data-sfx="draw">Prova pareggio</button></div></div>
         <div class="optrow"><span>Tema</span>${seg('theme',[['auto','Automatico'],['light','Santi · chiaro'],['dark','Corrotti · scuro']])}<small class="meta">Automatico segue l’impostazione del telefono.</small></div>
       </div>
@@ -1391,6 +1392,10 @@ function sumHtml(){
   h+=row('Totale',S.totals[0],S.totals[1],'tot');
   return`<table class="sumt"><tr><th></th><th>Santi</th><th>Corrotti</th></tr>${h}</table>`;
 }
+const FSE=()=>document.fullscreenElement||document.webkitFullscreenElement;
+const FSOK=()=>{const e=document.documentElement;return!!(e.requestFullscreen||e.webkitRequestFullscreen)};
+function toggleFS(){try{if(FSE()){(document.exitFullscreen||document.webkitExitFullscreen).call(document)}else{const e=document.documentElement;const r=(e.requestFullscreen||e.webkitRequestFullscreen).call(e);if(r&&r.catch)r.catch(()=>{})}}catch(x){}}
+['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{try{render()}catch(x){}}));
 function endFxHtml(){
   const[a,b]=S.totals,w=S.final.w;let title,fac;
   if(S.mode==='cpu'&&!S.demo&&(S.human===0||S.human===1)){fac=S.human;title=w===null?'PAREGGIO':w===S.human?'HAI VINTO':'HAI PERSO'}
@@ -1451,7 +1456,7 @@ if(typeof document!=='undefined'){
   document.addEventListener('click',e=>{if(lpFired){lpFired=false;e.stopPropagation();e.preventDefault()}},true);
   document.documentElement.addEventListener('pointerleave',()=>{tip.hidden=true});
   document.addEventListener('click',e=>{
-    const t=e.target.closest('[data-sfx],[data-ib],[data-album],[data-albtab],[data-resume],[data-code],[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
+    const t=e.target.closest('[data-fs],[data-sfx],[data-ib],[data-album],[data-albtab],[data-resume],[data-code],[data-endfx],[data-menu],[data-setopt],[data-resetstats],[data-popok],[data-credits],[data-info],[data-start],[data-quit],[data-home],[data-rules],[data-help],[data-htab],[data-hstep],[data-hclose],[data-close],[data-veil],[data-opt],[data-skip],[data-tog],[data-confirm],[data-card],[data-hand],[data-restart]');
     if(!t)return;
     if(t.dataset.start==='demo'){newGame('cpu',0,false,true);return}
     if(t.dataset.start!==undefined){newGame(t.dataset.start,t.dataset.start==='cpu'?+t.dataset.h:null,t.dataset.x==='1');return}
@@ -1471,6 +1476,7 @@ if(typeof document!=='undefined'){
     if(t.dataset.menu!==undefined||t.dataset.credits!==undefined){if(S)S.codeMsg=null}
     if(t.dataset.endfx!==undefined){S.endFx=false;render();return}
     if(t.dataset.menu!==undefined){const at=S&&S.albTab;S={screen:'start',menu:t.dataset.menu,albTab:at};render();window.scrollTo(0,0);return}
+    if(t.dataset.fs!==undefined){toggleFS();return}
     if(t.dataset.sfx!==undefined){const k=OPT.sound;OPT.sound='on';sfx(t.dataset.sfx);OPT.sound=k;return}
     if(t.dataset.setopt!==undefined){setOpt(t.dataset.setopt,t.dataset.v);return}
     if(t.dataset.resetstats!==undefined){const v=t.dataset.resetstats;if(v==='yes')saveStats([{w:0,l:0,d:0},{w:0,l:0,d:0}]);S.confirmReset=v==='ask';render();return}
