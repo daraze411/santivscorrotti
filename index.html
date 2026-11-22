@@ -392,6 +392,7 @@ D('lorenzo','San Lorenzo',0,'Martiri',1,2,'Se viene eliminato da una carta avver
 D('gennaro','San Gennaro',0,'Miracoli',3,3,'Se vinci il primo round elimini definitivamente due carte avversarie anziché una.',null,null),
 D('rocco','San Rocco',0,'Miracoli',2,3,'Se una carta sta per essere eliminata, anche San Rocco stesso, la protegge e il suo Dominio scende a 1.',null,null),
 D('pantaleone','San Pantaleone',0,'Miracoli',2,2,'Elimina un Comunista o un Eretico avversario, scoperto o coperto. Se scegli una carta coperta che non lo è, non succede nulla.',null,null),
+D('bernadette','Santa Bernadette',0,'Miracoli',2,3,'Una tua carta scoperta ottiene +3 Dominio. Può essere Bernadette stessa.',null,null),
 D('rita','Santa Rita',0,'Miracoli',3,2,'Tutti i tuoi Santi ottengono +1 Dominio.',null,null),
 D('pietro','San Pietro',0,'Mistici',3,3,'Rimette in gioco una tua carta eliminata, nello slot originario. Il suo effetto non viene riattivato.',null,null),
 D('benedetto','San Benedetto',0,'Mistici',2,2,'Annulla l’effetto principale della prossima carta avversaria ad attivarsi.',null,null),
@@ -425,7 +426,7 @@ D('mosconi','Germano Mosconi',1,'Persecutori',2,2,'Ai fini del tris o del poker 
 D('guevara','Che Guevara',1,'Comunisti',2,3,'Elimina una carta avversaria scoperta con costo stampato 2 o meno.',null,null),
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.',null,null,'eretico'),
 ];
-const SYM={'giorgio': '☠ ↑ 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta (anche sé)', 'pantaleone': '☠ Com./Er. 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⊘ ↑ prossima', 'lucia': '🔍 {c}', 'paolo': '▼2 ↑', 'ferretti': '☠ 👁 Com./Art. ≤2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 ↓', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria ↑ 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ ↑', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ ↑', 'nerone': '▼1 tutte ↑ 👁', 'giuliano': '▼2 ↑ · se Artista 👁', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁 · o ⊘ {c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}', 'agata': '☠ 👁 costo ≥ 3', 'padrepio': '◐⇄ due ↑', 'giovanna_s': '0 se Giovanna ↑ 👁 · costo 4', 'giovanna_c': '0 se Giovanna ↑ 👁 · costo 4', 'manson': '1ª: schiera +1 carta', 'mosconi': '★ jolly tris/poker', 'guevara': '☠ 👁 costo ≤ 2'};
+const SYM={'giorgio': '☠ ↑ 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta (anche sé)', 'pantaleone': '☠ Com./Er. 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⊘ ↑ prossima', 'lucia': '🔍 {c}', 'paolo': '▼2 ↑', 'ferretti': '☠ 👁 Com./Art. ≤2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 ↓', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria ↑ 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ ↑', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ ↑', 'nerone': '▼1 tutte ↑ 👁', 'giuliano': '▼2 ↑ · se Artista 👁', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁 · o ⊘ {c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}', 'agata': '☠ 👁 costo ≥ 3', 'padrepio': '◐⇄ due ↑', 'giovanna_s': '0 se Giovanna ↑ 👁 · costo 4', 'giovanna_c': '0 se Giovanna ↑ 👁 · costo 4', 'manson': '1ª: schiera +1 carta', 'mosconi': '★ jolly tris/poker', 'guevara': '☠ 👁 costo ≤ 2', 'bernadette': '▲3 ↓ 👁'};
 const symHtml=id=>esc(SYM[id]||'').replace(/\//g,'/\u200b').replace(/\{c\}/g,'<i class="eyec">👁</i>');
 const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));DEF.giovanna_s.deckPay=DEF.giovanna_c.deckPay=true;
 const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
@@ -781,6 +782,7 @@ const MAIN={
     if(x){const b=init(x);x.tokens++;log(`${pn(x)} riceve un gettone iniziativa: ${b} → ${init(x)}.`)}},
   async bruno(c){const x=await pick(c.owner,'Giordano Bruno: puoi eliminare un tuo Comunista per ottenere +3 Dominio',live(c.owner).filter(x=>!x.fixed&&x.def.cat==='Comunisti'),{optional:true,ai:x=>3-x.dom});
     if(x&&await eliminate(x,c)){addDom(c,3);log('Giordano Bruno ottiene +3 Dominio.')}},
+  async bernadette(c){const p=c.owner;const t=await pick(p,'Santa Bernadette: una tua carta scoperta ottiene +3 Dominio',live(p).filter(x=>x.faceUp),{ai:x=>x.dom<=3?4-x.dom:0});if(t){addDom(t,3);log(`Santa Bernadette: ${t.def.name} ottiene +3 Dominio.`)}},
   async agata(c){const p=c.owner;const t=await pick(p,'Sant’Agata: elimina una carta avversaria scoperta con costo stampato 3 o più',live(1-p).filter(x=>x.faceUp&&x.def.cost>=3));if(t)await eliminate(t,c)},
   async guevara(c){const p=c.owner;const t=await pick(p,'Che Guevara: elimina una carta avversaria scoperta con costo stampato 2 o meno',live(1-p).filter(x=>x.faceUp&&x.def.cost<=2));if(t)await eliminate(t,c)},
   async padrepio(c){await swapTokens(c.owner,'Padre Pio: scambia i gettoni iniziativa di due carte avversarie',live(1-c.owner),true)},
@@ -889,6 +891,7 @@ function mainValue(id,p){
     case 'giorgio':return el(()=>true)-0.6;
     case 'agata':return el(x=>x.faceUp&&x.def.cost>=3)-0.3;
     case 'guevara':return el(x=>x.faceUp&&x.def.cost<=2);
+    case 'bernadette':return 1.6;
     case 'padrepio':return 0.6;case 'giovanna_s':case 'giovanna_c':return 0.3;case 'manson':return 1.2;case 'mosconi':return 0.8;
     case 'barbara':return el(x=>x.faceUp&&x.dom<=2)
     case 'lucifero':return el(x=>x.faceUp)+0.3;
