@@ -400,6 +400,9 @@ D('paolo','San Paolo',0,'Mistici',3,2,'−2 Dominio a una carta avversaria.',nul
 D('ferretti','Giovanni Lindo Ferretti',0,'Devoti',3,3,'Elimina un Comunista o un Artista avversario scoperto con Dominio ≤ 2.',null,null),
 D('adinolfi','Mario Adinolfi',0,'Devoti',2,3,'Un altro Santo ottiene +1 Dominio.',null,null),
 D('koll','Claudia Koll',0,'Devoti',2,2,'Due Santi ottengono +1 Dominio.',null,null),
+D('agata','Sant’Agata',0,'Martiri',3,1,'Elimina una carta avversaria scoperta con costo stampato 3 o più.',null,null),
+D('padrepio','Padre Pio',0,'Mistici',2,2,'Scambia i gettoni iniziativa di due carte avversarie, scoperte o coperte.',null,null),
+D('giovanna_s','Santa Giovanna d’Arco',0,'Martiri',4,5,'Se la Giovanna d’Arco avversaria si è già attivata, il Dominio di questa carta scende a 0. Costo 4: si paga con tre carte dalla mano e la cima del mazzo.',null,null),
 D('brosio','Paolo Brosio',0,'Devoti',2,2,'Sostituisci una tua carta non ancora attivata con una carta dalla tua mano.',null,null),
 D('marx','Karl Marx',1,'Comunisti',2,3,'+1 Dominio agli altri Comunisti scoperti.',null,null),
 D('lenin','Vladimir Lenin',1,'Comunisti',3,2,'Se hai un altro Comunista scoperto, elimina una carta avversaria scoperta.',null,null),
@@ -416,11 +419,15 @@ D('lutero','Martin Lutero',1,'Persecutori',2,2,'Se è la prima carta dei Corrott
 D('lucifero','Lucifero',1,'Demoni ed Eretici',3,3,'Elimina una carta avversaria scoperta.',null,null,'demone'),
 D('belzebu','Belzebù',1,'Demoni ed Eretici',3,3,'Elimina un Martire avversario scoperto, oppure annulla l’effetto di una carta avversaria coperta.',null,null,'demone'),
 D('bruno','Giordano Bruno',1,'Demoni ed Eretici',3,2,'Puoi eliminare un tuo Comunista già schierato, anche coperto: se lo fai, Giordano Bruno ottiene +3 Dominio.',null,null,'eretico'),
+D('giovanna_c','Giovanna d’Arco',1,'Demoni ed Eretici',4,5,'Se la Giovanna d’Arco avversaria si è già attivata, il Dominio di questa carta scende a 0. Costo 4: si paga con tre carte dalla mano e la cima del mazzo.',null,null,'eretico'),
+D('manson','Marilyn Manson',1,'Artisti',3,2,'Se è la prima carta dei Corrotti ad attivarsi, puoi schierare una nuova carta dalla mano, pagandone il costo.',null,null),
+D('mosconi','Germano Mosconi',1,'Artisti',2,2,'Ai fini del tris o del poker di categoria vale come jolly.',null,null),
+D('guevara','Che Guevara',1,'Comunisti',2,3,'Elimina una carta avversaria scoperta con costo stampato 2 o meno.',null,null),
 D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni iniziativa di due carte coperte.',null,null,'eretico'),
 ];
-const SYM={'giorgio': '☠ ↑ 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta (anche sé)', 'pantaleone': '☠ Com./Er. 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⊘ ↑ prossima', 'lucia': '🔍 {c}', 'paolo': '▼2 ↑', 'ferretti': '☠ 👁 Com./Art. ≤2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 ↓', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria ↑ 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ ↑', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ ↑', 'nerone': '▼1 tutte ↑ 👁', 'giuliano': '▼2 ↑ · se Artista 👁', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁 · o ⊘ {c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}'};
+const SYM={'giorgio': '☠ ↑ 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta (anche sé)', 'pantaleone': '☠ Com./Er. 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⊘ ↑ prossima', 'lucia': '🔍 {c}', 'paolo': '▼2 ↑', 'ferretti': '☠ 👁 Com./Art. ≤2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 ↓', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria ↑ 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ ↑', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ ↑', 'nerone': '▼1 tutte ↑ 👁', 'giuliano': '▼2 ↑ · se Artista 👁', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁 · o ⊘ {c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}', 'agata': '☠ 👁 costo ≥ 3', 'padrepio': '◐⇄ due ↑', 'giovanna_s': '0 se Giovanna ↑ 👁 · costo 4', 'giovanna_c': '0 se Giovanna ↑ 👁 · costo 4', 'manson': '1ª: schiera +1 carta', 'mosconi': '★ jolly tris/poker', 'guevara': '☠ 👁 costo ≤ 2'};
 const symHtml=id=>esc(SYM[id]||'').replace(/\//g,'/\u200b').replace(/\{c\}/g,'<i class="eyec">👁</i>');
-const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));
+const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));DEF.giovanna_s.deckPay=DEF.giovanna_c.deckPay=true;
 const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
   marx:'Plusvalore',lenin:'Obladi oblada',stalin:'Grande purga',ozzy:'Pipistrello',siffredi:'Gran finale',baudelaire:'Fiori malvagi',dali:'Baffi onirici',diocleziano:'Editto letale',nerone:'Fuoco nel fuoco',lutero:'Lutero è mio e lo gestisco io',galileo:'Dito medio',bruno:'Mente ardente',engels:'Fedeltà totale',giuliano:'Nostalgia canaglia',lucifero:'Amore disperato',belzebu:'Fame insaziabile'};
 const nick=d=>{const n=NICK[d.id];if(!n)return'';const lw=Math.max(...n.split(' ').map(w=>w.length));return`<span class="nk ${lw>10||n.length>18?'sm':''}">${esc(n)}</span>`};
@@ -580,6 +587,7 @@ function refill(p,silent){
     P.hand.push(P.deck.pop());
   }
 }
+const payOK=(p,h)=>{const P=S.players[p],k=DEF[h.id].deckPay?1:0;return costOf(p,h)-k<=P.hand.length-1&&(!k||P.deck.length>0)};
 function costOf(p,card){const d=DEF[card.id];return Math.max(0,d.cost-((d.cat==='Comunisti'&&S.players[p].comDiscount)?1:0))}
 
 /* ---------- visibilità ed etichette ---------- */
@@ -773,6 +781,30 @@ const MAIN={
     if(x){const b=init(x);x.tokens++;log(`${pn(x)} riceve un gettone iniziativa: ${b} → ${init(x)}.`)}},
   async bruno(c){const x=await pick(c.owner,'Giordano Bruno: puoi eliminare un tuo Comunista per ottenere +3 Dominio',live(c.owner).filter(x=>!x.fixed&&x.def.cat==='Comunisti'),{optional:true,ai:x=>3-x.dom});
     if(x&&await eliminate(x,c)){addDom(c,3);log('Giordano Bruno ottiene +3 Dominio.')}},
+  async agata(c){const p=c.owner;const t=await pick(p,'Sant’Agata: elimina una carta avversaria scoperta con costo stampato 3 o più',live(1-p).filter(x=>x.faceUp&&x.def.cost>=3));if(t)await eliminate(t,c)},
+  async guevara(c){const p=c.owner;const t=await pick(p,'Che Guevara: elimina una carta avversaria scoperta con costo stampato 2 o meno',live(1-p).filter(x=>x.faceUp&&x.def.cost<=2));if(t)await eliminate(t,c)},
+  async padrepio(c){await swapTokens(c.owner,'Padre Pio: scambia i gettoni iniziativa di due carte avversarie',live(1-c.owner),true)},
+  async giovanna_s(c){await giovanna(c)},async giovanna_c(c){await giovanna(c)},
+  async manson(c){const p=c.owner,P=S.players[p];
+    if(S.actCount[p]!==0){log('Marilyn Manson non è la prima carta dei Corrotti.');return}
+    const ok=P.hand.filter(h=>!DEF[h.id].deckPay&&costOf(p,h)<=P.hand.length-1);
+    if(!ok.length){log('Marilyn Manson: nessuna carta pagabile dalla mano.');return}
+    let ch=null;
+    if(isCpu(p)){const b=cpuDeploy(p);if(b&&!DEF[b.card.id].deckPay&&costOf(p,b.card)<=2)ch=b}
+    else{
+      const r=await ask(p,{title:'Marilyn Manson: schieri una nuova carta?',text:'Scegli una carta dalla mano e paghine il costo scartando altre carte. Resta coperta.',opts:[...ok.map(h=>({label:`${DEF[h.id].name} · costo ${costOf(p,h)} · Dom ${DEF[h.id].dom}`,v:h,hand:h.uid})),{label:'No, grazie',v:null,main:true}]});
+      if(r){const cost=costOf(p,r),others=P.hand.filter(h=>h!==r);let disc=others;
+        if(cost<others.length){const sel=await ask(p,{title:`Scegli ${cost} ${cost===1?'carta':'carte'} da scartare`,multi:cost,optional:true,playing:r.uid,opts:others.map(h=>({label:`${DEF[h.id].name} · Dom ${DEF[h.id].dom}`,v:h,hand:h.uid}))});
+          disc=sel||null}
+        if(disc&&disc.length>cost)disc=disc.slice(0,cost);
+        if(disc)ch={card:r,disc}}}
+    if(!ch)return;
+    const{card,disc}=ch,cost=costOf(p,card);
+    P.hand=P.hand.filter(h=>h!==card&&!disc.includes(h));P.discard.push(...disc);
+    const n=inst(card,p);let sl=P.board.indexOf(null);if(sl<0){sl=P.board.length;P.board.push(null)}
+    n.slot=sl;P.board[sl]=n;n.known[p]=true;P.paid+=cost;if(S.round===2)S.costSum[p]+=card.def?card.def.cost:DEF[card.id].cost;
+    log(`Marilyn Manson: i Corrotti schierano ${S.mode==='cpu'&&p!==S.human?'una carta coperta':DEF[card.id].name} in pos. ${sl+1} (iniziativa ${init(n)}, pagano ${cost}).`);
+    refill(p);refreshOzzy()},
   async galileo(c){await swapTokens(c.owner,'Galileo: scambia i gettoni iniziativa di due carte coperte',both().filter(x=>!x.faceUp),true)},
 };
 
@@ -809,7 +841,7 @@ async function playGame(resume){
 }
 function snapshotEnd(){if(S)S.phase='end';snapshot()}
 function cpuDeployOld(p){
-  const P=S.players[p],pl=P.hand.filter(h=>costOf(p,h)<=P.hand.length-1);
+  const P=S.players[p],pl=P.hand.filter(h=>payOK(p,h));
   let card=pl[0],bs=-1;
   for(const h of pl){const d=DEF[h.id],s=d.dom+Math.random()*2.5+(d.m?0.5:0)-(S.noRe?costOf(p,h)*0.7:0);if(s>bs){bs=s;card=h}}
   const d=DEF[card.id],up=Math.random()<(d.s?0.75:0.35);
@@ -818,7 +850,7 @@ function cpuDeployOld(p){
 }
 
 /* ---------- avversario computer: valutazioni ---------- */
-const KILL_UP={lucifero:1,belzebu:.7,lenin:.6,stalin:.5,barbara:.7,ferretti:.4,giorgio:1,pantaleone:.3,paolo:.4};
+const KILL_UP={agata:.5,guevara:.3,lucifero:1,belzebu:.7,lenin:.6,stalin:.5,barbara:.7,ferretti:.4,giorgio:1,pantaleone:.3,paolo:.4};
 const KILL_DOWN={diocleziano:1,giorgio:1,paolo:.4,belzebu:.7};
 function oppView(p){
   const o=1-p,board=S.players[o].board.filter(Boolean);
@@ -855,6 +887,9 @@ function mainValue(id,p){
   const el=f=>Math.max(bestTarget(p,f),fut);
   switch(id){
     case 'giorgio':return el(()=>true)-0.6;
+    case 'agata':return el(x=>x.faceUp&&x.def.cost>=3)-0.3;
+    case 'guevara':return el(x=>x.faceUp&&x.def.cost<=2);
+    case 'padrepio':return 0.6;case 'giovanna_s':case 'giovanna_c':return 0.3;case 'manson':return 1.2;case 'mosconi':return 0.8;
     case 'barbara':return el(x=>x.faceUp&&x.dom<=2)
     case 'lucifero':return el(x=>x.faceUp)+0.3;
     case 'belzebu':return Math.max(1.2,el(x=>x.faceUp&&x.def.cat==='Martiri'));
@@ -880,11 +915,15 @@ function mainValue(id,p){
     default:return 0.2;
   }
 }
+async function giovanna(c){const o=1-c.owner;
+  const other=S.players[o].board.find(x=>x&&x.id.startsWith('giovanna')&&x.activated);
+  if(other){c.dom=0;log(`${c.def.name}: l’altra Giovanna d’Arco si era già attivata, il suo Dominio scende a 0.`)}
+  else log(`${c.def.name}: per prima, mantiene il Dominio ${c.dom}.`)}
 function scopValue(id,p){return 0}
 function keepValue(h,p){const d=DEF[h.id];return d.dom+mainValue(d.id,p)*0.6+(S.noRe?(3-costOf(p,h))*0.5:0)}
 function cpuDeploy(p){
   if(S.aiOld&&S.aiOld[p])return cpuDeployOld(p);
-  const P=S.players[p],pl=P.hand.filter(h=>costOf(p,h)<=P.hand.length-1);
+  const P=S.players[p],pl=P.hand.filter(h=>payOK(p,h));
   let best=null,bs=-Infinity;
   for(const h of pl){const d=DEF[h.id],cost=costOf(p,h);
     const tUp=Math.min(1.6,threat(p,true,d)),tDown=Math.min(1.6,threat(p,false,d));
@@ -894,22 +933,23 @@ function cpuDeploy(p){
       sc+=Math.random()*0.35;
       if(sc>bs){bs=sc;best={card:h,up:false}}}}
   const others=P.hand.filter(h=>h!==best.card).sort((a,b)=>keepValue(a,p)-keepValue(b,p));
-  return{card:best.card,up:best.up,disc:others.slice(0,costOf(p,best.card))};
+  return{card:best.card,up:best.up,disc:others.slice(0,costOf(p,best.card)-(DEF[best.card.id].deckPay?1:0))};
 }
 async function humanDeploy(p){
   const P=S.players[p];
   for(;;){
     S.status=`Tocca ai ${FAC[p]}: tocca una carta della mano per schierarla. Tieni premuta una carta per leggerne i poteri.`;
     const card=await new Promise(res=>{S.handWait=res;render()});S.handWait=null;
-    const d=DEF[card.id],cost=costOf(p,card),ok=cost<=P.hand.length-1;
-    const r=await ask(p,{title:d.name,card:d,text:ok?`Costo ${cost}: scarti ${cost} ${cost===1?'carta':'carte'} dalla mano. Dopo lo schieramento potrai scartarne altre per spostare l’iniziativa. La carta resta coperta finché non si attiva.`:`Costo ${cost}: non hai abbastanza carte in mano.`,
+    const d=DEF[card.id],cost=costOf(p,card),ok=payOK(p,card),dk=d.deckPay?1:0;
+    const r=await ask(p,{title:d.name,card:d,text:ok?`Costo ${cost}: ${dk?'scarti 3 carte dalla mano e la cima del mazzo (alla cieca).':`scarti ${cost} ${cost===1?'carta':'carte'} dalla mano.`} Dopo lo schieramento potrai scartarne altre per spostare l’iniziativa. La carta resta coperta finché non si attiva.`:`Costo ${cost}: non hai abbastanza carte in mano.`,
       opts:[...(ok?[{label:'Schiera',v:'down',main:true}]:[]),{label:'Scegli un’altra carta',v:'back'}]});
     if(r==='back')continue;
     const others=P.hand.filter(h=>h!==card);let disc=[];
-    if(cost===others.length)disc=others;
-    else if(cost>0){const sel=await ask(p,{title:`Scegli ${cost} ${cost===1?'carta':'carte'} da scartare`,multi:cost,optional:true,playing:card.uid,opts:others.map(h=>({label:`${DEF[h.id].name} · Dom ${DEF[h.id].dom}`,v:h,hand:h.uid}))});
+    const nh=cost-dk;
+    if(nh===others.length)disc=others;
+    else if(nh>0){const sel=await ask(p,{title:`Scegli ${nh} ${nh===1?'carta':'carte'} da scartare`,multi:nh,optional:true,playing:card.uid,opts:others.map(h=>({label:`${DEF[h.id].name} · Dom ${DEF[h.id].dom}`,v:h,hand:h.uid}))});
       if(!sel)continue;disc=sel}
-    return{card,up:false,disc};
+    return{card,up:false,disc,deckPay:!!dk};
   }
 }
 async function deployTurn(p){
@@ -917,14 +957,14 @@ async function deployTurn(p){
   S.status=isCpu(p)?`I ${FAC[p]} stanno schierando…`:`Tocca ai ${FAC[p]}.`;
   if(S.mode==='hot')await ensureViewer(p);
   render();
-  if(!P.hand.some(h=>costOf(p,h)<=P.hand.length-1)){
+  if(!P.hand.some(h=>payOK(p,h))){
     log(`${FAC[p]}: nessuna carta pagabile, saltano il turno.`);
     await info(p,'Non puoi pagare nessuna carta','Il mazzo è finito e non hai abbastanza carte in mano: salti questo turno.');
     return}
   let ch;if(isCpu(p)){await sleep(700);ch=cpuDeploy(p)}else ch=await humanDeploy(p);
-  const{card,disc}=ch,up=false,cost=costOf(p,card),mark=S.log.length;S.lastPaid=cost;S.cpuActed=false;const tok0=card.cost;
+  const{card,disc,deckPay}=ch,up=false,cost=costOf(p,card),mark=S.log.length;S.lastPaid=cost;S.cpuActed=false;const tok0=card.cost;
   if(DEF[card.id].cat==='Comunisti')P.comDiscount=0;
-  P.hand=P.hand.filter(h=>h!==card&&!disc.includes(h));P.discard.push(...disc);
+  P.hand=P.hand.filter(h=>h!==card&&!disc.includes(h));P.discard.push(...disc);if(DEF[card.id].deckPay&&P.deck.length){const g=P.deck.pop();P.discard.push(g);log(`${FAC[p]}: scartano la cima del mazzo${isCpu(p)?'':' ('+DEF[g.id].name+')'} per pagare il costo.`)}
   const c=inst(card,p);c.slot=P.board.indexOf(null);P.board[c.slot]=c;c.faceUp=up;c.depUp=up;c.known[p]=true;
   P.paid+=cost;P.last=c;if(S.round===2)S.costSum[p]+=c.def.cost;
   log(`${FAC[p]}: schierano una carta coperta in pos. ${c.slot+1} (iniziativa ${init(c)}, pagano ${cost}).`);
@@ -1045,8 +1085,8 @@ async function endRound(){
   if(tk[0]!==tk[1]){const b=tk[0]<tk[1]?0:1;sc[b]+=1;rw.ini[b]=1;bonus.push(`Meno gettoni iniziativa in gioco (${tk[b]} contro ${tk[1-b]}): +1 punto ai ${FAC[b]}`)}
   else bonus.push(`Stessi gettoni iniziativa in gioco (${tk[0]}): nessun punto extra`);
   /* variante esperti: tris e poker di categoria */
-  if(S.expert)for(const p of [0,1]){const cnt={};live(p).forEach(c=>cnt[c.def.cat]=(cnt[c.def.cat]||0)+1);
-    const [cat,n]=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]||[null,0];
+  if(S.expert)for(const p of [0,1]){const cnt={},jol=live(p).filter(c=>c.id==='mosconi').length;live(p).forEach(c=>{if(c.id!=='mosconi')cnt[c.def.cat]=(cnt[c.def.cat]||0)+1});
+    const [cat,n0]=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]||[null,0];const n=Math.min(live(p).length,n0+jol);
     if(n>=4){sc[p]+=5;rw.exp[p]=5;bonus.push(`Poker di ${cat}: +5 punti ai ${FAC[p]}`)}else if(n===3){sc[p]+=3;rw.exp[p]=3;bonus.push(`Tris di ${cat}: +3 punti ai ${FAC[p]}`)}}
   S.totals[0]+=sc[0];S.totals[1]+=sc[1];S.history.push(sc);S.lastBonus=bonus;
   bonus.forEach(b=>log(b+'.'));
@@ -1115,7 +1155,7 @@ const HELP_BRIEF=`
 <li><b>Carte coperte.</b> Ogni carta si schiera coperta: l’avversario vede la sua posizione e la sua iniziativa, ma non sa cos’è. Si scopre solo quando si attiva.</li>
 <li><b>Carte in più.</b> Dopo aver schierato puoi scartare carte oltre al costo, fino a 4 in tutto (al massimo una può essere la cima del mazzo, alla cieca). Ogni carta in più sposta di 1 l’iniziativa di una tua carta, in su o in giù: serve a farla agire prima o dopo.</li>
 <li><b>Attivazione.</b> Le carte si attivano dalla iniziativa più bassa alla più alta. Ogni carta ha un solo effetto, indicato dai simboli sulla carta.</li>
-<li><b>Punteggio.</b> Sommate il Dominio delle carte sopravvissute. Chi ha meno gettoni iniziativa sulle proprie carte in gioco prende 1 punto in più; a parità, nessuno.</li>
+<li><b>Punteggio.</b> Sommate il Dominio delle carte sopravvissute. Chi ha meno gettoni iniziativa sulle proprie carte in gioco prende 1 punto in più; a parità, nessuno. Tre carte della stessa categoria valgono +3 punti, quattro +5 (Germano Mosconi vale come jolly).</li>
 </ol>
 <h3>Fra il primo e il secondo round</h3>
 <ol class="lst">
@@ -1297,12 +1337,10 @@ function render(){
         <button class="opt" data-credits><span class="bi"><svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 3l2.6 5.6 6.1.6-4.6 4.1 1.3 6-5.4-3.1-5.4 3.1 1.3-6L3.3 9.2l6.1-.6z"/></svg></span><span class="bt">Crediti</span><span class="ar">›</span></button>
       </div>`;
     else if(m==='mode')body=`<h2 class="mh">Scegli il gioco</h2><div class="btns">
-        <button class="opt main" data-menu="side"><span class="bt">Gioco base<small>Le regole del regolamento 0.8</small></span><span class="ar">›</span></button>
-        ${expertUnlocked()?`<button class="opt main xp" data-menu="side-x"><span class="bt">Variante esperti<small>Tris di categoria +3, poker +5</small></span><span class="ar">›</span></button>`
-          :(()=>{const st=loadStats();return`<button class="opt soon" disabled aria-disabled="true"><span class="bt">Variante esperti<small>Da sbloccare: vinci una partita con i Santi ${st[0].w?'✓':'○'} e una con i Corrotti ${st[1].w?'✓':'○'}</small></span><span class="badge">bloccata</span></button>`})()}
-        <button class="opt demo" data-start="demo"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M2 12c4-7 16-7 20 0-4 7-16 7-20 0z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></span><span class="bt">Guarda una partita simulata<small>Il computer gioca per entrambe le fazioni</small></span><span class="ar">›</span></button>
+        <button class="opt main" data-menu="side-x"><span class="bt">Gioca<small>Contro il computer o in due · tris di categoria +3, poker +5</small></span><span class="ar">›</span></button>
+        <button class="opt demo" data-start="demo" data-x="1"><span class="bi"><svg viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M2 12c4-7 16-7 20 0-4 7-16 7-20 0z"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg></span><span class="bt">Guarda una partita simulata<small>Il computer gioca per entrambe le fazioni</small></span><span class="ar">›</span></button>
         <button class="opt back" data-menu="home">Indietro</button></div>`;
-    else if(m==='side'||m==='side-x'){const X=m==='side-x'?' data-x="1"':'';body=`<h2 class="mh">${X?'Variante esperti · ':''}Da che parte stai?</h2><div class="btns">
+    else if(m==='side'||m==='side-x'){const X=m==='side-x'?' data-x="1"':'';body=`<h2 class="mh">Da che parte stai?</h2><div class="btns">
         <button class="opt fs" data-start="cpu" data-h="0"${X}><span class="bi">${ico('back0')}</span><span class="bt">Gioca con i Santi<small>Contro il computer</small></span><span class="ar">›</span></button>
         <button class="opt fc" data-start="cpu" data-h="1"${X}><span class="bi">${ico('back1')}</span><span class="bt">Gioca con i Corrotti<small>Contro il computer</small></span><span class="ar">›</span></button>
         <button class="opt" data-start="hot"${X}><span class="bt">Due giocatori sullo stesso telefono<small>Passatevi il telefono a ogni turno</small></span><span class="ar">›</span></button>
@@ -1368,7 +1406,7 @@ function render(){
     ${S.final.why?`<div class="meta">${S.final.why}</div>`:''}
     <div class="opts"><button class="opt main" data-restart>Nuova partita</button></div></div>`}
   app.innerHTML=`<div class="wrap">
-    ${S.demo?'<div class="xtag">Partita simulata · il computer gioca per entrambi</div>':S.expert?'<div class="xtag">Variante esperti</div>':''}<div class="top"><h1>Round ${S.round>2?2:S.round} <i>di 2</i></h1>
+    ${S.demo?'<div class="xtag">Partita simulata · il computer gioca per entrambi</div>':''}<div class="top"><h1>Round ${S.round>2?2:S.round} <i>di 2</i></h1>
       <div class="score"><span>Santi <b class="s">${S.totals[0]}</b></span><span>Corrotti <b class="c">${S.totals[1]}</b></span><button class="linkbtn" data-help="breve">Regole</button><button class="linkbtn" data-quit>Esci</button></div></div>
     ${initBarHtml()}
     ${S.players?rowHtml(top,true):''}
@@ -1395,7 +1433,7 @@ function sumHtml(){
 const FSE=()=>document.fullscreenElement||document.webkitFullscreenElement;
 const FSOK=()=>{const e=document.documentElement;return!!(e.requestFullscreen||e.webkitRequestFullscreen)};
 function toggleFS(){try{if(FSE()){(document.exitFullscreen||document.webkitExitFullscreen).call(document)}else{const e=document.documentElement;const r=(e.requestFullscreen||e.webkitRequestFullscreen).call(e);if(r&&r.catch)r.catch(()=>{})}}catch(x){}}
-['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{try{render()}catch(x){}}));
+if(typeof document!=='undefined'&&document.addEventListener)['fullscreenchange','webkitfullscreenchange'].forEach(ev=>document.addEventListener(ev,()=>{try{render()}catch(x){}}));
 function endFxHtml(){
   const[a,b]=S.totals,w=S.final.w;let title,fac;
   if(S.mode==='cpu'&&!S.demo&&(S.human===0||S.human===1)){fac=S.human;title=w===null?'PAREGGIO':w===S.human?'HAI VINTO':'HAI PERSO'}
