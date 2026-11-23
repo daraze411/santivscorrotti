@@ -371,7 +371,7 @@ div.hcard{cursor:default}
 @keyframes quake{0%{transform:translate(0,0)}25%{transform:translate(-6px,3px) rotate(-.6deg)}50%{transform:translate(5px,-4px) rotate(.5deg)}75%{transform:translate(-4px,-2px)}100%{transform:translate(0,0)}}
 @keyframes glitch{0%,86%,100%{text-shadow:2px 0 #ff2e7e,-2px 0 #3d0063,0 0 22px rgb(150 60 255 / .6);transform:none}88%{text-shadow:-6px 0 #ff2e7e,6px 0 #3d0063;transform:skewX(-8deg)}92%{text-shadow:5px 2px #ff2e7e,-5px -2px #000;transform:skewX(6deg) translateX(3px)}}
 @keyframes flicker{0%,94%,100%{filter:none}95%{filter:brightness(.55)}97%{filter:brightness(1.25)}}
-.endfx .sumt{color:#f4ecd8}.sumt{border-collapse:collapse;margin:12px auto 4px;font-size:13px;min-width:240px}.sumt th{font-weight:600;opacity:.7;font-size:11px;padding:2px 8px}.sumt td{padding:3px 8px;text-align:center;border-top:1px solid rgba(255,255,255,.18)}.sumt td:first-child{text-align:left}.sumt tr.tot td{font-weight:800;border-top:2px solid currentColor}.sheet .sumt td{border-top-color:rgba(0,0,0,.15)}.efw{font-size:12px;opacity:.8;margin-top:6px;max-width:300px}
+.pwn{font-weight:800;letter-spacing:.08em;font-size:13px;color:var(--fg);margin:6px 0 -2px}.endfx .sumt{color:#f4ecd8}.sumt{border-collapse:collapse;margin:12px auto 4px;font-size:13px;min-width:240px}.sumt th{font-weight:600;opacity:.7;font-size:11px;padding:2px 8px}.sumt td{padding:3px 8px;text-align:center;border-top:1px solid rgba(255,255,255,.18)}.sumt td:first-child{text-align:left}.sumt tr.tot td{font-weight:800;border-top:2px solid currentColor}.sheet .sumt td{border-top-color:rgba(0,0,0,.15)}.efw{font-size:12px;opacity:.8;margin-top:6px;max-width:300px}
 </style>
 
 </head>
@@ -428,7 +428,7 @@ D('galileo','Galileo Galilei',1,'Demoni ed Eretici',1,2,'Scambia i gettoni inizi
 ];
 const SYM={'giorgio': '☠ ↑ 👁{c}', 'sebastiano': '⛨ non eliminabile', 'barbara': '☠ 👁 · Dom ≤ 2', 'lorenzo': '⛨ ☠ chi lo elimina', 'gennaro': 'round 1 vinto: ☠☠', 'rocco': '⛨ una tua carta (anche sé)', 'pantaleone': '☠ Com./Er. 👁{c}', 'rita': '▲1 tutti i Santi', 'pietro': '↺ una tua eliminata', 'benedetto': '⊘ ↑ prossima', 'lucia': '🔍 {c}', 'paolo': '▼2 ↑', 'ferretti': '☠ 👁 Com./Art. ≤2', 'adinolfi': '▲1 un altro Santo', 'koll': '▲1 due Santi', 'brosio': '↺ carta dalla mano', 'marx': '▲1 Comunisti 👁', 'lenin': '☠ 👁 · se +1 Comunista', 'stalin': '☠ 👁 · ▼1 ↓', 'engels': '▲1 due carte', 'ozzy': '▼1 categoria ↑ 👁', 'siffredi': '▲3 se è l’ultima', 'baudelaire': '◐+ ↑', 'dali': '⇄ Dominio di due 👁', 'diocleziano': '☠ ↑', 'nerone': '▼1 tutte ↑ 👁', 'giuliano': '▼2 ↑ · se Artista 👁', 'lutero': '▲3 se è la prima', 'lucifero': '☠ 👁', 'belzebu': '☠ Martire 👁 · o ⊘ {c}', 'bruno': '☠ mio Comunista → ▲3', 'galileo': '◐⇄ {c}{c}', 'agata': '☠ 👁 costo ≥ 3', 'padrepio': '◐⇄ due ↑', 'giovanna_s': '0 se Giovanna ↑ 👁 · costo 4', 'giovanna_c': '0 se Giovanna ↑ 👁 · costo 4', 'manson': '1ª: schiera +1 carta', 'mosconi': '★ jolly tris/poker', 'guevara': '☠ 👁 costo ≤ 2', 'bernadette': '▲3 ↓ 👁'};
 const symHtml=id=>esc(SYM[id]||'').replace(/\//g,'/\u200b').replace(/\{c\}/g,'<i class="eyec">👁</i>');
-const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));DEF.giovanna_s.deckPay=DEF.giovanna_c.deckPay=true;
+const DEF=Object.fromEntries(DEFS.map(d=>[d.id,d]));DEF.padrepio.pw='PIO FORCE ONE';DEF.giovanna_s.deckPay=DEF.giovanna_c.deckPay=true;
 const NICK={giorgio:'Reptilia',sebastiano:'Pioggia di frecce',barbara:'Bum bum Barbie',lorenzo:'King of the BBQ',gennaro:'Sangue d’oro',rocco:'Travel blogger',pantaleone:'Omeopatia',rita:'Better call Rita',pietro:'Chiavi in 5 minuti',benedetto:'Ora et manus conserere',lucia:'Laser dagli occhi',paolo:'Fuori di testa',ferretti:'Komunione',koll:'Tinta aurea',adinolfi:'Fagocitazione',brosio:'Lacrime di sangue',
   marx:'Plusvalore',lenin:'Obladi oblada',stalin:'Grande purga',ozzy:'Pipistrello',siffredi:'Gran finale',baudelaire:'Fiori malvagi',dali:'Baffi onirici',diocleziano:'Editto letale',nerone:'Fuoco nel fuoco',lutero:'Lutero è mio e lo gestisco io',galileo:'Dito medio',bruno:'Mente ardente',engels:'Fedeltà totale',giuliano:'Nostalgia canaglia',lucifero:'Amore disperato',belzebu:'Fame insaziabile'};
 const nick=d=>{const n=NICK[d.id];if(!n)return'';const lw=Math.max(...n.split(' ').map(w=>w.length));return`<span class="nk ${lw>10||n.length>18?'sm':''}">${esc(n)}</span>`};
@@ -785,7 +785,7 @@ const MAIN={
   async bernadette(c){const p=c.owner;const t=await pick(p,'Santa Bernadette: una tua carta scoperta ottiene +3 Dominio',live(p).filter(x=>x.faceUp),{ai:x=>x.dom<=3?4-x.dom:0});if(t){addDom(t,3);log(`Santa Bernadette: ${t.def.name} ottiene +3 Dominio.`)}},
   async agata(c){const p=c.owner;const t=await pick(p,'Sant’Agata: elimina una carta avversaria scoperta con costo stampato 3 o più',live(1-p).filter(x=>x.faceUp&&x.def.cost>=3));if(t)await eliminate(t,c)},
   async guevara(c){const p=c.owner;const t=await pick(p,'Che Guevara: elimina una carta avversaria scoperta con costo stampato 2 o meno',live(1-p).filter(x=>x.faceUp&&x.def.cost<=2));if(t)await eliminate(t,c)},
-  async padrepio(c){await swapTokens(c.owner,'Padre Pio: scambia i gettoni iniziativa di due carte avversarie',live(1-c.owner),true)},
+  async padrepio(c){log('Padre Pio: PIO FORCE ONE!');await swapTokens(c.owner,'Padre Pio: scambia i gettoni iniziativa di due carte avversarie',live(1-c.owner),true)},
   async giovanna_s(c){await giovanna(c)},async giovanna_c(c){await giovanna(c)},
   async manson(c){const p=c.owner,P=S.players[p];
     if(S.actCount[p]!==0){log('Marilyn Manson non è la prima carta dei Corrotti.');return}
@@ -1271,7 +1271,7 @@ function handEl(h,p){
 const CATWORD=[[/\b(Martir[ei])\b/g,'Martiri'],[/\b(Miracol[io])\b/g,'Miracoli'],[/\b(Mistic[oi])\b/g,'Mistici'],[/\b(Devot[oi])\b/g,'Devoti'],[/\b(Comunist[ai])\b/g,'Comunisti'],[/\b(Artist[ai])\b/g,'Artisti'],[/\b(Persecutor[ei])\b/g,'Persecutori'],[/\b(Demon[ei]|Eretic[oi])\b/g,'Demoni ed Eretici']];
 function catTint(h){for(const [re,k] of CATWORD)h=h.replace(re,`<b class="kw" style="--cc:${CATCOL[k]}">$1</b>`);return h}
 function fxHtml(d){
-  return`<div class="fx"><span class="sym">${symHtml(d.id)}</span><span>${catTint(esc(d.m))}</span></div>`;
+  return`${d.pw?`<div class="pwn">${esc(d.pw)}</div>`:''}<div class="fx"><span class="sym">${symHtml(d.id)}</span><span>${catTint(esc(d.m))}</span></div>`;
 }
 function precOwner(){
   const paid=[0,1].map(p=>S.players[p].paid);
