@@ -1156,7 +1156,7 @@ const HELP_BRIEF=`
 <ol class="lst">
 <li><b>Schieramento.</b> A turno giocate una carta dalla mano, pagandone il costo con altre carte scartate, finché ne avete quattro in campo.</li>
 <li><b>Carte coperte.</b> Ogni carta si schiera coperta: l’avversario vede la sua posizione e la sua iniziativa, ma non sa cos’è. Si scopre solo quando si attiva.</li>
-<li><b>Carte in più.</b> Dopo aver schierato puoi scartare carte oltre al costo, fino a 4 in tutto (al massimo una può essere la cima del mazzo, alla cieca). Ogni carta in più sposta di 1 l’iniziativa di una tua carta, in su o in giù: serve a farla agire prima o dopo.</li>
+<li><b>Carte in più.</b> Dopo aver schierato puoi scartare carte oltre al costo, fino a 4 in tutto (al massimo una può essere la cima del mazzo, alla cieca). Ogni carta in più sposta di 1 l’iniziativa di una tua carta, in su o in giù: serve a farla agire prima o dopo. È un costo extra: ogni spostamento ti costa una carta in più dalla mano, e queste carte non contano come costo pagato per lo spareggio.</li>
 <li><b>Attivazione.</b> Le carte si attivano dalla iniziativa più bassa alla più alta. Ogni carta ha un solo effetto, indicato dai simboli sulla carta.</li>
 <li><b>Punteggio.</b> Sommate il Dominio delle carte sopravvissute. Chi ha meno gettoni iniziativa sulle proprie carte in gioco prende 1 punto in più; a parità, nessuno. Tre carte della stessa categoria valgono +3 punti, quattro +5 (Germano Mosconi vale come jolly).</li>
 </ol>
@@ -1198,7 +1198,7 @@ const TUT=[
  n:'L’iniziativa è l’unico indizio: una carta con tanti gettoni di solito costa molto. San Giorgio e Diocleziano possono colpire carte ancora coperte; Lucifero e Lenin solo carte già attivate.'},
 {t:'L’ordine di attivazione',x:()=>exRow(1,[exCard('galileo',{back:1}),exCard('stalin',{tok:-1,ini:1}),exCard('lenin',{tok:-1,ini:2})],'Corrotti')+exRow(0,[exCard('lucia',{tok:-1,ini:0}),exCard('rocco',{tok:-1,ini:1}),exCard('giorgio',{back:1})],'Santi')+
  `<div class="order"><span>Lucia 0</span><b>→</b><span>Rocco 1</span><b>→</b><span>Galileo 1</span><b>→</b><span>Stalin 1</span><b>→</b><span>Lenin 2</span><b>→</b><span>Giorgio 3</span></div>`,
- p:'Finito lo schieramento, le carte si attivano dall’iniziativa più bassa. Con iniziativa pari si alternano i giocatori. Qui a parità partono i Santi: per esempio perché hanno pagato meno.',
+ p:'Finito lo schieramento, le carte si attivano dall’iniziativa più bassa. Con iniziativa pari si alternano i giocatori. In questo esempio, a parità partono i Santi perché hanno meno gettoni iniziativa.',
  n:'Un gettone iniziativa può far attivare una carta dopo che i suoi bersagli sono già stati eliminati, o dopo che l’avversario l’ha eliminata.'},
 {t:'Un’eliminazione',x:()=>exRow(1,[exCard('lucifero',{tag:'si attiva'})],'Corrotti')+exRow(0,[exCard('adinolfi',{dead:1,tag:'eliminata'}),exCard('lorenzo',{back:1})],'Santi'),
  p:'Lucifero si attiva ed elimina una carta avversaria scoperta: sceglie Mario Adinolfi, che esce dal campo e non conterà nel punteggio. La carta coperta di San Lorenzo, invece, Lucifero non può colpirla.',
